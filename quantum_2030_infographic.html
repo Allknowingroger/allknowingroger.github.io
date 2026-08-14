@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum 2030 — The Next Frontier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070b1f;
+  --surface: #0f1530;
+  --surface-2: #161e40;
+  --ink: #e8edf7;
+  --muted: #8a95b8;
+  --accent-cyan: #00e5ff;
+  --accent-violet: #b829dd;
+  --accent-amber: #ffb74d;
+  --accent-cyan-weak: rgba(0, 229, 255, 0.08);
+  --accent-violet-weak: rgba(184, 41, 221, 0.08);
+  --line: rgba(138, 149, 184, 0.12);
+  --glow-cyan: 0 0 20px rgba(0, 229, 255, 0.25);
+  --glow-violet: 0 0 20px rgba(184, 41, 221, 0.25);
+  --step--2: clamp(0.64rem, 0.62rem + 0.12vw, 0.72rem);
+  --step--1: clamp(0.80rem, 0.76rem + 0.22vw, 0.96rem);
+  --step-0: clamp(1rem, 0.92rem + 0.4vw, 1.25rem);
+  --step-1: clamp(1.25rem, 1.10rem + 0.75vw, 1.75rem);
+  --step-2: clamp(1.56rem, 1.30rem + 1.3vw, 2.45rem);
+  --step-3: clamp(1.95rem, 1.55rem + 2.0vw, 3.4rem);
+  --step-4: clamp(2.44rem, 1.80rem + 3.2vw, 4.8rem);
+  --space: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  --radius: 16px;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.3), 0 12px 40px -12px rgba(0,0,0,0.5);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.65;
+  font-size: var(--step-0);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background quantum grid */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 80%);
+}
+
+/* Floating orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+}
+.orb-1 {
+  width: 500px; height: 500px;
+  background: var(--accent-violet);
+  top: -10%; right: -5%;
+  animation: float 20s ease-in-out infinite;
+}
+.orb-2 {
+  width: 400px; height: 400px;
+  background: var(--accent-cyan);
+  bottom: 10%; left: -8%;
+  animation: float 18s ease-in-out infinite reverse;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: var(--accent-amber);
+  top: 40%; left: 50%;
+  opacity: 0.15;
+  animation: float 22s ease-in-out infinite 2s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+header, main, footer { position: relative; z-index: 1; }
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Orbitron", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* Header / Hero */
+header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--space);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: "Orbitron", sans-serif;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  padding: 0.5em 1.2em;
+  border-radius: 100px;
+  background: var(--accent-cyan-weak);
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-badge::before {
+  content: "";
+  width: 8px; height: 8px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  box-shadow: var(--glow-cyan);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+header h1 {
+  font-size: var(--step-4);
+  font-weight: 900;
+  max-width: 14ch;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--ink) 0%, var(--accent-cyan) 60%, var(--accent-violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header .subtitle {
+  font-size: var(--step-1);
+  color: var(--muted);
+  max-width: 50ch;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: "Orbitron", sans-serif;
+  font-size: var(--step-3);
+  font-weight: 800;
+  display: block;
+  line-height: 1;
+}
+
+.stat-number.cyan { color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+.stat-number.violet { color: var(--accent-violet); text-shadow: var(--glow-violet); }
+.stat-number.amber { color: var(--accent-amber); }
+
+.stat-label {
+  font-size: var(--step--1);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.5em;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* Sections */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+section {
+  margin-bottom: calc(var(--space) * 3);
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: calc(var(--space) * 1.2);
+  flex-wrap: wrap;
+}
+
+.section-number {
+  font-family: "Orbitron", sans-serif;
+  font-size: var(--step-1);
+  font-weight: 400;
+  opacity: 0.4;
+  color: var(--accent-cyan);
+}
+
+section h2 {
+  font-size: var(--step-2);
+  color: var(--ink);
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line), transparent);
+  min-width: 60px;
+}
+
+/* Cards grid */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: calc(var(--space) * 0.8);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.1);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: rgba(0, 229, 255, 0.2);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card.cyan { --accent: var(--accent-cyan); --accent-weak: var(--accent-cyan-weak); }
+.card.violet { --accent: var(--accent-violet); --accent-weak: var(--accent-violet-weak); }
+.card.amber { --accent: var(--accent-amber); --accent-weak: rgba(255, 183, 77, 0.08); }
+
+.card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--accent-weak);
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  color: var(--accent);
+  font-size: 1.4rem;
+}
+
+.card h3 {
+  font-size: var(--step-1);
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+}
+
+.card p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.7;
+}
+
+.card-meta {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-family: "Orbitron", sans-serif;
+  font-size: var(--step--2);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-cyan), var(--accent-violet), var(--accent-amber));
+  opacity: 0.4;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: calc(var(--space) * 1.5);
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -1.65rem;
+  top: 0.3rem;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 0 4px var(--bg), var(--glow-cyan);
+}
+
+.timeline-item.violet::before { border-color: var(--accent-violet); box-shadow: 0 0 0 4px var(--bg), var(--glow-violet); }
+.timeline-item.amber::before { border-color: var(--accent-amber); box-shadow: 0 0 0 4px var(--bg), 0 0 10px rgba(255,183,77,0.3); }
+
+.timeline-year {
+  font-family: "Orbitron", sans-serif;
+  font-size: var(--step-0);
+  color: var(--accent-cyan);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.timeline-item.violet .timeline-year { color: var(--accent-violet); }
+.timeline-item.amber .timeline-year { color: var(--accent-amber); }
+
+.timeline-title {
+  font-size: var(--step-0);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.timeline-desc {
+  color: var(--muted);
+  font-size: var(--step--1);
+  max-width: 60ch;
+}
+
+/* Big quote / insight */
+.insight-band {
+  background: linear-gradient(135deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.5);
+  margin: calc(var(--space) * 2) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.insight-band::before {
+  content: "";
+  position: absolute;
+  top: -50%; left: -20%;
+  width: 60%; height: 200%;
+  background: radial-gradient(circle, var(--accent-violet-weak), transparent 70%);
+  pointer-events: none;
+}
+
+.insight-band p {
+  font-size: var(--step-1);
+  font-weight: 300;
+  line-height: 1.5;
+  position: relative;
+  max-width: 50ch;
+}
+
+.insight-band strong {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* Quantum circuit decoration */
+.circuit-deco {
+  width: 100%;
+  height: 80px;
+  margin: calc(var(--space) * 1.5) 0;
+  opacity: 0.4;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: calc(var(--space) * 2) var(--space);
+  color: var(--muted);
+  font-size: var(--step--1);
+  border-top: 1px solid var(--line);
+  margin-top: calc(var(--space) * 2);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; }
+  body::before, .orb, .scroll-hint { display: none; }
+  .card, .insight-band {
+    background: #f5f5f5;
+    border-color: #ccc;
+    break-inside: avoid;
+  }
+}
+@page { size: A4; margin: 15mm; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .hero-stats { gap: 1.5rem; }
+  .timeline { padding-left: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<header>
+  <div class="hero-badge">Forecast 2030</div>
+  <h1>Quantum 2030: The Next Frontier</h1>
+  <p class="subtitle">Twelve predictions for how quantum technologies will reshape computing, communication, sensing, and biology by the end of the decade.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-number cyan">1M+</span>
+      <span class="stat-label">Physical Qubits</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number violet">100%</span>
+      <span class="stat-label">Unhackable Comms</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number amber">10×</span>
+      <span class="stat-label">Sensing Precision</span>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll to explore</div>
+</header>
+
+<main>
+
+<!-- Quantum Computing -->
+<section>
+  <div class="section-header">
+    <span class="section-number">01</span>
+    <h2>Quantum Computing</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards">
+    <div class="card cyan">
+      <div class="card-icon">⚛</div>
+      <h3>Fault-Tolerant Systems</h3>
+      <p>By 2030, leading platforms will cross the threshold of 1,000 logical (error-corrected) qubits, enabling reliable execution of deep quantum circuits for the first time. Surface-code architectures and real-time decoding will mature from lab demos to production infrastructure.</p>
+      <div class="card-meta">2028–2030</div>
+    </div>
+    <div class="card cyan">
+      <div class="card-icon">🧬</div>
+      <h3>Drug Discovery at Scale</h3>
+      <p>Quantum simulations of protein folding, molecular docking, and reaction dynamics will become standard in pharmaceutical R&D. First quantum-designed therapeutics—particularly for previously "undruggable" targets—will enter pre-clinical trials.</p>
+      <div class="card-meta">2029–2030</div>
+    </div>
+    <div class="card cyan">
+      <div class="card-icon">🔐</div>
+      <h3>Post-Quantum Cryptography Transition</h3>
+      <p>As quantum computers approach cryptographically relevant scales, governments and enterprises will complete large-scale migrations to post-quantum cryptographic standards (ML-KEM, ML-DSA), rendering current RSA and ECC infrastructure obsolete.</p>
+      <div class="card-meta">2027–2030</div>
+    </div>
+  </div>
+</section>
+
+<!-- Quantum Communication -->
+<section>
+  <div class="section-header">
+    <span class="section-number">02</span>
+    <h2>Quantum Communication</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards">
+    <div class="card violet">
+      <div class="card-icon">🛰</div>
+      <h3>Global Quantum Internet Backbone</h3>
+      <p>Satellite-based quantum key distribution (QKD) and entanglement-swapping relays will link continents with quantum-secure channels. Major financial centers and government networks will operate on quantum-encrypted infrastructure by default.</p>
+      <div class="card-meta">2029–2030</div>
+    </div>
+    <div class="card violet">
+      <div class="card-icon">📡</div>
+      <h3>Quantum Local Area Networks</h3>
+      <p>City-scale quantum LANs using fiber-based entanglement distribution will connect quantum sensors, computers, and secure endpoints within metropolitan areas, forming the edges of the emerging quantum internet.</p>
+      <div class="card-meta">2028–2029</div>
+    </div>
+    <div class="card violet">
+      <div class="card-icon">🔮</div>
+      <h3>Device-Independent Security</h3>
+      <p>Next-generation protocols will verify security based on the violation of Bell inequalities alone, removing the need to trust hardware manufacturers. Information-theoretic security will become a commodity.</p>
+      <div class="card-meta">2030+</div>
+    </div>
+  </div>
+</section>
+
+<!-- Quantum Sensing -->
+<section>
+  <div class="section-header">
+    <span class="section-number">03</span>
+    <h2>Quantum Sensing &amp; Imaging</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards">
+    <div class="card amber">
+      <div class="card-icon">🧠</div>
+      <h3>Neurological Magnetometry</h3>
+      <p>Room-temperature optically pumped magnetometers and nitrogen-vacancy (NV) diamond sensors will enable portable, high-resolution brain imaging at 10× the sensitivity of current MEG systems, transforming early diagnosis of epilepsy and neurodegeneration.</p>
+      <div class="card-meta">2028–2030</div>
+    </div>
+    <div class="card amber">
+      <div class="card-icon">🌍</div>
+      <h3>Subterranean Quantum Mapping</h3>
+      <p>Quantum gravimeters and gravity gradiometers deployed on drones and satellites will map underground water reservoirs, mineral deposits, and voids with centimeter-scale resolution, revolutionizing geology and resource exploration.</p>
+      <div class="card-meta">2029–2030</div>
+    </div>
+    <div class="card amber">
+      <div class="card-icon">🧭</div>
+      <h3>GPS-Free Quantum Navigation</h3>
+      <p>Cold-atom interferometry will provide submarine, aircraft, and spacecraft navigation that is immune to jamming or spoofing. Quantum inertial sensors will maintain position accuracy for weeks without external signals.</p>
+      <div class="card-meta">2027–2029</div>
+    </div>
+  </div>
+</section>
+
+<!-- Quantum Biology & Materials -->
+<section>
+  <div class="section-header">
+    <span class="section-number">04</span>
+    <h2>Quantum Biology &amp; Materials</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards">
+    <div class="card cyan">
+      <div class="card-icon">🌿</div>
+      <h3>Artificial Photosynthesis 2.0</h3>
+      <p>Engineered light-harvesting complexes inspired by quantum coherence in natural photosynthesis will achieve >95% energy transfer efficiency in synthetic systems, enabling new classes of ultra-efficient solar cells and bio-reactors.</p>
+      <div class="card-meta">2029–2030</div>
+    </div>
+    <div class="card violet">
+      <div class="card-icon">❄</div>
+      <h3>Room-Temperature Superconductors?</h3>
+      <p>While still uncertain, the search for ambient-pressure room-temperature superconductivity will be guided by quantum machine learning screening of millions of crystal structures. Even near-room-temperature hydride superconductors would transform the power grid.</p>
+      <div class="card-meta">2030?</div>
+    </div>
+    <div class="card amber">
+      <div class="card-icon">🐦</div>
+      <h3>Quantum-Enhanced Migratory Sensors</h3>
+      <p>Reverse-engineering the radical-pair quantum compass of migratory birds will yield compact, biomimetic magnetic sensors for navigation and geomagnetic anomaly detection in consumer and industrial devices.</p>
+      <div class="card-meta">2028–2030</div>
+    </div>
+  </div>
+</section>
+
+<!-- Insight band -->
+<div class="insight-band">
+  <p>By 2030, quantum technology will not be a niche physics experiment. It will be <strong>invisible infrastructure</strong>—securing communications, guiding navigation, designing medicines, and sensing the world with precision beyond classical limits.</p>
+</div>
+
+<!-- Timeline -->
+<section>
+  <div class="section-header">
+    <span class="section-number">05</span>
+    <h2>Roadmap to 2030</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">2026</div>
+      <div class="timeline-title">First Commercial QKD Networks</div>
+      <div class="timeline-desc">Metro-scale quantum-secured networks go live in major financial and government hubs across Asia, Europe, and North America.</div>
+    </div>
+    <div class="timeline-item violet">
+      <div class="timeline-year">2027</div>
+      <div class="timeline-title">100-Logical-Qubit Demonstration</div>
+      <div class="timeline-desc">A major quantum computing platform demonstrates 100 logical qubits with error rates below the fault-tolerance threshold, proving scalable error correction.</div>
+    </div>
+    <div class="timeline-item amber">
+      <div class="timeline-year">2028</div>
+      <div class="timeline-title">Quantum Sensors in Clinical Use</div>
+      <div class="timeline-desc">Portable quantum magnetometers receive FDA approval for neurological diagnostics; quantum gravimeters enter commercial geophysical surveys.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2029</div>
+      <div class="timeline-title">Intercontinental Quantum Links</div>
+      <div class="timeline-desc">Satellite constellations enable quantum-encrypted communication between continents, forming the backbone of the global quantum internet.</div>
+    </div>
+    <div class="timeline-item violet">
+      <div class="timeline-year">2030</div>
+      <div class="timeline-title">Quantum-Native Applications</div>
+      <div class="timeline-desc">Quantum advantage becomes routine in materials science, drug discovery, and optimization. The technology transitions from "emerging" to "essential."</div>
+    </div>
+  </div>
+</section>
+
+<!-- Quantum circuit SVG decoration -->
+<svg class="circuit-deco" viewBox="0 0 1200 80" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="wireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00e5ff;stop-opacity:0" />
+      <stop offset="50%" style="stop-color:#00e5ff;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#b829dd;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  <line x1="0" y1="20" x2="1200" y2="20" stroke="url(#wireGrad)" stroke-width="1"/>
+  <line x1="0" y1="40" x2="1200" y2="40" stroke="url(#wireGrad)" stroke-width="1"/>
+  <line x1="0" y1="60" x2="1200" y2="60" stroke="url(#wireGrad)" stroke-width="1"/>
+  <circle cx="200" cy="20" r="4" fill="#00e5ff" opacity="0.6"/>
+  <circle cx="500" cy="40" r="4" fill="#b829dd" opacity="0.6"/>
+  <circle cx="800" cy="60" r="4" fill="#ffb74d" opacity="0.6"/>
+  <circle cx="1100" cy="20" r="4" fill="#00e5ff" opacity="0.6"/>
+  <rect x="350" y="16" width="8" height="8" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5" rx="1"/>
+  <rect x="650" y="36" width="8" height="8" fill="none" stroke="#b829dd" stroke-width="1" opacity="0.5" rx="1"/>
+  <rect x="950" y="56" width="8" height="8" fill="none" stroke="#ffb74d" stroke-width="1" opacity="0.5" rx="1"/>
+</svg>
+
+</main>
+
+<footer>
+  <p>Quantum 2030 Forecast · Compiled from WEF, MIT Technology Review, and major research roadmaps · August 2026</p>
+</footer>
+
+</body>
+</html>

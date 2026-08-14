@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Torsional Twistor Markov Pump — A Quantum-Gravity Computer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a12;
+  --surface: #0b1220;
+  --surface-raised: #111d32;
+  --ink: #e8edf5;
+  --muted: #7b8aa6;
+  --accent-cyan: #22d3ee;
+  --accent-cyan-dim: color-mix(in oklab, var(--accent-cyan) 20%, var(--bg));
+  --accent-magenta: #e879f9;
+  --accent-magenta-dim: color-mix(in oklab, var(--accent-magenta) 20%, var(--bg));
+  --accent-gold: #fbbf24;
+  --accent-gold-dim: color-mix(in oklab, var(--accent-gold) 20%, var(--bg));
+  --line: rgba(148, 163, 184, 0.12);
+  --line-strong: rgba(148, 163, 184, 0.25);
+  --step--1: clamp(0.85rem, 0.82rem + 0.2vw, 0.95rem);
+  --step-0: clamp(0.95rem, 0.92rem + 0.25vw, 1.05rem);
+  --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3rem);
+  --step-4: clamp(2.8rem, 2.2rem + 3vw, 4.5rem);
+  --space: clamp(1.2rem, 1rem + 1vw, 2rem);
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px -8px rgba(0,0,0,0.5);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Selection */
+::selection {
+  background: color-mix(in oklab, var(--accent-cyan) 35%, transparent);
+  color: #fff;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", sans-serif;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+a:hover { border-bottom-color: var(--accent-cyan); }
+
+/* Layout utilities */
+.container {
+  width: min(90%, 1100px);
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: calc(var(--space) * 3);
+  position: relative;
+}
+
+/* Header / Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 120%, var(--accent-cyan-dim) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, var(--accent-magenta-dim) 0%, transparent 50%),
+    var(--bg);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+  opacity: 0.6;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: var(--step--1);
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  display: inline-block;
+  border: 1px solid var(--accent-gold-dim);
+  padding: 0.35em 1em;
+  border-radius: 999px;
+  background: var(--accent-gold-dim);
+}
+
+.hero h1 {
+  font-size: var(--step-4);
+  font-weight: 700;
+  max-width: 14ch;
+  margin-inline: auto;
+  background: linear-gradient(135deg, var(--ink) 30%, var(--accent-cyan) 70%, var(--accent-magenta) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: var(--step-1);
+  color: var(--muted);
+  max-width: 52ch;
+  margin-inline: auto;
+  margin-top: 1.2rem;
+  line-height: 1.6;
+}
+
+.hero-meta {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-meta .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+/* Schematic Hero Illustration */
+.hero-schematic {
+  position: relative;
+  width: min(90%, 700px);
+  margin-inline: auto;
+  margin-top: 3rem;
+}
+
+.hero-schematic svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: bounce 2s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint { animation: none; }
+}
+
+/* Section header pattern */
+.section-header {
+  margin-bottom: calc(var(--space) * 1.5);
+  position: relative;
+}
+
+.section-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.section-label::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--accent-gold);
+}
+
+.section h2 {
+  font-size: var(--step-3);
+  font-weight: 600;
+  max-width: 22ch;
+}
+
+.section-lead {
+  font-size: var(--step-1);
+  color: var(--muted);
+  max-width: 60ch;
+  margin-top: 0.8rem;
+  line-height: 1.6;
+}
+
+/* Cards / Surfaces */
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.2);
+  box-shadow: var(--shadow);
+}
+
+.surface-raised {
+  background: var(--surface-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.2);
+  box-shadow: var(--shadow);
+}
+
+/* Lattice grid decorative backgrounds */
+.lattice-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  pointer-events: none;
+  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Two column layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--space) * 1.5);
+}
+
+@media (min-width: 800px) {
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--space) * 1.2);
+}
+
+@media (min-width: 800px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Feature cards for lattices */
+.lattice-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.lattice-card .card-glow {
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.18;
+  top: -40px; right: -40px;
+  pointer-events: none;
+}
+
+.lattice-card.cyan .card-glow { background: var(--accent-cyan); }
+.lattice-card.magenta .card-glow { background: var(--accent-magenta); }
+.lattice-card.gold .card-glow { background: var(--accent-gold); }
+
+.lattice-card h3 {
+  font-size: var(--step-2);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.lattice-card .card-index {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: var(--step--1);
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.lattice-card p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.lattice-card .equation {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: var(--step--1);
+  color: var(--accent-cyan);
+  margin-top: 1rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  display: inline-block;
+}
+
+/* Stream section */
+.stream-section {
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 50%, var(--accent-magenta-dim) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 60%, var(--accent-cyan-dim) 0%, transparent 50%),
+    var(--surface);
+}
+
+/* Narrative timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space) * 1.5);
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-cyan), var(--accent-magenta), var(--accent-gold));
+  opacity: 0.4;
+}
+
+.timeline-item {
+  position: relative;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: 0.35rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent-cyan);
+  transform: translateX(-4px);
+}
+
+.timeline-item:nth-child(2)::before { border-color: var(--accent-magenta); }
+.timeline-item:nth-child(3)::before { border-color: var(--accent-gold); }
+.timeline-item:nth-child(4)::before { border-color: var(--accent-cyan); }
+
+.timeline-item h4 {
+  font-size: var(--step-1);
+  margin-bottom: 0.4rem;
+}
+
+.timeline-item p {
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+/* Data stream animation on SVGs */
+.stream-line {
+  stroke-dasharray: 10 10;
+  animation: streamFlow 2s linear infinite;
+}
+
+@keyframes streamFlow {
+  to { stroke-dashoffset: -20; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stream-line { animation: none; }
+}
+
+/* Footer */
+.footer {
+  padding-block: calc(var(--space) * 2);
+  border-top: 1px solid var(--line);
+  text-align: center;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+}
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; }
+  .hero, .stream-section, .surface, .surface-raised {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  .hero-grid, .lattice-bg, .card-glow { display: none !important; }
+  .scroll-hint { display: none !important; }
+  .section { padding-block: 1.5rem; }
+}
+@page { size: A4; margin: 16mm; }
+
+/* Reduced motion for hero content */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-content > * {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.8s ease-out forwards;
+  }
+  .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-content > *:nth-child(2) { animation-delay: 0.25s; }
+  .hero-content > *:nth-child(3) { animation-delay: 0.4s; }
+  .hero-content > *:nth-child(4) { animation-delay: 0.55s; }
+  .hero-schematic { animation-delay: 0.7s; }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="container hero-content">
+    <div class="hero-eyebrow">Speculative Architecture</div>
+    <h1>The Quantum-Gravity Computer</h1>
+    <p class="hero-subtitle">A unified information processor that translates fermionic matter, bosonic force, and entangled radiation into emergent spacetime geometry via twistors, torsion, and Markov dynamics.</p>
+    <div class="hero-meta">
+      <span><span class="dot" style="background:var(--accent-cyan);box-shadow:0 0 8px var(--accent-cyan)"></span> Twistor Theory</span>
+      <span><span class="dot" style="background:var(--accent-magenta);box-shadow:0 0 8px var(--accent-magenta)"></span> Markov Processes</span>
+      <span><span class="dot" style="background:var(--accent-gold);box-shadow:0 0 8px var(--accent-gold)"></span> Spin Networks</span>
+    </div>
+  </div>
+
+  <!-- SVG Schematic of the Machine -->
+  <div class="hero-schematic" aria-hidden="true">
+    <svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gradCyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/><stop offset="50%" stop-color="#22d3ee" stop-opacity="0.9"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0.2"/></linearGradient>
+        <linearGradient id="gradMagenta" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#e879f9" stop-opacity="0.2"/><stop offset="50%" stop-color="#e879f9" stop-opacity="0.9"/><stop offset="100%" stop-color="#e879f9" stop-opacity="0.2"/></linearGradient>
+        <linearGradient id="gradGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#fbbf24" stop-opacity="0.2"/><stop offset="50%" stop-color="#fbbf24" stop-opacity="0.9"/><stop offset="100%" stop-color="#fbbf24" stop-opacity="0.2"/></linearGradient>
+        <radialGradient id="coreGrad"><stop offset="0%" stop-color="#fbbf24"/><stop offset="40%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+
+      <!-- Connecting streams -->
+      <path d="M 180 140 C 280 140, 320 180, 360 200" fill="none" stroke="url(#gradCyan)" stroke-width="3" class="stream-line" opacity="0.8"/>
+      <path d="M 180 300 C 280 300, 320 240, 360 220" fill="none" stroke="url(#gradMagenta)" stroke-width="3" class="stream-line" opacity="0.8"/>
+      <path d="M 620 140 C 520 140, 480 180, 440 200" fill="none" stroke="url(#gradGold)" stroke-width="3" class="stream-line" opacity="0.8"/>
+      <path d="M 620 300 C 520 300, 480 240, 440 220" fill="none" stroke="url(#gradCyan)" stroke-width="3" class="stream-line" opacity="0.8"/>
+
+      <!-- Lattice A (left) -->
+      <g transform="translate(80, 100)">
+        <rect x="0" y="0" width="140" height="100" rx="10" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="70" y="-10" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="0.1em">LATTICE A</text>
+        <!-- nodes -->
+        <circle cx="20" cy="25" r="4" fill="#22d3ee" opacity="0.9"/><circle cx="50" cy="20" r="4" fill="#e879f9" opacity="0.9"/><circle cx="80" cy="30" r="4" fill="#22d3ee" opacity="0.9"/><circle cx="110" cy="22" r="4" fill="#fbbf24" opacity="0.9"/>
+        <circle cx="30" cy="55" r="4" fill="#fbbf24" opacity="0.9"/><circle cx="65" cy="50" r="4" fill="#22d3ee" opacity="0.9"/><circle cx="95" cy="60" r="4" fill="#e879f9" opacity="0.9"/>
+        <circle cx="20" cy="80" r="4" fill="#e879f9" opacity="0.9"/><circle cx="55" cy="75" r="4" fill="#fbbf24" opacity="0.9"/><circle cx="90" cy="82" r="4" fill="#22d3ee" opacity="0.9"/><circle cx="120" cy="78" r="4" fill="#e879f9" opacity="0.9"/>
+        <!-- edges -->
+        <line x1="20" y1="25" x2="50" y2="20" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="50" y1="20" x2="80" y2="30" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="80" y1="30" x2="110" y2="22" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="20" y1="25" x2="30" y2="55" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="50" y1="20" x2="65" y2="50" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="80" y1="30" x2="95" y2="60" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="110" y1="22" x2="95" y2="60" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="30" y1="55" x2="65" y2="50" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="65" y1="50" x2="95" y2="60" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="30" y1="55" x2="20" y2="80" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="65" y1="50" x2="55" y2="75" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="95" y1="60" x2="90" y2="82" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="95" y1="60" x2="120" y2="78" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="20" y1="80" x2="55" y2="75" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="55" y1="75" x2="90" y2="82" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="90" y1="82" x2="120" y2="78" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+      </g>
+
+      <!-- Lattice B (top center) -->
+      <g transform="translate(330, 40)">
+        <rect x="0" y="0" width="140" height="100" rx="10" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="70" y="-10" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="0.1em">LATTICE B</text>
+        <circle cx="70" cy="50" r="18" fill="none" stroke="#e879f9" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="70" cy="50" r="30" fill="none" stroke="#e879f9" stroke-width="1" opacity="0.3"/>
+        <circle cx="70" cy="50" r="4" fill="#fbbf24" filter="url(#glow)"/>
+        <circle cx="40" cy="35" r="3" fill="#22d3ee"/><circle cx="100" cy="35" r="3" fill="#22d3ee"/><circle cx="40" cy="65" r="3" fill="#22d3ee"/><circle cx="100" cy="65" r="3" fill="#22d3ee"/>
+        <circle cx="70" cy="25" r="3" fill="#fbbf24"/><circle cx="70" cy="75" r="3" fill="#fbbf24"/>
+        <line x1="70" y1="50" x2="40" y2="35" stroke="#e879f9" stroke-width="1" opacity="0.6"/><line x1="70" y1="50" x2="100" y2="35" stroke="#e879f9" stroke-width="1" opacity="0.6"/><line x1="70" y1="50" x2="40" y2="65" stroke="#e879f9" stroke-width="1" opacity="0.6"/><line x1="70" y1="50" x2="100" y2="65" stroke="#e879f9" stroke-width="1" opacity="0.6"/><line x1="70" y1="50" x2="70" y2="25" stroke="#e879f9" stroke-width="1" opacity="0.6"/><line x1="70" y1="50" x2="70" y2="75" stroke="#e879f9" stroke-width="1" opacity="0.6"/>
+      </g>
+
+      <!-- Lattice C (right) -->
+      <g transform="translate(580, 100)">
+        <rect x="0" y="0" width="140" height="100" rx="10" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="70" y="-10" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="0.1em">LATTICE C</text>
+        <circle cx="25" cy="30" r="4" fill="#fbbf24"/><circle cx="70" cy="20" r="4" fill="#fbbf24"/><circle cx="115" cy="30" r="4" fill="#fbbf24"/>
+        <circle cx="45" cy="55" r="4" fill="#22d3ee"/><circle cx="70" cy="50" r="4" fill="#e879f9"/><circle cx="95" cy="55" r="4" fill="#22d3ee"/>
+        <circle cx="25" cy="80" r="4" fill="#e879f9"/><circle cx="70" cy="85" r="4" fill="#22d3ee"/><circle cx="115" cy="80" r="4" fill="#fbbf24"/>
+        <line x1="25" y1="30" x2="70" y2="20" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="70" y1="20" x2="115" y2="30" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="25" y1="30" x2="45" y2="55" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="70" y1="20" x2="70" y2="50" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="115" y1="30" x2="95" y2="55" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="45" y1="55" x2="70" y2="50" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="70" y1="50" x2="95" y2="55" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="45" y1="55" x2="25" y2="80" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="70" y1="50" x2="70" y2="85" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="95" y1="55" x2="115" y2="80" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+        <line x1="25" y1="80" x2="70" y2="85" stroke="#64748b" stroke-width="1" opacity="0.5"/><line x1="70" y1="85" x2="115" y2="80" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+      </g>
+
+      <!-- Central Pump -->
+      <g transform="translate(320, 160)">
+        <rect x="0" y="0" width="160" height="100" rx="14" fill="var(--surface-raised)" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="80" y="-10" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="0.08em">TORSIONAL PUMP</text>
+        <!-- coils -->
+        <ellipse cx="55" cy="50" rx="14" ry="28" fill="none" stroke="#22d3ee" stroke-width="2" opacity="0.7"/><ellipse cx="55" cy="50" rx="22" ry="36" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.4"/>
+        <ellipse cx="105" cy="50" rx="14" ry="28" fill="none" stroke="#e879f9" stroke-width="2" opacity="0.7"/><ellipse cx="105" cy="50" rx="22" ry="36" fill="none" stroke="#e879f9" stroke-width="1.5" opacity="0.4"/>
+        <!-- core -->
+        <circle cx="80" cy="50" r="16" fill="url(#coreGrad)" filter="url(#glow)"/>
+        <circle cx="80" cy="50" r="8" fill="#fff" opacity="0.9"/>
+        <!-- brackets -->
+        <rect x="10" y="35" width="8" height="30" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="142" y="35" width="8" height="30" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+      </g>
+
+      <!-- Bottom labels -->
+      <text x="150" y="380" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="0.08em">FERMIONIC PHASE MAPPING</text>
+      <text x="400" y="380" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="0.08em">TWISTOR MARKOV CORE</text>
+      <text x="650" y="380" text-anchor="middle" fill="#7b8aa6" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="0.08em">SPACETIME SPIN NETWORK</text>
+    </svg>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Scroll to explore</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</header>
+
+<main>
+
+<!-- Introduction -->
+<section class="section" id="introduction">
+  <div class="lattice-bg" aria-hidden="true" style="color:#22d3ee"></div>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">System Overview</div>
+      <h2>Reality as Interconvertible Information</h2>
+      <p class="section-lead">This speculative architecture treats spacetime not as a fixed stage, but as the output of a quantum computation — where matter, force, and geometry are continuously transformed into one another.</p>
+    </div>
+    <div class="grid-2">
+      <div class="surface">
+        <h3 style="font-size:var(--step-2); margin-bottom:0.6rem;">The Central Thesis</h3>
+        <p style="color:var(--muted); line-height:1.7;">The machine fuses three pillars of modern theoretical physics: <strong style="color:var(--ink)">twistor theory</strong> (reimagining spacetime as complex light-ray geometry), <strong style="color:var(--ink)">Markov processes</strong> (probabilistic state transitions), and <strong style="color:var(--ink)">spin networks</strong> (the Loop Quantum Gravity description of quantized geometry). The result is a conceptual pump that converts field-theoretic degrees of freedom into discrete spacetime structures.</p>
+      </div>
+      <div class="surface">
+        <h3 style="font-size:var(--step-2); margin-bottom:0.6rem;">It from Qubit</h3>
+        <p style="color:var(--muted); line-height:1.7;">In the tradition of "it from bit" and the holographic principle, this design pushes further: <strong style="color:var(--ink)">spacetime curvature, spin density, and entanglement entropy</strong> are not merely described by information — they are manufactured from it. The pump is the forge; the lattices are the templates; the state stream is the raw material.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Central Engine -->
+<section class="section stream-section" id="pump">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Core Component</div>
+      <h2>The Torsional Twistor Markov Pump</h2>
+      <p class="section-lead">A toroidal engine that translates quantum field states into twistor variables, couples spin to geometry through torsion, and evolves the result through a probabilistic transition matrix.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="surface-raised lattice-card cyan">
+        <div class="card-glow"></div>
+        <h3><span class="card-index">01</span> Twistor Theory</h3>
+        <p>Roger Penrose’s twistor framework replaces spacetime points with complex light-ray structures. Massless fields become functions on twistor space, turning conformal geometry into algebraic geometry.</p>
+        <div class="equation">Z<sup>α</sup> = (ω<sup>A</sup>, π<sub>A′</sub>)</div>
+      </div>
+      <div class="surface-raised lattice-card magenta">
+        <div class="card-glow"></div>
+        <h3><span class="card-index">02</span> Markov Dynamics</h3>
+        <p>The transition matrix <strong style="color:var(--ink)">M<sub>i,j</sub></strong> introduces non-unitary, probabilistic jumps between lattice configurations. This models decoherence, measurement, and thermal fluctuations of geometry at the Planck scale.</p>
+        <div class="equation">Ψ(t+1) = M · Ψ(t)</div>
+      </div>
+      <div class="surface-raised lattice-card gold">
+        <div class="card-glow"></div>
+        <h3><span class="card-index">03</span> Torsion</h3>
+        <p>In Einstein-Cartan theory, torsion couples directly to the intrinsic spin density of matter. Here, the pump’s magnetic coils become a metaphor for <strong style="color:var(--ink)">spin–spacetime coupling</strong> — twisting the fabric of geometry itself.</p>
+        <div class="equation">T<sup>a</sup><sub>bc</sub> ∝ S<sup>a</sup><sub>bc</sub></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Three Lattices -->
+<section class="section" id="lattices" style="background:var(--bg);">
+  <div class="lattice-bg" aria-hidden="true" style="color:#e879f9; opacity:0.03"></div>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Subsystems</div>
+      <h2>The Three Lattice Planes</h2>
+      <p class="section-lead">Each lattice captures a distinct sector of quantum reality: fermionic matter, bosonic correlation, and emergent geometry. Together they form a complete circuit from particle to spacetime.</p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap: calc(var(--space)*1.8);">
+      <!-- Lattice A -->
+      <article class="surface-raised lattice-card cyan" style="display:grid; grid-template-columns:1fr; gap:var(--space); align-items:start;">
+        <div class="card-glow"></div>
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">Lattice A — Input</div>
+          <h3 style="font-size:var(--step-2); margin-bottom:0.6rem;">Fermionic Phase Mapping</h3>
+          <p style="color:var(--muted); max-width:68ch; line-height:1.7;">A <strong style="color:var(--ink)">64-quaternion lattice</strong> encodes the full quantum phase structure of spin-½ fields. Quaternions (ℍ) extend complex numbers with three imaginary units, making them natural for 3D rotations and avoiding the gimbal lock of Euler angles. Nodes labeled <strong style="color:var(--ink)">q<sub>i,j</sub></strong> represent quaternionic amplitudes; edges encode hopping terms and gauge connections. The monitor shows real-time Dirac evolution — particle-antiparticle oscillations and chiral dynamics rendered as waveforms.</p>
+          <div style="margin-top:1.2rem; display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-cyan); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Spin-½</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-cyan); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Quaternionic ℍ</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-cyan); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Dirac Dynamics</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Lattice B -->
+      <article class="surface-raised lattice-card magenta" style="display:grid; grid-template-columns:1fr; gap:var(--space); align-items:start;">
+        <div class="card-glow"></div>
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--accent-magenta); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">Lattice B — Mediation</div>
+          <h3 style="font-size:var(--step-2); margin-bottom:0.6rem;">Bosonic Entanglement Network</h3>
+          <p style="color:var(--muted); max-width:68ch; line-height:1.7;">Force carriers — photons, gluons, W/Z bosons — are modeled as a <strong style="color:var(--ink)">tensor network of entangled modes</strong>. The polyhedral web’s edges represent Bell pairs and squeezed-state correlations; its dodecahedral symmetry hints at quasi-crystalline gauge structures. This lattice acts as the binding agent: without bosonic entanglement, fermionic matter cannot cohere into geometric structures. The "Playback" monitor visualizes correlated wave packets propagating through the network.</p>
+          <div style="margin-top:1.2rem; display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-magenta); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Bose-Einstein</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-magenta); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Tensor Network</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-magenta); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">MERA</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Lattice C -->
+      <article class="surface-raised lattice-card gold" style="display:grid; grid-template-columns:1fr; gap:var(--space); align-items:start;">
+        <div class="card-glow"></div>
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--accent-gold); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">Lattice C — Output</div>
+          <h3 style="font-size:var(--step-2); margin-bottom:0.6rem;">Spacetime Spin Network</h3>
+          <p style="color:var(--muted); max-width:68ch; line-height:1.7;">The final stage is a <strong style="color:var(--ink)">Penrose spin network</strong> — the foundational structure of Loop Quantum Gravity. Edges carry spin labels (SU(2) irreducible representations); nodes represent intertwiners. Area and volume are quantized. The irregular, geometric topology of this lattice reflects a dynamical triangulation or causal set from which smooth spacetime emerges at macroscopic scales. The monitor displays holonomies and curvature concentrated at vertices — the discrete analog of the Riemann tensor.</p>
+          <div style="margin-top:1.2rem; display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-gold); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Loop Quantum Gravity</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-gold); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">Quantized Geometry</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--accent-gold); border:1px solid var(--line); padding:0.3em 0.7em; border-radius:6px; background:var(--bg);">SU(2)</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- State Stream / Narrative -->
+<section class="section stream-section" id="narrative">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Operational Cycle</div>
+      <h2>The Torsional Markov State Stream</h2>
+      <p class="section-lead">A helical data flow converts inputs into geometry through four stages of quantum information processing.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>01 — Fermionic Encoding</h4>
+        <p>Matter enters as quaternionic amplitudes on Lattice A. Spin-½ wavefunctions, mass terms, and chiral phases are discretized into a 64-node grid where every node is a degree of freedom in a finite-dimensional Hilbert space.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>02 — Bosonic Correlation</h4>
+        <p>Force carriers on Lattice B establish entanglement correlations between fermionic sites. Gauge links and coherent bosonic modes bind the matter lattice into a coherent superposition of geometric precursors — a pre-geometric mesh of correlations.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>03 — Twistor–Torsion Translation</h4>
+        <p>The pump translates field-theoretic data into twistor variables, encoding light-ray structure rather than point positions. Torsion couples fermionic spin density directly to the affine connection, twisting the discrete geometry before it fully crystallizes.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>04 — Spin Network Crystallization</h4>
+        <p>The Markov matrix <strong style="color:var(--ink)">M<sub>i,j</sub></strong> drives probabilistic transitions from the twistor-torsion state into a spin network on Lattice C. Area eigenvalues and volume quanta emerge as the output — a quantum description of curved spacetime built from information alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Closing -->
+<section class="section" id="closing">
+  <div class="lattice-bg" aria-hidden="true" style="color:#fbbf24; opacity:0.03"></div>
+  <div class="container" style="text-align:center;">
+    <h2 style="font-size:var(--step-3); max-width:22ch; margin-inline:auto;">A Cathedral of Speculative Physics</h2>
+    <p style="color:var(--muted); max-width:60ch; margin-inline:auto; margin-top:1rem; line-height:1.7;">This machine does not exist — but it compresses a century of theoretical physics into a single architectural vision. It is a monument to the idea that <strong style="color:var(--ink)">the universe may be not merely described by information, but constituted from it</strong>: fermions as bits, bosons as bonds, and spacetime as the emergent network they weave.</p>
+    <div style="margin-top:2.5rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--muted);">Penrose · Twistors</span>
+      <span style="color:var(--line-strong);">|</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--muted);">Einstein-Cartan · Torsion</span>
+      <span style="color:var(--line-strong);">|</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--muted);">Rovelli · Spin Networks</span>
+      <span style="color:var(--line-strong);">|</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--muted);">Markov · Stochasticity</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Conceptual expansion of a speculative quantum-gravity processor. Generated for educational and aesthetic exploration.</p>
+  </div>
+</footer>
+
+</body>
+</html>

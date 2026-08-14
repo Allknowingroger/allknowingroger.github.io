@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMolSTM — Open Hardware Scanning Tunnelling Microscope</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --ink: #0f1b2e;
+  --muted: #4a5a6f;
+  --accent: #d97706;
+  --accent-weak: color-mix(in oklab, var(--accent) 12%, var(--surface));
+  --accent-dark: #b05600;
+  --line: color-mix(in oklab, var(--ink) 10%, transparent);
+  --step--1: clamp(0.85rem, 0.82rem + 0.2vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.7vw, 1.65rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.8vw, 2.75rem);
+  --step-3: clamp(2.5rem, 1.8rem + 3.5vw, 4.5rem);
+  --space: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(15,27,46,0.04), 0 12px 32px -10px rgba(15,27,46,0.14);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--step-3); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+h4 { font-size: var(--step-0); }
+
+p, li {
+  text-wrap: pretty;
+  max-width: 65ch;
+}
+
+a {
+  color: var(--accent-dark);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--accent) 40%, transparent);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.2s;
+}
+
+a:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* Layout utilities */
+.container {
+  width: 92%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: calc(var(--space) * 3);
+}
+
+/* Header / Hero */
+.hero {
+  position: relative;
+  background: var(--ink);
+  color: #fff;
+  padding-block: calc(var(--space) * 4) calc(var(--space) * 3);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(600px 400px at 85% 10%, rgba(217,119,6,0.18), transparent),
+    radial-gradient(500px 500px at 10% 90%, rgba(100,180,255,0.10), transparent);
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: calc(var(--space) * 0.8);
+}
+
+.eyebrow svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.hero h1 {
+  max-width: 18ch;
+  margin-bottom: calc(var(--space) * 0.8);
+  background: linear-gradient(135deg, #fff 60%, #b0c4de 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p.lead {
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: #c8d3e0;
+  max-width: 52ch;
+  margin-bottom: calc(var(--space) * 1.2);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em;
+  font-size: var(--step--1);
+  color: #8a9ab0;
+}
+
+.meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+/* Scan-line divider (signature element) */
+.scan-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin-block: calc(var(--space) * 1.5);
+  color: var(--muted);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.scan-divider::before,
+.scan-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+
+.scan-divider svg {
+  width: 2.2em;
+  height: 2.2em;
+  flex-shrink: 0;
+}
+
+/* Cards & surfaces */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.25);
+  box-shadow: var(--shadow);
+}
+
+/* Intro / Context */
+.intro-grid {
+  display: grid;
+  gap: calc(var(--space) * 1.5);
+  margin-top: calc(var(--space) * 1);
+}
+
+@media (min-width: 720px) {
+  .intro-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.intro-card h3 {
+  color: var(--ink);
+  margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.intro-card h3 .icon {
+  width: 1.6em;
+  height: 1.6em;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.intro-card p {
+  color: var(--muted);
+}
+
+/* Dark band for system architecture */
+.dark-band {
+  background: linear-gradient(180deg, #0b1422 0%, #0f1b2e 100%);
+  color: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(700px 400px at 20% 50%, rgba(217,119,6,0.10), transparent),
+    radial-gradient(600px 300px at 80% 20%, rgba(100,180,255,0.08), transparent);
+  pointer-events: none;
+}
+
+.dark-band .container {
+  position: relative;
+  z-index: 1;
+}
+
+.dark-band h2 {
+  color: #fff;
+}
+
+.dark-band .scan-divider {
+  color: #7a8aa0;
+}
+
+.dark-band .scan-divider::before,
+.dark-band .scan-divider::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12) 20%, rgba(255,255,255,0.12) 80%, transparent);
+}
+
+/* System diagram */
+.system-wrap {
+  margin-top: calc(var(--space) * 1.5);
+}
+
+.system-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Specs / features list */
+.specs {
+  display: grid;
+  gap: calc(var(--space) * 1);
+  margin-top: calc(var(--space) * 1.25);
+}
+
+@media (min-width: 640px) {
+  .specs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 980px) {
+  .specs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.spec {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.spec:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.06);
+}
+
+.spec .icon-wrap {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--accent) 20%, transparent);
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.spec .icon-wrap svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  color: var(--accent);
+}
+
+.spec h4 {
+  color: #fff;
+  margin-bottom: 0.35rem;
+  font-size: var(--step-0);
+}
+
+.spec p {
+  color: #94a3b8;
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
+/* Experiments */
+.experiment-grid {
+  display: grid;
+  gap: calc(var(--space) * 1.25);
+  margin-top: calc(var(--space) * 1.25);
+}
+
+@media (min-width: 720px) {
+  .experiment-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.experiment {
+  position: relative;
+  padding: calc(var(--space) * 1.25);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.experiment::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), #f59e0b);
+}
+
+.experiment h3 {
+  margin-bottom: 0.5em;
+}
+
+.experiment p {
+  color: var(--muted);
+}
+
+/* Journey timeline */
+.timeline {
+  margin-top: calc(var(--space) * 1.25);
+  display: grid;
+  gap: calc(var(--space) * 1);
+}
+
+@media (min-width: 720px) {
+  .timeline {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.timeline-step {
+  position: relative;
+  padding: calc(var(--space) * 1);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.timeline-step .step-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: var(--accent-weak);
+  line-height: 1;
+  margin-bottom: 0.25em;
+}
+
+.timeline-step h4 {
+  margin-bottom: 0.4em;
+}
+
+.timeline-step p {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+/* Footer */
+.footer {
+  padding-block: calc(var(--space) * 1.5);
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.footer .container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.footer strong {
+  color: var(--ink);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .spec:hover {
+    transform: none;
+  }
+}
+
+/* Print */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .hero {
+    background: #0f1b2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .dark-band {
+    background: #0f1b2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .card, .experiment, .timeline-step, .spec {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  a {
+    text-decoration: underline;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 16mm;
+}
+
+/* Focus */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+      Open Hardware Instrument
+    </div>
+    <h1>SMolSTM: A Scanning Tunnelling Microscope for Single‑Molecule Circuits</h1>
+    <p class="lead">An open-hardware, DIY scanning tunnelling microscope that achieves sub-nanometre precision for molecular electronics—orders of magnitude cheaper than commercial alternatives.</p>
+    <div class="meta">
+      <span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Lancaster University
+      </span>
+      <span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        EPSRC Funded
+      </span>
+      <span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M14.83 14.83a4 4 0 0 1-5.66 0"/><line x1="12" y1="8" x2="12" y2="8.01"/></svg>
+        CC BY‑SA 4.0
+      </span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="section" id="context">
+  <div class="container">
+    <div class="scan-divider" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>
+      The Context
+    </div>
+    <h2>Molecular Electronics &amp; the Energy Challenge</h2>
+    <p>As the energy consumed by data centres grows, finding energy‑efficient alternatives to conventional silicon electronics is becoming urgent. Molecular electronics offers a fundamentally different idea of what a device can be: using synthetic chemistry, custom molecules can be designed for specific applications, harnessing nanoscale quantum phenomena such as quantum interference. These single‑molecule devices can self‑assemble into larger structures for energy‑efficient sensing, memory, and computation.</p>
+
+    <div class="intro-grid">
+      <article class="card intro-card">
+        <h3>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+          Quantum Phenomena
+        </h3>
+        <p>At the nanoscale, electrons exhibit wave‑like behaviour. Quantum interference inside a single molecule can be engineered to control current flow in ways impossible in bulk semiconductors.</p>
+      </article>
+      <article class="card intro-card">
+        <h3>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+          Self‑Assembly
+        </h3>
+        <p>Instead of etching features into silicon, molecules naturally organise themselves into ordered structures. This bottom‑up approach could bypass the escalating costs and physical limits of top‑down fabrication.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section dark-band" id="system">
+  <div class="container">
+    <div class="scan-divider" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>
+      The System
+    </div>
+    <h2>From a Shed Prototype to a Precision Instrument</h2>
+    <p style="color:#94a3b8; max-width: 65ch;">Commercial STMs are extremely expensive and not optimised for single‑molecule break‑junction experiments. SMolSTM was developed over several years—from a DIY prototype built during the COVID‑19 pandemic to a precision instrument now operating in a state‑of‑the‑art low‑noise research facility.</p>
+
+    <div class="system-wrap">
+      <svg class="system-diagram" viewBox="0 0 900 420" aria-labelledby="sysTitle sysDesc" role="img">
+        <title id="sysTitle">SMolSTM system architecture</title>
+        <desc id="sysDesc">A schematic showing the central STM stage surrounded by six subsystems: 3D printed components, piezoelectric stage, tungsten tip, gold sample, feedback control electronics, and software interface.</desc>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a8aa0"/>
+          </marker>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+
+        <!-- centre stage -->
+        <rect x="330" y="140" width="240" height="180" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+        <text x="450" y="170" text-anchor="middle" fill="#fff" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="600">STM Stage</text>
+
+        <!-- tip -->
+        <path d="M450 220 L450 190 L440 210 Z" fill="#e2e8f0"/>
+        <line x1="450" y1="220" x2="450" y2="240" stroke="#f59e0b" stroke-width="2"/>
+        <circle cx="450" cy="245" r="5" fill="#f59e0b"/>
+        <text x="450" y="270" text-anchor="middle" fill="#94a3b8" font-size="11">Sample (Au)</text>
+        <text x="420" y="205" text-anchor="middle" fill="#cbd5e1" font-size="11">Tungsten Tip</text>
+
+        <!-- surrounding boxes -->
+        <!-- 3D printed -->
+        <rect x="60" y="80" width="180" height="70" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+        <text x="150" y="110" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">3D Printed Parts</text>
+        <text x="150" y="130" text-anchor="middle" fill="#94a3b8" font-size="11">Frame &amp; mechanics</text>
+        <path d="M240 115 L330 180" stroke="#7a8aa0" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+
+        <!-- Piezo stage -->
+        <rect x="60" y="270" width="180" height="70" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+        <text x="150" y="300" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">Piezoelectric Stage</text>
+        <text x="150" y="320" text-anchor="middle" fill="#94a3b8" font-size="11">Sub‑nm positioning</text>
+        <path d="M240 305 L330 260" stroke="#7a8aa0" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+
+        <!-- Feedback electronics -->
+        <rect x="660" y="80" width="180" height="70" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+        <text x="750" y="110" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">Feedback Electronics</text>
+        <text x="750" y="130" text-anchor="middle" fill="#94a3b8" font-size="11">Current control &amp; bias</text>
+        <path d="M660 115 L570 180" stroke="#7a8aa0" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+
+        <!-- Software -->
+        <rect x="660" y="270" width="180" height="70" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+        <text x="750" y="300" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">Software Interface</text>
+        <text x="750" y="320" text-anchor="middle" fill="#94a3b8" font-size="11">Data visualisation</text>
+        <path d="M660 305 L570 260" stroke="#7a8aa0" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+
+        <!-- centre label -->
+        <text x="450" y="380" text-anchor="middle" fill="#7a8aa0" font-size="12" font-style="italic">Buildable with hand tools &amp; 3D printing</text>
+      </svg>
+    </div>
+
+    <div class="specs">
+      <article class="spec">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2v20"/><path d="M2 12h20"/></svg>
+        </div>
+        <h4>Sub‑Nanometre Precision</h4>
+        <p>Piezoelectric actuators position the tip with atomic‑scale resolution, enabling tunnelling junction control.</p>
+      </article>
+      <article class="spec">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h4>3D‑Printable Frame</h4>
+        <p>Structural components are designed for desktop FDM printing, cutting fabrication cost and complexity.</p>
+      </article>
+      <article class="spec">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/></svg>
+        </div>
+        <h4>Open Control Stack</h4>
+        <p>Custom feedback electronics and open software interface allow experiments impossible on rigid commercial systems.</p>
+      </article>
+      <article class="spec">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h4>Orders of Magnitude Cheaper</h4>
+        <p>Total build cost is a tiny fraction of commercial STM prices, democratising access to atomic‑scale research.</p>
+      </article>
+      <article class="spec">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.3-2 3.5-.5 5s3.5.5 5-.5"/><path d="M12 14l-2 2"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <h4>Tungsten Tip</h4>
+        <p>Sharpened tungsten wire forms the probe, the point at which quantum tunnelling current is measured.</p>
+      </article>
+      <article class="spec">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h4>Low‑Noise Ready</h4>
+        <p>Refined through iterative design to perform reliably even in demanding low‑noise research environments.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="experiments">
+  <div class="container">
+    <div class="scan-divider" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>
+      Capabilities
+    </div>
+    <h2>Demonstrated Experiments</h2>
+    <p>Despite its low cost and DIY origins, SMolSTM achieves exceptional performance in single‑molecule characterisation.</p>
+
+    <div class="experiment-grid">
+      <article class="experiment">
+        <h3>Single‑Molecule Break‑Junctions</h3>
+        <p>A gold tip is driven into contact with a gold surface and then retracted, often capturing a single molecule in the gap that forms. By measuring current through the junction, SMolSTM characterises the electrical behaviour of individual molecular conductors—central to molecular electronics research.</p>
+      </article>
+      <article class="experiment">
+        <h3>Single‑Atom Resistance</h3>
+        <p>SMolSTM has been used to measure the electrical resistance of a single gold atom. A bias voltage is applied between tip and sample while the junction is controllably opened, revealing quantised conductance steps that fingerprint atomic contacts.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="impact" style="background: var(--surface);">
+  <div class="container">
+    <div class="scan-divider" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>
+      Impact
+    </div>
+    <h2>From Shed to State‑of‑the‑Art Lab</h2>
+    <p style="margin-bottom: calc(var(--space) * 1);">The flexibility of open hardware allows experiments that are impossible on existing commercial systems. By lowering the barrier to entry for single‑molecule circuit research, SMolSTM accelerates exploration of energy‑efficient computing technologies.</p>
+
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="step-num">01</div>
+        <h4>DIY Prototype</h4>
+        <p>Initial concept built in a shed during the COVID‑19 pandemic, proving that atomic‑scale precision was achievable with consumer‑grade tools.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="step-num">02</div>
+        <h4>Open Design Refinement</h4>
+        <p>Iterative improvements to mechanics, electronics, and software, driven by real break‑junction experiments and community feedback.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="step-num">03</div>
+        <h4>Research Deployment</h4>
+        <p>Now a precision instrument operating in a state‑of‑the‑art low‑noise facility at Lancaster University, producing publishable data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p><strong>SMolSTM</strong> was developed at Lancaster University by Sam Harley and colleagues, funded by EPSRC.</p>
+    <p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY‑SA 4.0</a>. Presented at Electromagnetic Field (EMF) 2026.</p>
+    <p style="color: #8a9ab0;">Open the file in any browser. Use Print → Save as PDF for a paper copy.</p>
+  </div>
+</footer>
+
+</body>
+</html>

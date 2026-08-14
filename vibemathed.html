@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VibeMathed — AI-Assisted Math Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1120;
+  --surface: #111d35;
+  --surface-raised: #182540;
+  --ink: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #f59e0b;
+  --accent-weak: rgba(245, 158, 11, 0.10);
+  --accent-glow: rgba(245, 158, 11, 0.25);
+  --secondary: #06b6d4;
+  --secondary-weak: rgba(6, 182, 212, 0.10);
+  --secondary-glow: rgba(6, 182, 212, 0.30);
+  --line: rgba(148, 163, 184, 0.15);
+  --success: #34d399;
+  --warning: #fb7185;
+  --step--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 1.9rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 2.8rem);
+  --step-4: clamp(2.6rem, 2rem + 3vw, 4rem);
+  --step-5: clamp(3.2rem, 2.4rem + 4vw, 5.5rem);
+  --space: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.20), 0 12px 32px -8px rgba(0,0,0,0.50);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: "Source Serif 4", "Hiragino Sans", "Yu Gothic", "Noto Serif JP", Georgia, serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background math decorations */
+.math-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.math-bg span {
+  position: absolute;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0.03;
+  user-select: none;
+  line-height: 1;
+}
+.math-bg .m1 { font-size: 18vw; top: -5%; left: -5%; transform: rotate(-12deg); }
+.math-bg .m2 { font-size: 14vw; bottom: 10%; right: -8%; transform: rotate(8deg); }
+.math-bg .m3 { font-size: 10vw; top: 40%; left: 60%; transform: rotate(-5deg); }
+.math-bg .m4 { font-size: 12vw; top: 70%; left: 5%; transform: rotate(15deg); }
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+h1 { font-size: var(--step-5); }
+h2 { font-size: var(--step-4); }
+h3 { font-size: var(--step-2); font-weight: 600; }
+h4 { font-size: var(--step-1); font-weight: 600; }
+
+p {
+  max-width: 68ch;
+}
+
+a {
+  color: var(--secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+a:hover {
+  border-bottom-color: var(--secondary);
+}
+
+/* Layout */
+.container {
+  width: 92%;
+  max-width: 72rem;
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+section {
+  padding-block: calc(var(--space) * 3);
+}
+
+/* Header / Hero */
+header {
+  position: relative;
+  padding-block: calc(var(--space) * 4) calc(var(--space) * 3);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 140%;
+  height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, var(--accent-weak) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 80%, var(--secondary-weak) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: var(--accent-weak);
+  border: 1px solid var(--accent-glow);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: calc(var(--space) * 1.2);
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.hero-lead {
+  font-family: "Source Serif 4", serif;
+  font-size: var(--step-2);
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.4;
+  max-width: 52ch;
+  margin-top: calc(var(--space) * 0.8);
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space);
+  margin-top: calc(var(--space) * 2);
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.1);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-glow);
+}
+
+.stat-value {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-3);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.5rem;
+}
+
+/* Section headers */
+.section-header {
+  margin-bottom: calc(var(--space) * 1.8);
+}
+
+.section-header h2 {
+  margin-bottom: 0.4rem;
+}
+
+.section-header p {
+  color: var(--muted);
+  font-size: var(--step-1);
+  max-width: 58ch;
+}
+
+.eyebrow {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--secondary);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space);
+}
+
+@media (min-width: 720px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.2);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--secondary-glow);
+}
+
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.card-icon.accent {
+  background: var(--accent-weak);
+  color: var(--accent);
+  border: 1px solid var(--accent-glow);
+}
+
+.card-icon.secondary {
+  background: var(--secondary-weak);
+  color: var(--secondary);
+  border: 1px solid var(--secondary-glow);
+}
+
+.card h4 {
+  margin-bottom: 0.5rem;
+  font-size: var(--step-1);
+}
+
+.card p, .card ul {
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+
+.card ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.6rem;
+}
+
+.card ul li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-bottom: 0.35rem;
+}
+
+.card ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 0.85em;
+}
+
+/* Signature element: Verification Ladder */
+.ladder {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.5);
+  box-shadow: var(--shadow);
+}
+
+.ladder-item {
+  display: flex;
+  gap: calc(var(--space) * 0.9);
+  padding-block: calc(var(--space) * 0.9);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.ladder-item:last-child {
+  border-bottom: none;
+}
+
+.ladder-rung {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  width: 32px;
+}
+
+.ladder-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid;
+  background: var(--surface-raised);
+  z-index: 2;
+}
+
+.ladder-line {
+  flex: 1;
+  width: 2px;
+  background: var(--line);
+  min-height: 24px;
+}
+
+.ladder-item:last-child .ladder-line {
+  display: none;
+}
+
+.ladder-item.tier-1 .ladder-dot { border-color: var(--secondary); box-shadow: 0 0 10px var(--secondary-glow); }
+.ladder-item.tier-2 .ladder-dot { border-color: var(--secondary); }
+.ladder-item.tier-3 .ladder-dot { border-color: var(--accent); }
+.ladder-item.tier-4 .ladder-dot { border-color: var(--muted); }
+.ladder-item.tier-5 .ladder-dot { border-color: var(--muted); border-style: dashed; }
+.ladder-item.tier-6 .ladder-dot { border-color: var(--warning); }
+
+.ladder-content h4 {
+  font-size: var(--step-1);
+  margin-bottom: 0.25rem;
+}
+
+.ladder-content p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  max-width: 60ch;
+}
+
+.ladder-tag {
+  display: inline-block;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.4rem;
+  background: var(--surface-raised);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+/* Notability scale */
+.scale-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.5);
+  box-shadow: var(--shadow);
+}
+
+.scale-bar {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--muted) 0%, var(--secondary) 50%, var(--accent) 100%);
+  margin-bottom: calc(var(--space) * 1.2);
+  position: relative;
+}
+
+.scale-markers {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space);
+  flex-wrap: wrap;
+}
+
+.scale-marker {
+  flex: 1;
+  min-width: 140px;
+}
+
+.scale-marker .score {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-3);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.scale-marker .name {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 0.3rem;
+}
+
+.scale-marker .desc {
+  font-size: var(--step--1);
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+/* Two column layout for methodology */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--space) * 1.5);
+}
+
+@media (min-width: 900px) {
+  .two-col {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* AI contribution levels */
+.levels {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space) * 0.7);
+}
+
+.level-item {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--space) * 0.8);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: calc(var(--space) * 0.9);
+  transition: border-color 0.2s ease;
+}
+
+.level-item:hover {
+  border-color: var(--accent-glow);
+}
+
+.level-rank {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 2.2rem;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.level-body h4 {
+  font-size: var(--step-1);
+  margin-bottom: 0.2rem;
+}
+
+.level-body p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  max-width: 50ch;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-block: calc(var(--space) * 2);
+  margin-top: calc(var(--space) * 1);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space);
+}
+
+@media (min-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+footer h4 {
+  font-size: var(--step-1);
+  margin-bottom: 0.6rem;
+}
+
+footer p, footer a {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+footer a {
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  border-bottom: 1px solid transparent;
+}
+
+footer a:hover {
+  color: var(--secondary);
+  border-bottom-color: var(--secondary);
+}
+
+.copyright {
+  margin-top: calc(var(--space) * 1.5);
+  padding-top: calc(var(--space) * 1);
+  border-top: 1px solid var(--line);
+  font-size: var(--step--1);
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* Utilities */
+.text-gradient {
+  background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mt-1 { margin-top: var(--space); }
+.mt-2 { margin-top: calc(var(--space) * 2); }
+
+/* Print */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .math-bg, header::before {
+    display: none;
+  }
+  .card, .ladder, .scale-container, .level-item, .stat-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 16mm;
+}
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+}
+</style>
+</head>
+<body>
+
+<div class="math-bg" aria-hidden="true">
+  <span class="m1">∑</span>
+  <span class="m2">π</span>
+  <span class="m3">∫</span>
+  <span class="m4">∞</span>
+</div>
+
+<header>
+  <div class="container">
+    <div class="badge"><span class="badge-dot" aria-hidden="true"></span> Live since July 2026</div>
+    <h1>VibeMathed</h1>
+    <p class="hero-lead">Mathematics that no human had settled, now settled with a model in the loop — written down carefully.</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">552</div>
+        <div class="stat-label">Tracked Problems</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">405</div>
+        <div class="stat-label">Fully Resolved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24%</div>
+        <div class="stat-label">Lean-Verified</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">7,989</div>
+        <div class="stat-label">Years Open (Combined)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="what">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">What it is</span>
+      <h2>A living record of AI-assisted mathematics</h2>
+      <p>VibeMathed is the first site to track mathematical problems solved by AI across all of mathematics — from famous conjectures to the long tail of specialist questions.</p>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon accent">◎</div>
+        <h4>Famous Conjectures</h4>
+        <p>Long-standing open questions that have shaped entire fields — such as the Jacobian conjecture — now resolved with AI models substantively in the loop.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon secondary">#</div>
+        <h4>Numbered Erdős Problems</h4>
+        <p>The catalogued problems from Paul Erdős's legacy, tracked against canonical sources like erdosproblems.com and imported via Terence Tao's AI-contributions wiki.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon accent">?</div>
+        <h4>Open Challenges</h4>
+        <p>Specialist questions across number theory, graph theory, combinatorics, analysis, and theoretical computer science — any precisely stated theorem whose resolution involved AI.</p>
+      </div>
+    </div>
+    <div class="two-col mt-2">
+      <div>
+        <h3>What qualifies</h3>
+        <p style="color: var(--muted); margin-top: 0.6rem;">The inclusion test is strict: a precisely stated open question whose answer is now a proved or disproved theorem, with an AI model substantively in the loop. Theoretical computer science is treated equally alongside number theory or analysis.</p>
+      </div>
+      <div>
+        <h3>What is excluded</h3>
+        <p style="color: var(--muted); margin-top: 0.6rem;">Formalizations of already-settled results, empirical cryptanalytic attacks, heuristic constructions without a stated resolution, and papers where AI only wrote text or ran routine checks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="methodology" style="border-top: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Methodology</span>
+      <h2>How results are tracked</h2>
+      <p>Every entry is classified rather than merely listed. Status, verification, AI contribution, and publication are tracked as independent axes.</p>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon secondary">↗</div>
+        <h4>Verifiable Sources</h4>
+        <p>Every entry cites a real, checkable primary source. Entries come from hand-curated marquee results, Terence Tao's AI wiki, and reviewed reader submissions.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon accent">✓</div>
+        <h4>Result &amp; Status</h4>
+        <p>Each entry carries a result (proved / disproved) and a status: Resolved, Partial result, Variant only, Candidate, or Retracted.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon secondary">◷</div>
+        <h4>Global Tracking</h4>
+        <p>The record is fully open and editable by signed-in readers. Every change lands in a public changelog. The complete dataset is available under CC BY 4.0.</p>
+      </div>
+    </div>
+
+    <h3 class="mt-2">AI Contribution Levels</h3>
+    <div class="levels mt-1">
+      <div class="level-item">
+        <div class="level-rank">1</div>
+        <div class="level-body">
+          <h4>AI-discovered</h4>
+          <p>The model produced the central proof, counterexample, or construction. Humans verified and wrote it up.</p>
+        </div>
+      </div>
+      <div class="level-item">
+        <div class="level-rank">2</div>
+        <div class="level-body">
+          <h4>AI co-developed</h4>
+          <p>Named, essential steps came from the model inside a human-led proof — a key lemma, construction idea, or subproblem the model solved.</p>
+        </div>
+      </div>
+      <div class="level-item">
+        <div class="level-rank">3</div>
+        <div class="level-body">
+          <h4>AI-assisted</h4>
+          <p>Instrumental but human-led. The model built search or verification tooling, checked proofs, or otherwise contributed materially.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="verification" style="border-top: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Verification</span>
+      <h2>The verification ladder</h2>
+      <p>Verification is tracked independently from publication status. Peer review answers a different question — where a claim sits in the scholarly pipeline — so it is recorded separately.</p>
+    </div>
+    <div class="ladder">
+      <div class="ladder-item tier-1">
+        <div class="ladder-rung">
+          <div class="ladder-dot"></div>
+          <div class="ladder-line"></div>
+        </div>
+        <div class="ladder-content">
+          <h4>Lean-verified</h4>
+          <p>Machine-checked end-to-end by the Lean kernel, with the formal statement independently anchored against the original problem.</p>
+          <span class="ladder-tag">Formal + Audited</span>
+        </div>
+      </div>
+      <div class="ladder-item tier-2">
+        <div class="ladder-rung">
+          <div class="ladder-dot"></div>
+          <div class="ladder-line"></div>
+        </div>
+        <div class="ladder-content">
+          <h4>Independently expert-verified</h4>
+          <p>Checked and endorsed by named domain experts with no stake in the claim. Catches what a kernel cannot: drifted statements, duplicate literature, neighbouring questions.</p>
+          <span class="ladder-tag">Human Expert</span>
+        </div>
+      </div>
+      <div class="ladder-item tier-3">
+        <div class="ladder-rung">
+          <div class="ladder-dot"></div>
+          <div class="ladder-line"></div>
+        </div>
+        <div class="ladder-content">
+          <h4>Site-confirmed</h4>
+          <p>The canonical community tracker accepted the claim, or the site reproduced the artifact: re-ran a certificate, re-derived a counterexample, or rebuilt a formalization.</p>
+          <span class="ladder-tag">Community / Reproduced</span>
+        </div>
+      </div>
+      <div class="ladder-item tier-4">
+        <div class="ladder-rung">
+          <div class="ladder-dot"></div>
+          <div class="ladder-line"></div>
+        </div>
+        <div class="ladder-content">
+          <h4>Lean-checked, statement unaudited</h4>
+          <p>The Lean artifact compiles with no sorry and no stray axioms, but nobody independent has audited whether the formal statement faithfully expresses the original conjecture.</p>
+          <span class="ladder-tag">Formal Only</span>
+        </div>
+      </div>
+      <div class="ladder-item tier-5">
+        <div class="ladder-rung">
+          <div class="ladder-dot"></div>
+          <div class="ladder-line"></div>
+        </div>
+        <div class="ladder-content">
+          <h4>Unreviewed</h4>
+          <p>Nobody independent has checked the mathematics yet, whatever venue the claim lives in.</p>
+          <span class="ladder-tag">Pending</span>
+        </div>
+      </div>
+      <div class="ladder-item tier-6">
+        <div class="ladder-rung">
+          <div class="ladder-dot"></div>
+        </div>
+        <div class="ladder-content">
+          <h4>Contested</h4>
+          <p>Actively disputed, walked back, or withdrawn outright. The entry stays listed so the dispute is on record.</p>
+          <span class="ladder-tag">Disputed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="notability" style="border-top: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Notability</span>
+      <h2>Significance scoring</h2>
+      <p>Every entry carries an AI-estimated significance score from 0 to 100, calibrated against an anchored ladder. The score describes how much mathematics cared about the problem <em>before</em> it was solved.</p>
+    </div>
+    <div class="scale-container">
+      <div class="scale-bar" aria-hidden="true"></div>
+      <div class="scale-markers">
+        <div class="scale-marker">
+          <div class="score">100</div>
+          <div class="name">Riemann Hypothesis</div>
+          <div class="desc">The anchor. The most famous open problem in mathematics.</div>
+        </div>
+        <div class="scale-marker">
+          <div class="score">~80</div>
+          <div class="name">Collatz Conjecture</div>
+          <div class="desc">Famous beyond specialist circles; widely known and attempted.</div>
+        </div>
+        <div class="scale-marker">
+          <div class="score">~65</div>
+          <div class="name">Jacobian Conjecture</div>
+          <div class="desc">Famous within algebraic geometry and related fields.</div>
+        </div>
+        <div class="scale-marker">
+          <div class="score">~30</div>
+          <div class="name">Community Famous</div>
+          <div class="desc">A conjecture famous within one research community.</div>
+        </div>
+        <div class="scale-marker">
+          <div class="score">~10</div>
+          <div class="name">Erdős Problem</div>
+          <div class="desc">A typical numbered Erdős problem from the catalogue.</div>
+        </div>
+        <div class="scale-marker">
+          <div class="score">~5</div>
+          <div class="name">Generated</div>
+          <div class="desc">Machine-generated conjectures without prior mathematical weight.</div>
+        </div>
+      </div>
+    </div>
+    <p class="mt-1" style="color: var(--muted); font-size: var(--step--1); max-width: 68ch;">Scores are editorial estimates assigned at review time by an AI model applying a fixed rubric, with a one-line justification stored on each entry. The whole catalog undergoes pairwise consistency sweeps. A single problem judged in isolation is only honest to a band of about five points; one-point resolution comes from answering "above or below that one?" against named neighbours.</p>
+  </div>
+</section>
+
+<section id="impact" style="border-top: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Impact</span>
+      <h2>Open data, open code, open history</h2>
+      <p>VibeMathed is not merely a list. It is a rigorous, transparent, and community-governed historical record of AI's growing role in advanced mathematics.</p>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon secondary">⬇</div>
+        <h4>Free to Reuse</h4>
+        <p>The complete dataset is available under CC BY 4.0 at /api/dataset. The source code is public on GitHub under an open license.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon accent">♯</div>
+        <h4>Oldest Problem Cracked</h4>
+        <p>Schiffer's Conjecture, posed in 1929, is the oldest problem in the record to have been resolved with AI assistance — 97 years open.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon secondary">◉</div>
+        <h4>Community Curated</h4>
+        <p>Submitted, reviewed, and curated by a community that cares about getting the mathematics right. Every entry has a public changelog and its own discussion thread.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>VibeMathed</h4>
+        <p>A record of mathematical problems solved with AI. Launched July 20, 2026. Kept in the open, edited with care, and free to reuse.</p>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="https://vibemathed.com">vibemathed.com</a><br>
+        <a href="https://vibemathed.com/about">About</a><br>
+        <a href="https://vibemathed.com/methodology">Methodology</a><br>
+        <a href="https://vibemathed.com/stats">Stats</a>
+      </div>
+      <div>
+        <h4>Open Source</h4>
+        <a href="https://github.com/mrconter1/vibemathed">GitHub Repository</a><br>
+        <a href="https://vibemathed.com/api/dataset">Dataset (CC BY 4.0)</a>
+      </div>
+    </div>
+    <div class="copyright">
+      Content derived from VibeMathed's public pages. Design and summary created for educational reference. Data available under CC BY 4.0.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

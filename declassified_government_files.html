@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Declassified: Navigating the Government's Secret Files</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F0E8;
+  --surface: #FFFFFF;
+  --ink: #1A1A1A;
+  --muted: #6B655D;
+  --accent: #B8321A;
+  --accent-weak: color-mix(in oklab, var(--accent) 10%, var(--bg));
+  --accent-2: #3D4F3A;
+  --accent-2-weak: color-mix(in oklab, var(--accent-2) 10%, var(--bg));
+  --line: #D4CFC5;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -12px rgba(0,0,0,0.18);
+  --step--1: clamp(0.85rem, 0.82rem + 0.2vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.6vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+  --step-3: clamp(2.2rem, 1.7rem + 2.4vw, 3.8rem);
+  --space: clamp(1.2rem, 0.9rem + 1.2vw, 2rem);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "DM Serif Display", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: var(--step-3); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+
+p { max-width: 65ch; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* Utilities */
+.container {
+  width: min(90%, 1100px);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  font-family: "Inter", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.eyebrow::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* Header / Hero */
+header {
+  background: var(--ink);
+  color: var(--bg);
+  padding: calc(var(--space) * 4) 0 calc(var(--space) * 3);
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: "CONFIDENTIAL";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 240, 232, 0.06);
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+header .container {
+  position: relative;
+  z-index: 1;
+}
+
+header h1 {
+  font-size: var(--step-3);
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+header h1 em {
+  font-style: italic;
+  color: color-mix(in oklab, var(--bg) 70%, var(--accent));
+}
+
+header .subtitle {
+  font-size: var(--step-1);
+  color: color-mix(in oklab, var(--bg) 75%, #fff);
+  max-width: 55ch;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+
+/* Stamp badge */
+.stamp {
+  display: inline-block;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  padding: 0.35em 0.9em;
+  transform: rotate(-3deg);
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+/* Sections */
+section {
+  padding: calc(var(--space) * 3) 0;
+}
+
+section + section {
+  border-top: 1px solid var(--line);
+}
+
+.section-header {
+  margin-bottom: calc(var(--space) * 1.5);
+}
+
+.section-header h2 {
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+/* Process Timeline */
+.process {
+  background: var(--surface);
+}
+
+.timeline {
+  display: grid;
+  gap: calc(var(--space) * 1.2);
+  position: relative;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: calc(var(--space) * 0.8);
+  align-items: start;
+  padding: calc(var(--space) * 0.8);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.step:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.step-number {
+  font-family: "DM Serif Display", serif;
+  font-size: var(--step-2);
+  color: var(--accent);
+  line-height: 1;
+  min-width: 2.5ch;
+  text-align: center;
+  padding-top: 0.1em;
+}
+
+.step-body h3 {
+  font-size: var(--step-1);
+  margin-bottom: 0.3rem;
+}
+
+.step-body .step-label {
+  font-family: "Inter", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.step-body p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+
+/* Redaction signature element */
+.redacted {
+  background: var(--ink);
+  color: transparent;
+  border-radius: 2px;
+  user-select: none;
+  position: relative;
+}
+
+.redacted::after {
+  content: "REDACTED";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg);
+  font-family: "Inter", sans-serif;
+  font-size: 0.55em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* Record Categories */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: calc(var(--space) * 0.8);
+}
+
+.category-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: calc(var(--space) * 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.category-card:nth-child(1) { border-top: 4px solid var(--accent); }
+.category-card:nth-child(2) { border-top: 4px solid #5a4fcf; }
+.category-card:nth-child(3) { border-top: 4px solid var(--accent-2); }
+.category-card:nth-child(4) { border-top: 4px solid #8c6b4a; }
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.category-card:nth-child(1) .category-icon { background: var(--accent-weak); }
+.category-card:nth-child(2) .category-icon { background: color-mix(in oklab, #5a4fcf 10%, var(--bg)); }
+.category-card:nth-child(3) .category-icon { background: var(--accent-2-weak); }
+.category-card:nth-child(4) .category-icon { background: color-mix(in oklab, #8c6b4a 10%, var(--bg)); }
+
+.category-card h3 {
+  font-size: var(--step-1);
+}
+
+.category-card p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Featured Section: Project Blue Book */
+.featured {
+  background: var(--surface);
+  position: relative;
+}
+
+.featured-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--space) * 1.5);
+  align-items: start;
+}
+
+@media (min-width: 720px) {
+  .featured-layout {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+}
+
+.featured-content h2 {
+  margin-bottom: 0.8rem;
+}
+
+.featured-content > p {
+  margin-bottom: 1.2rem;
+  color: var(--muted);
+}
+
+.stat-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: calc(var(--space) * 0.8);
+  margin-bottom: 1.2rem;
+}
+
+.stat-box .stat-number {
+  font-family: "DM Serif Display", serif;
+  font-size: var(--step-3);
+  color: var(--accent);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.stat-box .stat-label {
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.timeline-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--line);
+}
+
+.timeline-list li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 0.45em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.timeline-list .year {
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 0.5rem;
+}
+
+.timeline-list p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+/* Fact vs Fiction */
+.myth-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: calc(var(--space) * 1.2);
+  margin-top: calc(var(--space) * 0.8);
+}
+
+.myth-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.myth-badge {
+  font-family: "Inter", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.3em 0.7em;
+  border-radius: 4px;
+}
+
+.myth-box h3 {
+  font-size: var(--step-1);
+}
+
+.myth-box blockquote {
+  font-family: "DM Serif Display", serif;
+  font-size: var(--step-1);
+  font-style: italic;
+  color: var(--accent-2);
+  border-left: 3px solid var(--accent-2);
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.myth-box blockquote cite {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: var(--step--1);
+  font-style: normal;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* Sources */
+.sources {
+  background: var(--ink);
+  color: color-mix(in oklab, var(--bg) 80%, #fff);
+  padding: calc(var(--space) * 2) 0;
+}
+
+.sources h2 {
+  color: var(--bg);
+  font-size: var(--step-1);
+  margin-bottom: 1rem;
+}
+
+.sources-list {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.sources-list li {
+  font-size: var(--step--1);
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--bg) 15%, transparent);
+}
+
+.sources-list a {
+  color: color-mix(in oklab, var(--bg) 90%, #fff);
+  border-bottom-color: color-mix(in oklab, var(--bg) 40%, transparent);
+}
+
+.sources-list a:hover {
+  border-bottom-color: var(--bg);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: calc(var(--space) * 1.2) 0;
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .step, .category-card { transition: none; }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  header { background: #1a1a1a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sources { background: #1a1a1a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@page { size: A4; margin: 16mm; }
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="stamp">Declassified</div>
+    <h1>Navigating the <em>Government's</em> Secret Files</h1>
+    <p class="subtitle">How the Defense Intelligence Agency processes Freedom of Information Act requests, what hides inside the Electronic Reading Room, and where documented history ends and urban legend begins.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- Process Section -->
+<section class="process" id="process">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Process</div>
+      <h2>Five Steps from Secret to Public</h2>
+      <p>The 1996 amendments to FOIA mandate publicly accessible "electronic reading rooms" with agency response materials. Here is how a request moves from intake to release.</p>
+    </div>
+
+    <div class="timeline">
+      <article class="step">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <span class="step-label">Initial Processing</span>
+          <h3>Intake and Registration</h3>
+          <p>Requests submitted to the DIA FOIA Service Center are logged and assigned a case number. This creates a tracking record, allowing the agency to manage workflow, estimate backlogs, and maintain accountability throughout what can be a multi-month process.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <span class="step-label">Records Search &amp; Review</span>
+          <h3>Locating the Data</h3>
+          <p>Agency personnel conduct a comprehensive search across physical and digital archives. This includes not only formal reports but also emails, memoranda, briefing slides, and other internal communications. The scope depends on the specificity of the request.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <span class="step-label">SME and Consultative Review</span>
+          <h3>Expert Analysis and Referral</h3>
+          <p>Subject Matter Experts examine retrieved documents for sensitivity. If a document touches on the jurisdiction of another agency—such as the CIA, NSA, or an armed service—it is "referred" to that agency for its own review. This interagency coordination is a major reason complex requests can take years.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="step-number">4</div>
+        <div class="step-body">
+          <span class="step-label">Quality Control &amp; Redaction</span>
+          <h3>Protecting Sensitive Secrets</h3>
+          <p>Records are reviewed line-by-line. Material that falls under one of FOIA's nine specific exemption categories—such as classified national security information, intelligence sources and methods, or personal privacy—is <span class="redacted" style="display:inline-block;width:5.5em;height:1.1em;vertical-align:middle;"></span>. This step balances transparency with the legal obligation to protect ongoing operations.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="step-number">5</div>
+        <div class="step-body">
+          <span class="step-label">Delivery</span>
+          <h3>Releasing to the Public</h3>
+          <p>Once processing is complete, final records are delivered to the requester and simultaneously posted to the DIA's Electronic Reading Room. This ensures the information is available not just to the original requester, but to journalists, historians, and the general public without requiring duplicate requests.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section id="categories">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Inside the Reading Room</div>
+      <h2>Record Categories</h2>
+      <p>The DIA's public reading room contains a wide spectrum of intelligence products—some routine, others at the center of public fascination.</p>
+    </div>
+
+    <div class="categories-grid">
+      <article class="category-card">
+        <div class="category-icon">🚀</div>
+        <h3>Advanced Aerospace Weapon Systems</h3>
+        <p>Includes records from <strong>AAWSAP</strong> and <strong>AATIP</strong>, DIA programs initiated in 2008 to research cutting-edge and speculative aerospace technologies. Released materials include contract briefings and Defense Intelligence Reference Documents covering advanced propulsion and related concepts.</p>
+      </article>
+
+      <article class="category-card">
+        <div class="category-icon">🛸</div>
+        <h3>Unidentified Anomalous Phenomena</h3>
+        <p>Materials on phenomena tracked across space, air, land, sea, and undersea environments. Reflects the modern military framing of UAP as an "all-domain" issue, with records continuing to fuel public and congressional interest.</p>
+      </article>
+
+      <article class="category-card">
+        <div class="category-icon">🌍</div>
+        <h3>Regional Threat Centers</h3>
+        <p>Analytical products for the China Mission Group, Americas &amp; Transregional Threat Center, and Europe-Eurasia Regional Center. Declassified assessments help researchers understand the DIA's global intelligence posture.</p>
+      </article>
+
+      <article class="category-card">
+        <div class="category-icon">📁</div>
+        <h3>Specialized Dossiers</h3>
+        <p>Non-traditional records including medical and biological threat assessments, POW records, interrogation reports, and Government Accountability Office investigations—illustrating that FOIA releases cover far more than military hardware.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Project Blue Book Section -->
+<section class="featured" id="bluebook">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Historic Investigation</div>
+      <h2>Project Blue Book (1947–1969)</h2>
+    </div>
+
+    <div class="featured-layout">
+      <div class="featured-content">
+        <p>Project Blue Book was the U.S. Air Force's systematic study of unidentified flying objects, operating from 1952 until its termination in December 1969. Official National Archives records state the Air Force investigated <strong>12,618 sightings</strong> under the program.</p>
+
+        <div class="stat-box">
+          <span class="stat-number">12,618</span>
+          <span class="stat-label">Official UFO Reports Investigated</span>
+        </div>
+
+        <ul class="timeline-list">
+          <li>
+            <span class="year">1952</span>Project Blue Book formally established as the Air Force's systematic UFO study.
+            <p>Replaced earlier projects Sign and Grudge.</p>
+          </li>
+          <li>
+            <span class="year">1968</span>Internal review concludes no UFO posed a national security threat.
+            <p>The project is deemed no longer justifiable on national security or scientific grounds.</p>
+          </li>
+          <li>
+            <span class="year">1969</span>Official termination of Project Blue Book in December.
+            <p>All investigations cease; remaining unexplained cases are archived.</p>
+          </li>
+          <li>
+            <span class="year">1976</span>Records microfilmed and transferred to NARA.
+            <p>The complete case files enter the public custody of the National Archives.</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="featured-sidebar">
+        <div class="myth-box" style="margin-top:0;">
+          <div class="myth-header">
+            <span class="myth-badge">Notable Case</span>
+          </div>
+          <h3>Minot AFB, October 1968</h3>
+          <p style="color:var(--muted);font-size:var(--step--1);margin-top:0.5rem;">Case #12,548 contains approximately 146 pages of data, radar logs, and B-52 bomber-related photographs. It remains one of the most extensively documented sightings from the late period of Project Blue Book.</p>
+        </div>
+
+        <div class="myth-box">
+          <div class="myth-header">
+            <span class="myth-badge">Archive</span>
+          </div>
+          <h3>Public Access Today</h3>
+          <p style="color:var(--muted);font-size:var(--step--1);margin-top:0.5rem;">Project Blue Book records are available in NARA Record Group 341. Many case files have been digitized and are accessible online through the National Archives catalog.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Philadelphia Experiment Section -->
+<section id="philadelphia">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Fact vs. Fiction</div>
+      <h2>The Philadelphia Experiment Denied</h2>
+      <p>The boundary between documented history and popular myth is often what declassification efforts seek to clarify. The Philadelphia Experiment is one of the most enduring examples of the latter.</p>
+    </div>
+
+    <div class="featured-layout">
+      <div class="featured-content">
+        <h3>The Allegation</h3>
+        <p>According to conspiracy lore, in October 1943 the U.S. Navy conducted an experiment at the Philadelphia Naval Shipyard to make the destroyer escort <strong>USS Eldridge (DE-173)</strong> invisible to radar—or even teleport it. The story claims sailors were fused into bulkheads, driven insane, or vanished entirely.</p>
+
+        <h3 style="margin-top:1.2rem;">The Official Position</h3>
+        <blockquote>
+          "The Office of Naval Research has never conducted any investigations on invisibility."
+          <cite>— Naval History and Heritage Command / Office of Naval Research</cite>
+        </blockquote>
+
+        <p>The ONR and Naval Historical Center have consistently and explicitly denied the story. The Navy considers the entire episode to be a product of science fiction and misinformation, with no basis in actual naval research.</p>
+      </div>
+
+      <div class="featured-sidebar">
+        <div class="myth-box" style="background:var(--accent-2-weak);border-color:color-mix(in oklab, var(--accent-2) 20%, var(--line));">
+          <div class="myth-header">
+            <span class="myth-badge" style="background:var(--accent-2);">Origin</span>
+          </div>
+          <h3>Where the Myth Came From</h3>
+          <p style="color:var(--muted);font-size:var(--step--1);margin-top:0.5rem;">The story surfaced in the 1950s through letters from Carl M. Allen, then spread through books and a 1984 film. Researchers trace it to misunderstandings of wartime <strong>degaussing</strong>—a real technology used to make ships less vulnerable to magnetic mines.</p>
+        </div>
+
+        <div class="myth-box">
+          <div class="myth-header">
+            <span class="myth-badge">Verdict</span>
+          </div>
+          <h3>No Credible Documentation</h3>
+          <p style="color:var(--muted);font-size:var(--step--1);margin-top:0.5rem;">No credible documentation of such an experiment exists in declassified naval records. The USS Eldridge's actual deck logs show it was elsewhere in the Atlantic on the dates in question.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sources -->
+<section class="sources" id="sources">
+  <div class="container">
+    <h2>Sources &amp; References</h2>
+    <ul class="sources-list">
+      <li><a href="https://www.dia.mil/FOIA/FOIA-Electronic-Reading-Room/" target="_blank" rel="noopener">Defense Intelligence Agency — FOIA Electronic Reading Room</a></li>
+      <li><a href="https://www.dia.mil/foia.aspx" target="_blank" rel="noopener">Defense Intelligence Agency — Freedom of Information Act</a></li>
+      <li><a href="https://www.archives.gov/research/military/air-force/ufos" target="_blank" rel="noopener">National Archives — Project BLUE BOOK</a></li>
+      <li><a href="https://www.archives.gov/press/press-releases/2020/nr20-19" target="_blank" rel="noopener">National Archives — 50 Years Ago: Government Stops Investigating UFOs</a></li>
+      <li><a href="https://www.archives.gov/news/articles/project-blue-book-50th-anniversary" target="_blank" rel="noopener">National Archives — Public Interest in UFOs Persists 50 Years After Project Blue Book Termination</a></li>
+      <li><a href="https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/p/philadelphia-experiment/philadelphia-experiment-onr-info-sheet.html" target="_blank" rel="noopener">Naval History and Heritage Command — Philadelphia Experiment: ONR Information Sheet</a></li>
+      <li><a href="https://taskandpurpose.com/news/navy-philadelphia-experiment-military-myth/" target="_blank" rel="noopener">Task &amp; Purpose — The Philadelphia Experiment: Inside the WWII Myth of an Invisible Warship</a></li>
+      <li><a href="https://www.theblackvault.com/documentarchive/the-advanced-aerospace-weapon-system-applications-program-aawsap-documentation/" target="_blank" rel="noopener">The Black Vault — AAWSAP Documentation</a></li>
+      <li><a href="https://www.aaro.mil/Portals/136/PDFs/AARO_Historical_Record_Report_Vol_1_2024.pdf" target="_blank" rel="noopener">Department of Defense AARO — Historical Record Report Volume I (2024)</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>Compiled from official U.S. government sources and declassified records.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Chosen Palette: Deep Cosmos & Warm Neutrals (Slate background #f8fafc, Cosmic Indigo #0f172a, Electric Cyan #0284c7, Quantum Gold #d97706, Rose Accent #e11d48) -->
+    <!-- Application Structure Plan: 
+        1. Sticky Navigation Bar & Hero Section with KPI Metrics: Immediate clarity on cosmic parameters and core research questions.
+        2. Section 1: The Matter-Antimatter Asymmetry Puzzle: Interactive timeline and log-scale Chart.js visualization of matter/antimatter abundance vs. temperature.
+        3. Section 2: Sakharov Conditions Diagnostic Matrix: Interactive comparison cards and status checker comparing Standard Model EW Baryogenesis vs. Leptogenesis.
+        4. Section 3: Type-I Seesaw Mechanism & Heavy Neutrino Simulator: Live interactive calculator with sliders for Heavy Neutrino Mass (M_1) and Yukawa couplings, computing light neutrino mass m_nu and CP asymmetry parameter epsilon_1 with live Chart.js response.
+        5. Section 4: Sphalerons & B-L Conversion Flow: Step-by-step cosmic pipeline and Chart.js interaction comparing Hubble expansion rate H(T), Sphaleron rate Gamma_sph(T), and N_1 decay rate.
+        6. Section 5: Experimental Frontier (0vBB Decay Simulator): Dynamic energy spectrum plot comparing 2vBB continuum vs. 0vBB sharp peak at Q-value, isotope selector, energy resolution toggles, and filterable experimental benchmark table (LEGEND, GERDA, CUORE, nEXO).
+        7. Section 6: Formula Reference & Knowledge Synthesis: MathJax equations and synthesis notes.
+        This non-linear interactive dashboard layout allows both high-level conceptual learning and deep mathematical/parameter exploration without page reloads.
+    -->
+    <!-- Visualization & Content Choices:
+        - Matter Abundance Evolution: Chart.js Line (Log scale) -> Goal: Show annihilation & freeze-out asymmetry -> Interaction: Hover tooltips & epoch highlights -> Justification: Canvas rendering is fast and clean.
+        - Seesaw Parameter Explorer: Interactive Sliders + Chart.js Line/Bar -> Goal: Show m_nu vs M_1 inverse relation & CP asymmetry -> Interaction: Real-time slider recalculation.
+        - Sphaleron & Cosmic Rates: Chart.js Line (Log-log) -> Goal: Illustrate non-equilibrium condition H(T) > Gamma -> Interaction: Toggle rates on/off.
+        - 0vBB Energy Spectrum Simulator: Chart.js Line/Area -> Goal: Illustrate signature peak at Q_bb over 2vBB background -> Interaction: Isotope parameter changes, resolution adjustments, noise simulation.
+        - Sakharov Matrix: HTML/Tailwind interactive grid with state toggles.
+        - NO SVG or Mermaid JS used; all diagrams built via Chart.js canvas or HTML/CSS grid/flex constructs.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leptogenesis: Interactive Origin of Matter Explorer</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cosmos: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            accent: '#0284c7',
+                            gold: '#d97706',
+                            rose: '#e11d48'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- MathJax for LaTeX formatting -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 380px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom-color: #0284c7;
+            color: #0284c7;
+            font-weight: 600;
+        }
+        .math-scroll {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-cosmos-50 text-cosmos-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Announcement / Cosmic Header -->
+    <header class="bg-cosmos-900 text-white border-b-2 border-cosmos-accent sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">⚛️</span>
+                    <div>
+                        <span class="font-bold text-lg tracking-tight">Leptogenesis</span>
+                        <span class="text-xs bg-cosmos-accent/30 text-sky-300 px-2 py-0.5 rounded-full ml-2 border border-sky-400/30">Interactive Physics Report</span>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-300">
+                    <a href="#asymmetry" class="hover:text-sky-400 transition-colors">Cosmic Asymmetry</a>
+                    <a href="#sakharov" class="hover:text-sky-400 transition-colors">Sakharov Criteria</a>
+                    <a href="#seesaw" class="hover:text-sky-400 transition-colors">Seesaw & CP Decay</a>
+                    <a href="#sphaleron" class="hover:text-sky-400 transition-colors">Sphaleron Conversion</a>
+                    <a href="#experiments" class="hover:text-sky-400 transition-colors">0νββ Frontier</a>
+                </nav>
+                <div class="text-xs font-mono bg-slate-800 px-3 py-1.5 rounded border border-slate-700 text-amber-400">
+                    η<sub>B</sub> ≈ 6.1 × 10<sup>-10</sup>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Header Block -->
+    <section class="bg-gradient-to-b from-cosmos-900 to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+        <div class="max-w-5xl mx-auto text-center space-y-4">
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Explaining the Universe's Missing Antimatter
+            </h1>
+            <p class="text-lg sm:text-xl text-slate-300 font-light max-w-3xl mx-auto">
+                How minute CP-violating decays of ultra-heavy right-handed neutrinos in the early universe produced the baryon asymmetry that allows matter—and life—to exist today.
+            </p>
+            
+            <!-- Key Metric Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 max-w-4xl mx-auto">
+                <div class="bg-slate-800/80 backdrop-blur p-3 rounded-lg border border-slate-700 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Baryon-Photon Ratio</div>
+                    <div class="text-xl font-bold text-sky-400 font-mono mt-1">6.1 × 10<sup>-10</sup></div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Observed in CMB & BBN</div>
+                </div>
+                <div class="bg-slate-800/80 backdrop-blur p-3 rounded-lg border border-slate-700 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Heavy Neutrino Mass Scale</div>
+                    <div class="text-xl font-bold text-amber-400 font-mono mt-1">10<sup>9</sup> - 10<sup>14</sup> GeV</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Davidson-Ibarra Limit</div>
+                </div>
+                <div class="bg-slate-800/80 backdrop-blur p-3 rounded-lg border border-slate-700 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Sphaleron Decoupling T</div>
+                    <div class="text-xl font-bold text-emerald-400 font-mono mt-1">~ 132 GeV</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Electroweak Phase Transition</div>
+                </div>
+                <div class="bg-slate-800/80 backdrop-blur p-3 rounded-lg border border-slate-700 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Key Experimental Test</div>
+                    <div class="text-xl font-bold text-rose-400 font-mono mt-1">0νββ Decay</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Majorana Nature Proof</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- SECTION 1: Cosmic Asymmetry Puzzle -->
+        <section id="asymmetry" class="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-cosmos-accent font-semibold text-sm uppercase tracking-wider">
+                    <span>SECTION 1</span>
+                    <span>•</span>
+                    <span>Observational Cosmology</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-cosmos-900 mt-1">
+                    The Matter-Antimatter Asymmetry Paradox
+                </h2>
+            </div>
+
+            <p class="text-base text-slate-600 leading-relaxed">
+                Standard Big Bang cosmology asserts that equal quantities of matter ($q$) and antimatter ($\bar{q}$) were created during the hot early universe. If symmetry were preserved exactly, matter and antimatter would have completely annihilated into photons during early expansion, leaving a dynamic "radiation universe" with virtually zero residual matter. Instead, precision measurement of the Cosmic Microwave Background (CMB) by Planck and Big Bang Nucleosynthesis (BBN) yields a small but critical surplus:
+            </p>
+
+            <div class="p-4 bg-slate-50 border-l-4 border-cosmos-accent rounded-r-lg font-mono text-center sm:text-left text-sm text-slate-700">
+                $$ \eta_B \equiv \frac{n_B - n_{\bar{B}}}{n_\gamma} = (6.14 \pm 0.25) \times 10^{-10} $$
+                <p class="text-xs text-slate-500 font-sans mt-2">For every ~10 billion antimatter particles created in the early universe, there were 10,000,000,001 matter particles. That single surplus particle survived annihilation to form all stars, planets, and galaxies.</p>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-6 items-center">
+                <div class="md:col-span-5 space-y-4">
+                    <h3 class="font-bold text-lg text-slate-800">Explore Cosmic Epochs & Annihilation</h3>
+                    <p class="text-sm text-slate-600">
+                        Adjust the cosmological timeline to see how matter and antimatter densities evolved during the universe's first second.
+                    </p>
+                    
+                    <div class="space-y-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <label for="epoch-slider" class="block text-xs font-semibold text-slate-700">
+                            Cosmic Era / Temperature: <span id="epoch-label" class="text-cosmos-accent font-mono">T ~ 10¹³ GeV (GUT Scale)</span>
+                        </label>
+                        <input type="range" id="epoch-slider" min="0" max="4" step="1" value="0" class="w-full accent-cosmos-accent cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                            <span>GUT (10¹³)</span>
+                            <span>Leptogenesis</span>
+                            <span>EW (100 GeV)</span>
+                            <span>Freezeout</span>
+                            <span>Present</span>
+                        </div>
+                    </div>
+
+                    <div id="epoch-description" class="p-3 bg-sky-50 rounded border border-sky-100 text-xs text-slate-700">
+                        <strong>GUT Scale (T ~ 10¹³ GeV):</strong> Universe is symmetric. Matter and antimatter exist in equal densities ($n_q = n_{\bar{q}}$). Right-handed neutrinos ($N_1$) are in thermal equilibrium.
+                    </div>
+                </div>
+
+                <div class="md:col-span-7">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase mb-2 text-center">Particle Density relative to Photons vs Temperature</h4>
+                        <div class="chart-container">
+                            <canvas id="asymmetryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Sakharov Conditions -->
+        <section id="sakharov" class="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-cosmos-accent font-semibold text-sm uppercase tracking-wider">
+                    <span>SECTION 2</span>
+                    <span>•</span>
+                    <span>Theoretical Foundations</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-cosmos-900 mt-1">
+                    The Sakharov Conditions Diagnostic Matrix
+                </h2>
+            </div>
+
+            <p class="text-base text-slate-600 leading-relaxed">
+                In 1967, Andrei Sakharov proved that any microphysical theory capable of dynamically generating a baryon asymmetry from an initially symmetric universe must satisfy three strict requirements. Below, compare why the Standard Model (SM) fails alone, and how Leptogenesis successfully satisfies each criterion.
+            </p>
+
+            <!-- Interactive Diagnostic Cards Grid -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Condition 1 -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 flex flex-col justify-between hover:border-cosmos-accent transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">Condition 1</span>
+                            <span class="text-xl">⚖️</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-800 mb-2">Baryon (or Lepton) Number Violation</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Must have reactions where total B (or L) is not conserved ($\Delta L \neq 0$). Otherwise, starting from $L=0$ keeps $L=0$ forever.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 text-xs space-y-2">
+                        <div class="flex items-start space-x-2">
+                            <span class="text-emerald-600 font-bold">✓ SM:</span>
+                            <span class="text-slate-600">Sphaleron non-perturbative transitions violate $B+L$.</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <span class="text-emerald-600 font-bold">✓ Leptogenesis:</span>
+                            <span class="text-slate-600">Majorana neutrino decays $N_1 \to l H$ and $N_1 \to \bar{l} \bar{H}$ explicitly violate $L$ by 2 units.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Condition 2 -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 flex flex-col justify-between hover:border-cosmos-accent transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">Condition 2</span>
+                            <span class="text-xl">🪞</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-800 mb-2">C and CP Violation</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Charge conjugation (C) and Charge-Parity (CP) symmetries must be broken so rates for $N_1 \to l H$ and $N_1 \to \bar{l} \bar{H}$ are asymmetric.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 text-xs space-y-2">
+                        <div class="flex items-start space-x-2">
+                            <span class="text-rose-600 font-bold">✗ SM Fails:</span>
+                            <span class="text-slate-600">CKM matrix CP phase is far too small ($\eta_B^{\text{SM}} < 10^{-18}$).</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <span class="text-emerald-600 font-bold">✓ Leptogenesis:</span>
+                            <span class="text-slate-600">Complex phases in Yukawa coupling matrix ($Y_\nu$) yield robust CP violation in loop diagrams.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Condition 3 -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 flex flex-col justify-between hover:border-cosmos-accent transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">Condition 3</span>
+                            <span class="text-xl">🌡️</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-800 mb-2">Departure from Thermal Equilibrium</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            If decay processes occur in equilibrium, inverse decays re-erase any generated asymmetry ($\Gamma_1 < H$).
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 text-xs space-y-2">
+                        <div class="flex items-start space-x-2">
+                            <span class="text-rose-600 font-bold">✗ SM Fails:</span>
+                            <span class="text-slate-600">Electroweak crossover for $m_h = 125\text{ GeV}$ is smooth, not 1st-order.</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <span class="text-emerald-600 font-bold">✓ Leptogenesis:</span>
+                            <span class="text-slate-600">Expansion rate $H(T)$ exceeds $N_1$ decay width at $T \sim M_1$, freezing out asymmetry.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Seesaw Mechanism & Interactive Calculator -->
+        <section id="seesaw" class="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-cosmos-accent font-semibold text-sm uppercase tracking-wider">
+                    <span>SECTION 3</span>
+                    <span>•</span>
+                    <span>Particle Mechanics</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-cosmos-900 mt-1">
+                    Type-I Seesaw & CP Asymmetry Calculator
+                </h2>
+            </div>
+
+            <p class="text-base text-slate-600 leading-relaxed">
+                The Type-I Seesaw Mechanism introduces right-handed, SM-singlet Majorana neutrinos $N_i$ with heavy mass $M_i$. This elegantly explains why observed light neutrinos have sub-eV masses: as heavy mass $M_1$ increases, light neutrino mass $m_\nu$ decreases according to $m_\nu \approx \frac{y^2 v^2}{M_1}$.
+            </p>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <!-- Calculator Controls -->
+                <div class="lg:col-span-5 bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-5">
+                    <h3 class="font-bold text-base text-slate-800 border-b pb-2 flex justify-between items-center">
+                        <span>Seesaw Parameter Controls</span>
+                        <span class="text-xs text-cosmos-accent font-mono font-normal">v = 174 GeV</span>
+                    </h3>
+
+                    <!-- Slider 1: Heavy Mass M1 -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label for="m1-slider" class="text-slate-700">Heavy Neutrino Mass ($M_1$):</label>
+                            <span id="m1-val" class="text-cosmos-accent font-mono">10¹¹ GeV</span>
+                        </div>
+                        <input type="range" id="m1-slider" min="9" max="15" step="0.1" value="11" class="w-full accent-cosmos-accent cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <span>10⁹ GeV (Davidson-Ibarra limit)</span>
+                            <span>10¹⁵ GeV</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 2: Dirac Yukawa Coupling y -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label for="yukawa-slider" class="text-slate-700">Yukawa Coupling ($y_\nu$):</label>
+                            <span id="yukawa-val" class="text-cosmos-accent font-mono">1.0 × 10⁻²</span>
+                        </div>
+                        <input type="range" id="yukawa-slider" min="-5" max="0" step="0.1" value="-2" class="w-full accent-cosmos-accent cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <span>10⁻⁵ (Electron-like)</span>
+                            <span>1.0 (Top-like)</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 3: Effective CP Phase sin(delta) -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label for="cp-slider" class="text-slate-700">Effective CP Phase ($\sin\delta$):</label>
+                            <span id="cp-val" class="text-cosmos-accent font-mono">0.50</span>
+                        </div>
+                        <input type="range" id="cp-slider" min="0" max="1" step="0.05" value="0.5" class="w-full accent-cosmos-accent cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <span>0.0 (No CPV)</span>
+                            <span>1.0 (Max CPV)</span>
+                        </div>
+                    </div>
+
+                    <!-- Computed Outputs Box -->
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-3 font-mono text-xs">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-slate-600">Light Neutrino Mass ($m_\nu$):</span>
+                            <span id="m-light-out" class="font-bold text-emerald-600">0.030 eV</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-slate-600">CP Asymmetry ($\epsilon_1$):</span>
+                            <span id="epsilon-out" class="font-bold text-amber-600">3.2 × 10⁻6</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-600">Predicted $\eta_B$:</span>
+                            <span id="eta-out" class="font-bold text-cosmos-accent">6.4 × 10⁻¹⁰</span>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-slate-500 italic">
+                        Formula: $\epsilon_1 \approx \frac{3}{16\pi} \frac{M_1 m_{\text{top}}}{v^2} \sin\delta$. Notice how $M_1 \ge 10^9 \text{ GeV}$ is required to yield $\eta_B \sim 10^{-10}$ (Davidson-Ibarra bound).
+                    </p>
+                </div>
+
+                <!-- Seesaw Curve Chart -->
+                <div class="lg:col-span-7 bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase text-center">
+                        Light Neutrino Mass $m_\nu$ vs Heavy Mass $M_1$ (Seesaw Balancing)
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="seesawChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Sphalerons & Cosmic Flow -->
+        <section id="sphaleron" class="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-cosmos-accent font-semibold text-sm uppercase tracking-wider">
+                    <span>SECTION 4</span>
+                    <span>•</span>
+                    <span>Cosmological Dynamics</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-cosmos-900 mt-1">
+                    Sphaleron Conversion: From Leptons to Baryons
+                </h2>
+            </div>
+
+            <p class="text-base text-slate-600 leading-relaxed">
+                Generating a lepton asymmetry ($\Delta L \neq 0$) is only step one. How does excess lepton number turn into protons and neutrons? Non-perturbative Standard Model field configurations known as <strong>sphalerons</strong> act as thermal bridges at $T > 132 \text{ GeV}$. They conserve $B-L$ while converting $L$ asymmetry into $B$ asymmetry.
+            </p>
+
+            <!-- Conversion Formula & Pipeline -->
+            <div class="bg-slate-900 text-slate-200 p-5 rounded-xl space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center text-sm font-mono gap-4">
+                    <div class="text-center sm:text-left">
+                        <div class="text-slate-400 text-xs">SM Sphaleron Redistribution Formula</div>
+                        <div class="text-emerald-400 font-bold text-base mt-1">
+                            $$ B = \left( \frac{28}{79} \right) (B - L) = -\frac{28}{51} L $$
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded border border-slate-700 text-xs text-amber-300 max-w-xs">
+                        Sphalerons enforce $\Delta B = \frac{1}{3} \Delta L$ per generation, locking final baryon number to primordial $B-L$.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rate Hierarchy Chart -->
+            <div class="grid md:grid-cols-12 gap-6 items-center">
+                <div class="md:col-span-7">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase mb-2 text-center">
+                            Cosmological Rates vs Temperature $T$ (Log-Log Scale)
+                        </h4>
+                        <div class="chart-container">
+                            <canvas id="rateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 space-y-3">
+                    <h3 class="font-bold text-base text-slate-800">Key Rate Interactions</h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                            <strong class="text-sky-600">1. Expansion Rate $H(T)$:</strong>
+                            <p class="text-slate-600 mt-1">Hubble parameter $H \propto T^2 / M_{\text{Planck}}$. Governs cosmic expansion speed.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                            <strong class="text-emerald-600">2. Sphaleron Rate $\Gamma_{\text{sph}}(T)$:</strong>
+                            <p class="text-slate-600 mt-1">$\Gamma_{\text{sph}} \approx 25 \alpha_w^5 T$. Active above Electroweak Phase Transition ($T_{EW} \approx 132 \text{ GeV}$). Sharp cutoff below $T_{EW}$.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                            <strong class="text-amber-600">3. Decay Freezeout:</strong>
+                            <p class="text-slate-600 mt-1">When $N_1$ decay rate falls below expansion ($\Gamma_1 < H$), $N_1$ decays out of equilibrium, locking in $\Delta L$.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Experimental Frontier (0vBB Simulator) -->
+        <section id="experiments" class="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-cosmos-accent font-semibold text-sm uppercase tracking-wider">
+                    <span>SECTION 5</span>
+                    <span>•</span>
+                    <span>Experimental Probes</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-cosmos-900 mt-1">
+                    Experimental Proof: Neutrinoless Double Beta Decay ($0\nu\beta\beta$)
+                </h2>
+            </div>
+
+            <p class="text-base text-slate-600 leading-relaxed">
+                Because the mass scale of right-handed neutrinos ($10^9\text{ GeV}$) is far higher than the Large Hadron Collider (13 TeV), testing Leptogenesis relies on proving neutrinos are <strong>Majorana particles</strong>. The definitive experimental test is <strong>Neutrinoless Double Beta Decay ($0\nu\beta\beta$)</strong>: $(A, Z) \to (A, Z+2) + 2e^-$.
+            </p>
+
+            <!-- Simulator Controls & Spectrum Plot -->
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-6">
+                <div class="grid md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-4 space-y-4">
+                        <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide">
+                            $0\nu\beta\beta$ Energy Spectrum Simulator
+                        </h3>
+
+                        <!-- Isotope Selector -->
+                        <div class="space-y-1">
+                            <label for="isotope-select" class="text-xs font-semibold text-slate-700">Select Isotope Core:</label>
+                            <select id="isotope-select" class="w-full bg-white border border-slate-300 rounded p-2 text-xs font-mono text-slate-800 focus:ring-2 focus:ring-cosmos-accent">
+                                <option value="76Ge" selected>Germanium-76 (76Ge) - Q_bb = 2039 keV [LEGEND]</option>
+                                <option value="130Te">Tellurium-130 (130Te) - Q_bb = 2527 keV [CUORE]</option>
+                                <option value="136Xe">Xenon-136 (136Xe) - Q_bb = 2458 keV [nEXO, KamLAND]</option>
+                            </select>
+                        </div>
+
+                        <!-- Energy Resolution Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-slate-700">Detector Resolution (FWHM):</span>
+                                <span id="res-val" class="font-mono text-cosmos-accent">0.2%</span>
+                            </div>
+                            <input type="range" id="res-slider" min="0.1" max="2.0" step="0.1" value="0.2" class="w-full accent-cosmos-accent cursor-pointer">
+                        </div>
+
+                        <!-- Half-life / Signal Amplitude -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-slate-700">Hypothetical Signal Scale:</span>
+                                <span id="signal-val" class="font-mono text-rose-600">Moderate Peak</span>
+                            </div>
+                            <input type="range" id="signal-slider" min="0" max="100" step="5" value="40" class="w-full accent-rose-500 cursor-pointer">
+                        </div>
+
+                        <div class="p-3 bg-white rounded border border-slate-200 text-xs text-slate-600">
+                            <strong>Key Signature:</strong> Standard $2\nu\beta\beta$ produces a broad continuous spectrum due to escaping neutrinos. A discovery $0\nu\beta\beta$ signal produces a sharp monochromatic peak exactly at $Q_{\beta\beta}$.
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-8">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-500 uppercase mb-2 text-center">
+                                Electron Sum Energy ($E_{1} + E_{2}$) Spectrum
+                            </h4>
+                            <div class="chart-container">
+                                <canvas id="spectrumChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Major Experimental Comparison Table -->
+            <div class="space-y-3">
+                <h3 class="font-bold text-lg text-slate-800">Current & Next-Generation $0\nu\beta\beta$ Experiments</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-600 border border-slate-200 rounded-lg">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                            <tr>
+                                <th class="p-3 border-b">Experiment</th>
+                                <th class="p-3 border-b">Target Isotope</th>
+                                <th class="p-3 border-b">Active Mass</th>
+                                <th class="p-3 border-b">Current $T_{1/2}^{0\nu}$ Limit</th>
+                                <th class="p-3 border-b">Effective Majorana Mass $\langle m_{\beta\beta} \rangle$</th>
+                                <th class="p-3 border-b">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 font-mono">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-bold text-slate-800 font-sans">LEGEND-200 / 1000</td>
+                                <td class="p-3">⁷⁶Ge</td>
+                                <td class="p-3">200 kg → 1000 kg</td>
+                                <td class="p-3 text-sky-600">> 1.8 × 10²⁶ yrs</td>
+                                <td class="p-3">< 36 - 156 meV</td>
+                                <td class="p-3 font-sans"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Running / Construction</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-bold text-slate-800 font-sans">nEXO</td>
+                                <td class="p-3">¹³⁶Xe</td>
+                                <td class="p-3">5000 kg</td>
+                                <td class="p-3 text-sky-600">> 1.35 × 10²⁷ yrs (Proj)</td>
+                                <td class="p-3">< 5 - 15 meV</td>
+                                <td class="p-3 font-sans"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Planned</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-bold text-slate-800 font-sans">CUORE / CUPID</td>
+                                <td class="p-3">¹³⁰Te / ¹⁰⁰Mo</td>
+                                <td class="p-3">206 kg</td>
+                                <td class="p-3 text-sky-600">> 2.2 × 10²⁵ yrs</td>
+                                <td class="p-3">< 90 - 300 meV</td>
+                                <td class="p-3 font-sans"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Running</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-bold text-slate-800 font-sans">KamLAND-Zen 800</td>
+                                <td class="p-3">¹³⁶Xe</td>
+                                <td class="p-3">745 kg</td>
+                                <td class="p-3 text-sky-600">> 2.3 × 10²⁶ yrs</td>
+                                <td class="p-3">< 36 - 156 meV</td>
+                                <td class="p-3 font-sans"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Running</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: Summary & Reference Cheat-Sheet -->
+        <section class="bg-cosmos-900 text-white rounded-xl p-6 sm:p-8 space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-bold text-white">Mathematical Summary & Formula Reference</h2>
+                <p class="text-sm text-slate-400">Core analytical relations underlying Thermal Leptogenesis</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 text-xs font-mono">
+                <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-2">
+                    <span class="text-amber-400 font-bold uppercase font-sans text-[11px]">1. CP Decay Asymmetry Parameter ($\epsilon_1$)</span>
+                    <div class="math-scroll text-slate-200 py-2">
+                        $$ \epsilon_1 = \frac{\Gamma(N_1 \to l H) - \Gamma(N_1 \to \bar{l} \bar{H})}{\Gamma(N_1 \to l H) + \Gamma(N_1 \to \bar{l} \bar{H})} \approx -\frac{3}{16\pi} \sum_{j \neq 1} \frac{M_1}{M_j} \frac{\text{Im}[(Y_\nu^\dagger Y_\nu)_{1j}^2]}{(Y_\nu^\dagger Y_\nu)_{11}} $$
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-2">
+                    <span class="text-amber-400 font-bold uppercase font-sans text-[11px]">2. Washout Parameter ($K$)</span>
+                    <div class="math-scroll text-slate-200 py-2">
+                        $$ K \equiv \frac{\Gamma_1}{H(T=M_1)} = \frac{\tilde{m}_1}{m_*}, \quad m_* \approx 1.08 \times 10^{-3} \text{ eV} $$
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-2">
+                    <span class="text-amber-400 font-bold uppercase font-sans text-[11px]">3. Davidson-Ibarra Bound</span>
+                    <div class="math-scroll text-slate-200 py-2">
+                        $$ | \epsilon_1 | \le \frac{3}{16\pi} \frac{M_1 (m_3 - m_1)}{v^2} \implies M_1 \ge 10^9 \text{ GeV} $$
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-2">
+                    <span class="text-amber-400 font-bold uppercase font-sans text-[11px]">4. Final Baryon Asymmetry ($\eta_B$)</span>
+                    <div class="math-scroll text-slate-200 py-2">
+                        $$ \eta_B = d \cdot C_{\text{sphaleron}} \cdot \kappa(K) \cdot \epsilon_1 \approx 0.96 \times 10^{-2} \kappa(K) \epsilon_1 $$
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-cosmos-900 text-slate-400 text-xs py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p>Leptogenesis Interactive Explorer • Developed as an educational interactive physics tool.</p>
+            <p class="text-slate-500">Based on Fukugita & Yanagida (1986), Buchmüller et al. (2005), and modern $0\nu\beta\beta$ experimental research.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Store charts in global scope for dynamic updating
+        let asymmetryChart, seesawChart, rateChart, spectrumChart;
+
+        // Isotope Database for 0vBB
+        const isotopes = {
+            '76Ge': { name: 'Germanium-76', qbb: 2039, bkgRate: 0.05 },
+            '130Te': { name: 'Tellurium-130', qbb: 2527, bkgRate: 0.12 },
+            '136Xe': { name: 'Xenon-136', qbb: 2458, bkgRate: 0.08 }
+        };
+
+        // DOM Content Loaded Handler
+        document.addEventListener('DOMContentLoaded', () => {
+            initAsymmetryChart();
+            initSeesawChart();
+            initRateChart();
+            initSpectrumChart();
+
+            setupEventListeners();
+            updateSeesawCalculator();
+            updateSpectrum();
+        });
+
+        // -------------------------------------------------------------
+        // CHART 1: Cosmic Asymmetry Evolution
+        // -------------------------------------------------------------
+        function initAsymmetryChart() {
+            const ctx = document.getElementById('asymmetryChart').getContext('2d');
+            
+            // Logarithmic temperature scale from 10^15 GeV down to 10^-4 GeV
+            const temps = ['10¹⁵', '10¹³', '10¹¹', '10⁹', '10⁷', '10⁵', '10³', '100', '1', '10⁻³'];
+            
+            asymmetryChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: temps,
+                    datasets: [
+                        {
+                            label: 'Quark / Lepton Density (n/n_γ)',
+                            data: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1e-9, 6.1e-10],
+                            borderColor: '#0284c7',
+                            backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Antiquark / Antilepton Density (n̄/n_γ)',
+                            data: [1.0, 1.0, 1.0, 1.0, 0.999999, 0.99999, 0.9999, 0.999, 1e-15, 0],
+                            borderColor: '#e11d48',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [4, 4],
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Net Asymmetry η_B',
+                            data: [0, 0, 1e-12, 1e-10, 6.1e-10, 6.1e-10, 6.1e-10, 6.1e-10, 6.1e-10, 6.1e-10],
+                            borderColor: '#d97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            title: { display: true, text: 'Relative Density (log scale)', font: { size: 11 } },
+                            min: 1e-11,
+                            max: 10
+                        },
+                        x: {
+                            title: { display: true, text: 'Temperature T (GeV)', font: { size: 11 } }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw.toExponential(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Epoch Slider Logic
+        const epochDescriptions = [
+            "<strong>GUT Scale (T ~ 10¹³ GeV):</strong> Universe is symmetric. Matter and antimatter exist in equal densities ($n_q = n_{\\bar{q}}$). Right-handed neutrinos ($N_1$) are in thermal equilibrium.",
+            "<strong>Leptogenesis Epoch (T ~ 10¹¹ - 10⁹ GeV):</strong> Expansion rate $H(T)$ exceeds $N_1$ decay rate. Out-of-equilibrium $N_1$ decays produce a net Lepton asymmetry $\\Delta L \\neq 0$.",
+            "<strong>Electroweak Era (T ~ 100 GeV):</strong> Sphalerons actively convert $\\Delta L$ into Baryon asymmetry $\\Delta B$. Sphalerons shut off at $T_{EW} \\approx 132\\text{ GeV}$, freezing in the baryon excess.",
+            "<strong>Annihilation & Freezeout (T ~ 100 MeV):</strong> Free quarks and antiquarks annihilate. All antiquarks disappear; only the excess $6.1 \\times 10^{-10}$ matter fraction remains.",
+            "<strong>Present Day (T = 2.73 K):</strong> BBN and CMB confirm leftover matter forms all galaxies, stars, and life. Background photons outnumber baryons by 1.6 billion to 1."
+        ];
+
+        const epochLabels = [
+            "T ~ 10¹³ GeV (GUT Scale)",
+            "T ~ 10¹⁰ GeV (Leptogenesis)",
+            "T ~ 100 GeV (EW Phase Transition)",
+            "T ~ 100 MeV (Quark Annihilation)",
+            "T = 2.73 K (Present Day)"
+        ];
+
+        // -------------------------------------------------------------
+        // CHART 2: Seesaw & Asymmetry Calculator
+        // -------------------------------------------------------------
+        function initSeesawChart() {
+            const ctx = document.getElementById('seesawChart').getContext('2d');
+            
+            // Generate curves for m_light vs M1
+            const m1Values = [9, 10, 11, 12, 13, 14, 15];
+            
+            seesawChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: m1Values.map(v => `10¹` + (v === 9 ? '⁹' : v === 10 ? '⁰' : v === 11 ? '¹' : v === 12 ? '²' : v === 13 ? '³' : v === 14 ? '⁴' : '⁵')),
+                    datasets: [
+                        {
+                            label: 'Light Neutrino Mass m_ν (eV)',
+                            data: [3.0, 0.3, 0.03, 0.003, 0.0003, 0.00003, 0.000003],
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            borderWidth: 2,
+                            yAxisID: 'y1'
+                        },
+                        {
+                            label: 'CP Decay Asymmetry ε₁',
+                            data: [3.2e-8, 3.2e-7, 3.2e-6, 3.2e-5, 3.2e-4, 3.2e-3, 3.2e-2],
+                            borderColor: '#d97706',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            yAxisID: 'y2'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y1: {
+                            type: 'logarithmic',
+                            position: 'left',
+                            title: { display: true, text: 'm_ν (eV)' }
+                        },
+                        y2: {
+                            type: 'logarithmic',
+                            position: 'right',
+                            title: { display: true, text: 'CP Asymmetry ε₁' },
+                            grid: { drawOnChartArea: false }
+                        },
+                        x: {
+                            title: { display: true, text: 'Heavy Neutrino Mass M₁ (GeV)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSeesawCalculator() {
+            const m1Exp = parseFloat(document.getElementById('m1-slider').value);
+            const yukawaExp = parseFloat(document.getElementById('yukawa-slider').value);
+            const cpSin = parseFloat(document.getElementById('cp-slider').value);
+
+            // Calculate M1 and y
+            const M1 = Math.pow(10, m1Exp); // GeV
+            const y = Math.pow(10, yukawaExp);
+            const v = 174; // GeV
+
+            // Light neutrino mass m_nu approx y^2 * v^2 / M1 (in eV: multiply by 1e9)
+            const mNuGev = (y * y * v * v) / M1;
+            const mNuEv = mNuGev * 1e9;
+
+            // CP Asymmetry epsilon1 approx (3 / 16 pi) * (M1 * m_top / v^2) * cpSin
+            const mTop = 172; // GeV
+            const epsilon1 = (3 / (16 * Math.PI)) * (M1 * mTop / (v * v)) * cpSin * (y * y);
+
+            // Predicted baryon asymmetry eta_B approx 0.01 * epsilon1 * efficiency (assume eff = 0.1)
+            const etaB = 1e-2 * epsilon1 * 0.05;
+
+            // Update DOM text
+            document.getElementById('m1-val').innerText = `10¹` + (m1Exp.toFixed(1));
+            document.getElementById('yukawa-val').innerText = y.toExponential(1);
+            document.getElementById('cp-val').innerText = cpSin.toFixed(2);
+
+            document.getElementById('m-light-out').innerText = mNuEv < 1e-6 ? mNuEv.toExponential(2) + ' eV' : mNuEv.toFixed(4) + ' eV';
+            document.getElementById('epsilon-out').innerText = epsilon1.toExponential(2);
+            document.getElementById('eta-out').innerText = etaB.toExponential(2);
+
+            // Update chart data points live
+            if (seesawChart) {
+                const m1Points = [9, 10, 11, 12, 13, 14, 15];
+                const mNuData = m1Points.map(p => ((y * y * v * v) / Math.pow(10, p)) * 1e9);
+                const epsData = m1Points.map(p => (3 / (16 * Math.PI)) * (Math.pow(10, p) * mTop / (v * v)) * cpSin * (y * y));
+                
+                seesawChart.data.datasets[0].data = mNuData;
+                seesawChart.data.datasets[1].data = epsData;
+                seesawChart.update();
+            }
+        }
+
+        // -------------------------------------------------------------
+        // CHART 3: Cosmological Rates
+        // -------------------------------------------------------------
+        function initRateChart() {
+            const ctx = document.getElementById('rateChart').getContext('2d');
+            
+            const temps = ['10¹⁴', '10¹²', '10¹⁰', '10⁸', '10⁶', '10⁴', '100 (EW)', '1'];
+            
+            rateChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: temps,
+                    datasets: [
+                        {
+                            label: 'Hubble Expansion Rate H(T)',
+                            data: [1e20, 1e16, 1e12, 1e8, 1e4, 1, 1e-4, 1e-8],
+                            borderColor: '#0284c7',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Sphaleron Rate Γ_sph(T)',
+                            data: [1e18, 1e15, 1e12, 1e9, 1e6, 1e3, 1e-1, 1e-25],
+                            borderColor: '#059669',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'N₁ Decay Rate Γ₁',
+                            data: [1e11, 1e11, 1e11, 1e-5, 1e-15, 1e-25, 1e-35, 1e-45],
+                            borderColor: '#d97706',
+                            borderDash: [3, 3],
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            title: { display: true, text: 'Rate (GeV, log scale)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Temperature T (GeV)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // CHART 4: 0vBB Energy Spectrum
+        // -------------------------------------------------------------
+        function initSpectrumChart() {
+            const ctx = document.getElementById('spectrumChart').getContext('2d');
+            
+            spectrumChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: '2νββ Continuous Spectrum',
+                            data: [],
+                            borderColor: '#64748b',
+                            backgroundColor: 'rgba(100, 116, 139, 0.15)',
+                            fill: true,
+                            borderWidth: 1.5,
+                            pointRadius: 0
+                        },
+                        {
+                            label: '0νββ Signal Peak (Discovery)',
+                            data: [],
+                            borderColor: '#e11d48',
+                            backgroundColor: 'rgba(225, 29, 72, 0.3)',
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Summed Electron Energy E_1 + E_2 (keV)', font: { size: 11 } }
+                        },
+                        y: {
+                            title: { display: true, text: 'Counts / Energy Bin (Arb. Units)', font: { size: 11 } },
+                            min: 0
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSpectrum() {
+            const isoKey = document.getElementById('isotope-select').value;
+            const resFWHM = parseFloat(document.getElementById('res-slider').value);
+            const signalScale = parseFloat(document.getElementById('signal-slider').value);
+
+            const iso = isotopes[isoKey];
+            const qbb = iso.qbb;
+
+            // Generate energy bins around 0 to Qbb + 200 keV
+            const numBins = 100;
+            const minE = 0;
+            const maxE = qbb + 200;
+            const step = (maxE - minE) / numBins;
+
+            const labels = [];
+            const data2nu = [];
+            const data0nu = [];
+
+            // Standard deviation for Gaussian peak: FWHM = 2.355 * sigma
+            const sigma = (qbb * (resFWHM / 100)) / 2.355;
+
+            for (let i = 0; i <= numBins; i++) {
+                const E = minE + i * step;
+                labels.push(Math.round(E));
+
+                // Phase space approximation for 2vBB: ~ x * (1 - x)^5 where x = E / Qbb
+                const x = E / qbb;
+                let val2nu = 0;
+                if (x > 0 && x < 1) {
+                    val2nu = 100 * Math.pow(x, 2) * Math.pow(1 - x, 5);
+                }
+                data2nu.push(val2nu);
+
+                // Gaussian peak at Qbb for 0vBB
+                let val0nu = 0;
+                if (signalScale > 0) {
+                    val0nu = signalScale * Math.exp(-0.5 * Math.pow((E - qbb) / sigma, 2));
+                }
+                data0nu.push(val0nu);
+            }
+
+            document.getElementById('res-val').innerText = resFWHM.toFixed(1) + '%';
+            document.getElementById('signal-val').innerText = signalScale === 0 ? 'No Signal' : signalScale < 30 ? 'Weak Peak' : 'Clear Discovery Peak';
+
+            if (spectrumChart) {
+                spectrumChart.data.labels = labels;
+                spectrumChart.data.datasets[0].data = data2nu;
+                spectrumChart.data.datasets[1].data = data0nu;
+                spectrumChart.update();
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Event Listeners Setup
+        // -------------------------------------------------------------
+        function setupEventListeners() {
+            // Epoch slider listener
+            const epochSlider = document.getElementById('epoch-slider');
+            epochSlider.addEventListener('input', (e) => {
+                const idx = parseInt(e.target.value);
+                document.getElementById('epoch-label').innerText = epochLabels[idx];
+                document.getElementById('epoch-description').innerHTML = epochDescriptions[idx];
+                
+                // Rerender MathJax in description block
+                if (window.MathJax) {
+                    MathJax.typesetPromise([document.getElementById('epoch-description')]);
+                }
+            });
+
+            // Seesaw calculator sliders
+            document.getElementById('m1-slider').addEventListener('input', updateSeesawCalculator);
+            document.getElementById('yukawa-slider').addEventListener('input', updateSeesawCalculator);
+            document.getElementById('cp-slider').addEventListener('input', updateSeesawCalculator);
+
+            // Spectrum simulator controls
+            document.getElementById('isotope-select').addEventListener('change', updateSpectrum);
+            document.getElementById('res-slider').addEventListener('input', updateSpectrum);
+            document.getElementById('signal-slider').addEventListener('input', updateSpectrum);
+        }
+    </script>
+</body>
+</html>

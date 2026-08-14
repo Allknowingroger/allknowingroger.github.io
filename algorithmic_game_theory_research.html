@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Human Mathematical Creativity | Algorithmic Game Theory</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Roboto Mono', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc; /* Tailwind slate-50 */
+            color: #475569; /* Tailwind slate-600 */
+        }
+        
+        /* Grid background pattern for the hero section */
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center center;
+            animation: panGrid 20s linear infinite;
+        }
+
+        @keyframes panGrid {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* Scroll Reveal Utility Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+
+        /* Subtle glowing text for accents in light mode */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(8, 145, 178, 0.2); /* Cyan-600 glow */
+        }
+        
+        /* Scrollbar styling for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0891b2; /* cyan-600 */
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan-200 selection:text-slate-900 text-slate-600 bg-slate-50">
+
+    <nav class="fixed w-full z-50 top-0 backdrop-blur-md bg-white/80 border-b border-slate-200 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="font-mono font-bold text-slate-900 text-lg tracking-tighter flex items-center gap-2">
+                <span class="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></span>
+                AGT<span class="text-slate-500 font-normal">_RESEARCH</span>
+            </a>
+            <div class="hidden md:flex gap-8 font-mono text-sm text-slate-600">
+                <a href="#frameworks" class="hover:text-cyan-600 transition-colors">01. Frameworks</a>
+                <a href="#architecture" class="hover:text-cyan-600 transition-colors">02. Architecture</a>
+                <a href="#bias" class="hover:text-cyan-600 transition-colors">03. Uncertainty</a>
+                <a href="#future" class="hover:text-cyan-600 transition-colors">04. Autonomy</a>
+            </div>
+            <!-- Mobile Menu Icon (Visual Only) -->
+            <button class="md:hidden text-slate-400 hover:text-slate-900">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </nav>
+
+    <header id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-grid-pattern pt-20 bg-slate-50">
+        <!-- Background decorative elements -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-400/20 rounded-full blur-[120px] pointer-events-none animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-400/20 rounded-full blur-[100px] pointer-events-none animate-float"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center reveal">
+            <p class="font-mono text-green-600 uppercase tracking-widest text-xs md:text-sm mb-6 font-semibold">Sys_Init: Booting Theoretical Models</p>
+            <h1 class="font-mono text-5xl md:text-7xl lg:text-8xl text-slate-900 font-bold tracking-tighter mb-8 leading-tight">
+                The Dawn of <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-700 text-glow">Post-Human</span><br/>
+                Mathematical Creativity
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
+                Exploring the convergence of Game Theory, Artificial Intelligence, and Quantum Computing. These rapidly expanding techniques are opening new frontiers in interactive strategic decision-making and predictive adversarial analysis.
+            </p>
+            <a href="#frameworks" class="inline-flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-full font-medium hover:bg-cyan-600 transition-colors duration-300 shadow-lg hover:shadow-cyan-500/25">
+                Explore the Frameworks
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </a>
+        </div>
+    </header>
+
+    <section id="frameworks" class="py-32 relative bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-16 md:flex justify-between items-end reveal">
+                <div class="max-w-2xl">
+                    <h2 class="font-mono text-cyan-600 text-3xl md:text-5xl font-bold mb-4">01. The Mechanics of Strategy</h2>
+                    <p class="text-slate-600 text-lg">From classical matrices to algorithmic computation. Defining the baseline mechanics of strategic decision-making before introducing machine learning complexities.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Normal Form -->
+                <div class="group relative bg-slate-50 border border-slate-200 p-8 rounded-2xl hover:border-cyan-400/80 hover:-translate-y-2 hover:shadow-[0_10px_30px_-15px_rgba(8,145,178,0.2)] transition-all duration-500 overflow-hidden reveal delay-100">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all duration-500"></div>
+                    <div class="font-mono text-green-600 font-semibold text-sm mb-4">Model_Type: 0x01</div>
+                    <h3 class="text-2xl text-slate-900 font-mono font-bold mb-4">Normal Form</h3>
+                    <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+                        Also known as the Strategic Form. A representation of a game utilizing a payoff matrix. It maps players, their available strategies, and the resulting payoffs in simultaneous-move scenarios.
+                    </p>
+                    <div class="h-32 border border-slate-200 rounded bg-white flex flex-col items-center justify-center font-mono text-xs text-slate-500 group-hover:border-cyan-300 transition-colors relative overflow-hidden">
+                        <!-- Slate-300 SVG background pattern -->
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDM5LjVoNDBNMzkuNSAwVjQwIiBzdHJva2U9IiNjYmQ1ZTEiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')] opacity-40"></div>
+                        <span class="z-10 group-hover:text-cyan-600 transition-colors bg-white/80 px-2 py-1 rounded">Hover: Matrix Visualized</span>
+                        <!-- Abstract matrix simulation on hover -->
+                        <div class="opacity-0 group-hover:opacity-100 absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-white/95">
+                             <div class="grid grid-cols-2 gap-2 text-cyan-700 font-semibold">
+                                <div class="border border-cyan-200 p-2 bg-cyan-50/50 rounded-sm">3, 3</div>
+                                <div class="border border-cyan-200 p-2 bg-cyan-50/50 rounded-sm">0, 5</div>
+                                <div class="border border-cyan-200 p-2 bg-cyan-50/50 rounded-sm">5, 0</div>
+                                <div class="border border-cyan-200 p-2 bg-cyan-50/50 rounded-sm">1, 1</div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Extensive Form -->
+                <div class="group relative bg-slate-50 border border-slate-200 p-8 rounded-2xl hover:border-cyan-400/80 hover:-translate-y-2 hover:shadow-[0_10px_30px_-15px_rgba(8,145,178,0.2)] transition-all duration-500 overflow-hidden reveal delay-200">
+                    <div class="font-mono text-green-600 font-semibold text-sm mb-4">Model_Type: 0x02</div>
+                    <h3 class="text-2xl text-slate-900 font-mono font-bold mb-4">Extensive Form</h3>
+                    <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+                        A dynamic tree-based representation capturing sequential decision-making. It details the exact order of moves, the information available at each node, and chance events.
+                    </p>
+                    <div class="h-32 border border-slate-200 rounded bg-white flex items-center justify-center font-mono text-xs text-slate-500 group-hover:border-cyan-300 transition-colors relative overflow-hidden">
+                        <span class="z-10 group-hover:opacity-0 transition-opacity">Sequential Decision Tree</span>
+                        <!-- Abstract tree simulation on hover -->
+                        <div class="opacity-0 group-hover:opacity-100 absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 bg-white/95">
+                             <div class="w-2 h-2 bg-cyan-500 rounded-full"></div>
+                             <div class="w-px h-6 bg-cyan-300"></div>
+                             <div class="flex gap-12 w-full justify-center">
+                                 <div class="flex flex-col items-center"><div class="w-16 h-px bg-cyan-300 transform rotate-45 mb-2"></div><div class="w-2 h-2 bg-green-500 rounded-full"></div></div>
+                                 <div class="flex flex-col items-center"><div class="w-16 h-px bg-cyan-300 transform -rotate-45 mb-2"></div><div class="w-2 h-2 bg-red-500 rounded-full"></div></div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Coalition Form -->
+                <div class="group relative bg-slate-50 border border-slate-200 p-8 rounded-2xl hover:border-cyan-400/80 hover:-translate-y-2 hover:shadow-[0_10px_30px_-15px_rgba(8,145,178,0.2)] transition-all duration-500 overflow-hidden reveal delay-300">
+                    <div class="font-mono text-green-600 font-semibold text-sm mb-4">Model_Type: 0x03</div>
+                    <h3 class="text-2xl text-slate-900 font-mono font-bold mb-4">Coalition Form</h3>
+                    <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+                        Focuses on cooperative game theory. It models scenarios where groups of players (coalitions) can form binding agreements to maximize collective value distribution.
+                    </p>
+                    <div class="h-32 border border-slate-200 rounded bg-white flex items-center justify-center font-mono text-xs text-slate-500 group-hover:border-cyan-300 transition-colors relative overflow-hidden">
+                        <span class="z-10 group-hover:opacity-0 transition-opacity">Value Distribution Set</span>
+                        <!-- Abstract node connection simulation on hover -->
+                        <div class="opacity-0 group-hover:opacity-100 absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-white/95">
+                            <div class="relative w-16 h-16 animate-pulse-slow">
+                                <div class="absolute top-0 left-1/2 w-3 h-3 bg-cyan-500 rounded-full -translate-x-1/2"></div>
+                                <div class="absolute bottom-0 left-0 w-3 h-3 bg-cyan-500 rounded-full"></div>
+                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-cyan-500 rounded-full"></div>
+                                <svg class="absolute inset-0 w-full h-full text-cyan-300" fill="none" stroke="currentColor"><path d="M8 8 L8 56 M8 56 L56 56 M56 56 L8 8" stroke-width="1.5"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Algorithmic Note -->
+            <div class="mt-12 bg-slate-50 border-l-4 border-green-500 p-6 rounded-r-lg shadow-sm reveal delay-400">
+                <p class="font-mono text-sm text-slate-700">
+                    <span class="text-green-600 font-bold">INFO //</span> Algorithmic Game Theory pursues the efficient computation of the <strong class="text-slate-900">Nash Equilibrium</strong>—the state where no player can benefit by unilaterally changing their strategy, often balancing the tension between individual rationality and collective outcomes (e.g., The Prisoner's Dilemma).
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="py-32 relative bg-slate-50 border-t border-slate-200">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="mb-16 text-center reveal">
+                <h2 class="font-mono text-cyan-600 text-3xl md:text-5xl font-bold mb-4">02. Multi-Phase Architecture</h2>
+                <p class="text-slate-600 text-lg">Applying algorithmic equilibria to adversarial environments and cybersecurity.</p>
+            </div>
+
+            <!-- Cascading Vertical Diagram -->
+            <div class="relative border-l-2 border-slate-300 pl-8 ml-4 md:ml-12 space-y-20 py-8">
+                
+                <!-- Level 1: Strategic -->
+                <div class="relative group reveal delay-100">
+                    <!-- Node -->
+                    <div class="absolute -left-[41px] top-2 w-5 h-5 bg-white border-2 border-slate-400 rounded-full group-hover:border-cyan-500 group-hover:bg-cyan-50 transition-colors z-10 shadow-[0_0_0_4px_#f8fafc]"></div>
+                    <div class="bg-white border border-slate-200 shadow-sm p-8 rounded-2xl group-hover:border-cyan-300 group-hover:shadow-md transition-all">
+                        <div class="font-mono text-cyan-600 font-semibold text-sm mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded bg-cyan-500"></span> Level 1 // Top Tier
+                        </div>
+                        <h3 class="text-3xl text-slate-900 font-mono font-bold mb-4">Strategic Level</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            The highest echelon of decision-making. Focuses on overarching objectives, long-term planning, and systemic resource allocation. In an adversarial model, this represents the overarching goal of an entity (e.g., system defense vs. network compromise).
+                        </p>
+                        <div class="flex gap-2 font-mono text-xs text-slate-600">
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Policy Generation</span>
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Budgeting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level 2: Operational -->
+                <div class="relative group reveal delay-200">
+                    <div class="absolute -left-[41px] top-2 w-5 h-5 bg-white border-2 border-slate-400 rounded-full group-hover:border-cyan-500 group-hover:bg-cyan-50 transition-colors z-10 shadow-[0_0_0_4px_#f8fafc]"></div>
+                    <div class="bg-white border border-slate-200 shadow-sm p-8 rounded-2xl group-hover:border-cyan-300 group-hover:shadow-md transition-all">
+                        <div class="font-mono text-cyan-600 font-semibold text-sm mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded bg-cyan-500"></span> Level 2 // Mid Tier
+                        </div>
+                        <h3 class="text-3xl text-slate-900 font-mono font-bold mb-4">Operational Level</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            The translation of strategy into actionable campaigns. Involves the planning and coordination of a sequence of actions over a medium timeframe. It dictates *how* resources allocated at the strategic level are deployed.
+                        </p>
+                        <div class="flex gap-2 font-mono text-xs text-slate-600">
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Campaign Coordination</span>
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Intelligence Gathering</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level 3: Tactical -->
+                <div class="relative group reveal delay-300">
+                    <div class="absolute -left-[41px] top-2 w-5 h-5 bg-white border-2 border-slate-400 rounded-full group-hover:border-cyan-500 group-hover:bg-cyan-50 transition-colors z-10 shadow-[0_0_0_4px_#f8fafc]"></div>
+                    <div class="bg-white border border-slate-200 shadow-sm p-8 rounded-2xl group-hover:border-cyan-300 group-hover:shadow-md transition-all">
+                        <div class="font-mono text-cyan-600 font-semibold text-sm mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded bg-cyan-500"></span> Level 3 // Ground Tier
+                        </div>
+                        <h3 class="text-3xl text-slate-900 font-mono font-bold mb-4">Tactical Level</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            Immediate maneuvers and highly specific, short-term actions. This is the domain of automated response systems, honeypot configurations, real-time attacker engagement, and exact algorithmic countermeasures.
+                        </p>
+                        <div class="flex gap-2 font-mono text-xs text-slate-600">
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Firewall Rules</span>
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Honeypot Deployment</span>
+                            <span class="bg-slate-100 border border-slate-200 px-2 py-1 rounded">Packet Inspection</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gradient line to cover the bottom border tail smoothly -->
+                <div class="absolute left-[-2px] bottom-0 w-[2px] h-32 bg-gradient-to-b from-slate-300 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bias" class="py-32 relative bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-16 text-center reveal">
+                <h2 class="font-mono text-cyan-600 text-3xl md:text-5xl font-bold mb-4">03. Uncertainty & Bias</h2>
+                <p class="text-slate-600 text-lg">Navigating imperfect observations and constructed realities.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left Side: Bayesian Math -->
+                <div class="space-y-8 reveal delay-100">
+                    <div class="p-8 border border-slate-200 bg-slate-50 rounded-2xl hover:border-cyan-600/30 transition-colors duration-500 shadow-sm hover:shadow-md">
+                        <div class="flex items-center gap-3 mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                            <h3 class="text-2xl text-slate-900 font-mono font-bold">Bayesian Incompleteness</h3>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            In highly complex networks, actors rarely have perfect information regarding their adversaries' payoffs or available actions. The <strong class="text-slate-900 font-semibold">Bayesian Approach</strong> models these imperfect observations, shifting the challenge from definitive calculation to quantifying uncertainty and probability clouds.
+                        </p>
+                        <!-- Mock Equation rendering -->
+                        <div class="bg-slate-100 p-4 border border-slate-200 rounded font-mono text-center text-green-700 text-sm overflow-x-auto shadow-inner">
+                            P(A|B) = [P(B|A) * P(A)] / P(B)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Systemic Bias -->
+                <div class="space-y-8 reveal delay-200">
+                    <div class="p-8 border border-slate-200 bg-slate-50 rounded-2xl relative overflow-hidden hover:border-red-500/30 transition-colors duration-500 shadow-sm hover:shadow-md">
+                        <!-- Abstract Background element -->
+                        <div class="absolute top-0 right-0 p-4 opacity-5 text-slate-900">
+                            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M2 15h10"></path><path d="M9 18l3-3-3-3"></path></svg>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            <h3 class="text-2xl text-slate-900 font-mono font-bold">Constructed Algorithms</h3>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">
+                            It is a fallacy to assume computational systems are neutral. Algorithms and the data they consume are inherently constructed and value-laden.
+                        </p>
+                        <ul class="mt-6 space-y-4 text-sm text-slate-600">
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-500 mt-1 font-bold">↳</span>
+                                Technologies survive to carry systemic biases that preference specific institutional outcomes.
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-500 mt-1 font-bold">↳</span>
+                                Mathematical equilibria in economics often reflect built-in politics rather than universal truths.
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-500 mt-1 font-bold">↳</span>
+                                Security architectures inherently prioritize the defense of dominant socio-technical paradigms.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="future" class="py-32 relative bg-slate-50 border-t border-slate-200 flex flex-col justify-center items-center overflow-hidden">
+        <div class="max-w-3xl mx-auto px-6 text-center z-10 reveal">
+            <h2 class="font-mono text-slate-900 text-4xl md:text-6xl font-bold mb-8 tracking-tight">Integrating Learning & Adaptation</h2>
+            <p class="text-xl text-slate-600 leading-relaxed mb-12">
+                The rigid matrices of classical theory are dissolving into <strong class="text-cyan-700 font-semibold">learning form games</strong>. Here, objectives are not static blueprints, but are implicitly conveyed through dynamic, nonstationary learning processes. As algorithms interact, adapt, and rewrite their own strategic parameters, we cross the threshold into true artificial mathematical creativity.
+            </p>
+            
+            <div class="inline-block relative">
+                <div class="absolute inset-0 bg-cyan-400 blur-md opacity-30 rounded-full animate-pulse"></div>
+                <div class="relative bg-white border border-cyan-300 shadow-sm px-6 py-3 rounded-full font-mono text-sm text-cyan-700 font-semibold flex items-center gap-3">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                    STATUS: AGI Horizon Approaching
+                </div>
+            </div>
+        </div>
+        
+        <!-- Abstract background animation for conclusion -->
+        <div class="absolute bottom-0 w-full h-64 overflow-hidden pointer-events-none opacity-20">
+            <div class="w-full h-full flex justify-center items-end">
+                <div class="w-[800px] h-[800px] border-[1px] border-cyan-300 rounded-full absolute translate-y-1/2"></div>
+                <div class="w-[600px] h-[600px] border-[1px] border-cyan-400 rounded-full absolute translate-y-1/2"></div>
+                <div class="w-[400px] h-[400px] border-[1px] border-cyan-500 rounded-full absolute translate-y-1/2"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t border-slate-200 py-12">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 reveal delay-100">
+            <div class="font-mono text-slate-500 text-sm">
+                &copy; 2026 Algorithmic Game Theory Research Group.<br>
+                Simulating Post-Human Logic.
+            </div>
+            <div class="flex gap-6 font-mono text-xs text-slate-500 font-medium">
+                <a href="#" class="hover:text-cyan-600 transition-colors">References</a>
+                <a href="#" class="hover:text-cyan-600 transition-colors">Data Models</a>
+                <a href="#" class="hover:text-cyan-600 transition-colors">Ethics Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intersection Observer for scroll-reveal effects
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Trigger only once
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+
+            // Navbar background styling on scroll
+            const nav = document.querySelector('nav');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('bg-white/95', 'shadow-sm');
+                    nav.classList.remove('bg-white/80');
+                } else {
+                    nav.classList.remove('bg-white/95', 'shadow-sm');
+                    nav.classList.add('bg-white/80');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

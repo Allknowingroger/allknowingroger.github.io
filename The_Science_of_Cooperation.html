@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Science of Cooperation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F0E8;
+  --surface: #FFFCF7;
+  --ink: #3D2B1F;
+  --muted: #7A6B5F;
+  --accent: #C45C3E;
+  --accent-weak: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  --accent-2: #5A8A6E;
+  --accent-2-weak: color-mix(in oklab, var(--accent-2) 10%, var(--surface));
+  --accent-3: #D4A76A;
+  --accent-3-weak: color-mix(in oklab, var(--accent-3) 12%, var(--surface));
+  --line: color-mix(in oklab, var(--ink) 10%, transparent);
+  --shadow: 0 1px 1px rgba(61,43,31,0.04), 0 12px 32px -8px rgba(61,43,31,0.14);
+  --radius: 16px;
+  --step--1: clamp(0.875rem, 0.85rem + 0.125vw, 1rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.75vw, 3rem);
+  --step-3: clamp(3rem, 2.2rem + 4vw, 6rem);
+  --space: clamp(2rem, 1.5rem + 2.5vw, 4rem);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Figtree", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-family: "Fraunces", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  transition: border-color 0.2s;
+}
+
+a:hover {
+  border-color: var(--accent);
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  padding: var(--space) 5vw calc(var(--space) * 1.5);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1200px 600px at 80% -10%, color-mix(in oklab, var(--accent-3) 25%, transparent), transparent 60%),
+              radial-gradient(800px 500px at 10% 110%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 55%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-family: "Figtree", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.hero h1 {
+  font-size: var(--step-3);
+  font-weight: 700;
+  max-width: 14ch;
+  margin-bottom: 0.35em;
+  color: var(--ink);
+}
+
+.hero-subtitle {
+  font-family: "Fraunces", serif;
+  font-size: var(--step-1);
+  font-weight: 400;
+  color: var(--muted);
+  max-width: 36ch;
+  line-height: 1.4;
+  margin-bottom: 1.5em;
+}
+
+.hero-lead {
+  max-width: 60ch;
+  font-size: var(--step-0);
+  color: color-mix(in oklab, var(--ink) 85%, transparent);
+}
+
+/* Main layout with cooperation path */
+main {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: calc(var(--space) * 1.5) 5vw;
+}
+
+.path-container {
+  position: absolute;
+  left: 2rem;
+  top: 0;
+  bottom: 0;
+  width: 3rem;
+  pointer-events: none;
+  display: none;
+}
+
+.path-line {
+  fill: none;
+  stroke: var(--accent-3);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+
+.path-node {
+  fill: var(--bg);
+  stroke: var(--accent-3);
+  stroke-width: 3;
+}
+
+@media (min-width: 800px) {
+  .path-container {
+    display: block;
+    left: 3.5rem;
+  }
+  main {
+    padding-left: 8rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .path-container {
+    left: 4.5rem;
+  }
+  main {
+    padding-left: 10rem;
+  }
+}
+
+/* Sections */
+section {
+  position: relative;
+  margin-bottom: calc(var(--space) * 2);
+}
+
+.section-header {
+  margin-bottom: calc(var(--space) * 0.75);
+}
+
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: "Figtree", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.section-eyebrow .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+section:nth-child(2) .section-eyebrow { color: var(--accent); }
+section:nth-child(3) .section-eyebrow { color: var(--accent-2); }
+section:nth-child(4) .section-eyebrow { color: var(--accent-3); }
+section:nth-child(5) .section-eyebrow { color: var(--muted); }
+
+.section-header h2 {
+  font-size: var(--step-2);
+  max-width: 22ch;
+  margin-bottom: 0.3em;
+}
+
+.section-header p {
+  font-size: var(--step-0);
+  color: var(--muted);
+  max-width: 55ch;
+  line-height: 1.6;
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 700px) {
+  .card-grid.two {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card-grid.three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1px 1px rgba(61,43,31,0.04), 0 20px 40px -10px rgba(61,43,31,0.16);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  font-size: 1.5rem;
+}
+
+.card:nth-child(1) .card-icon { background: var(--accent-weak); }
+.card:nth-child(2) .card-icon { background: var(--accent-2-weak); }
+.card:nth-child(3) .card-icon { background: var(--accent-3-weak); }
+
+.card h3 {
+  font-size: var(--step-1);
+  margin-bottom: 0.6em;
+  color: var(--ink);
+}
+
+.card p, .card ul {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.card ul {
+  padding-left: 1.2em;
+  margin: 0.5em 0 0;
+}
+
+.card li {
+  margin-bottom: 0.4em;
+}
+
+/* Math / code blocks */
+.math-block {
+  background: var(--accent-weak);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  font-family: "Fraunces", serif;
+  font-size: var(--step-0);
+  color: var(--ink);
+  overflow-x: auto;
+}
+
+.math-block.alt {
+  background: var(--accent-2-weak);
+  border-left-color: var(--accent-2);
+}
+
+.math-block.gold {
+  background: var(--accent-3-weak);
+  border-left-color: var(--accent-3);
+}
+
+/* Pull quote / insight */
+.insight {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: linear-gradient(135deg, var(--surface) 0%, color-mix(in oklab, var(--accent-2) 6%, var(--surface)) 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+}
+
+.insight-marker {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: "Fraunces", serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.insight p {
+  margin: 0;
+  font-size: var(--step-0);
+  color: color-mix(in oklab, var(--ink) 90%, transparent);
+}
+
+/* Comparison */
+.compare {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 700px) {
+  .compare {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.compare-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.compare-item.good::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-2);
+}
+
+.compare-item.bad::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent);
+}
+
+.compare-item h4 {
+  font-family: "Fraunces", serif;
+  font-size: var(--step-1);
+  margin-bottom: 0.5em;
+}
+
+.compare-item.good h4 { color: var(--accent-2); }
+.compare-item.bad h4 { color: var(--accent); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding: calc(var(--space) * 1.5) 5vw;
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--ink) 3%, transparent));
+}
+
+.footer-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+footer h2 {
+  font-size: var(--step-1);
+  margin-bottom: 1rem;
+}
+
+.source-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.source-list li {
+  font-size: var(--step--1);
+  color: var(--muted);
+  padding-left: 1.5em;
+  position: relative;
+}
+
+.source-list li::before {
+  content: "↳";
+  position: absolute;
+  left: 0;
+  color: var(--accent-3);
+}
+
+.source-list a {
+  color: var(--ink);
+  border-bottom-color: var(--line);
+}
+
+.source-list a:hover {
+  color: var(--accent);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .card, a {
+    transition: none;
+  }
+}
+
+/* Print */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .path-container, .card:hover, .compare-item {
+    box-shadow: none !important;
+  }
+  .card, .insight, .compare-item {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 16mm;
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Game Theory · Multi-Agent Systems · Mechanism Design</div>
+    <h1>The Science of Cooperation</h1>
+    <p class="hero-subtitle">From Nash Equilibrium to AI Advantage Alignment</p>
+    <p class="hero-lead">
+      Three threads of modern game-theoretic research weave together in this overview: a new foundation for proving Nash equilibrium without fixed-point theorems, a family of AI algorithms that shape opponents toward cooperation, and a theory of simplicity that asks what mechanisms real, bounded agents can actually play.
+    </p>
+  </div>
+</header>
+
+<main>
+  <!-- Cooperation path SVG -->
+  <div class="path-container" aria-hidden="true">
+    <svg width="60" height="100%" preserveAspectRatio="none">
+      <path class="path-line" d="M30,0 C30,200 50,250 30,400 C10,550 50,600 30,800 C10,1000 50,1050 30,1200 C10,1400 50,1450 30,1600 C10,1800 50,1850 30,2000 C10,2200 50,2250 30,2400 C10,2600 50,2650 30,2800 L30,3000" />
+      <circle class="path-node" cx="30" cy="120" r="6" />
+      <circle class="path-node" cx="30" cy="800" r="6" />
+      <circle class="path-node" cx="30" cy="1600" r="6" />
+      <circle class="path-node" cx="30" cy="2400" r="6" />
+    </svg>
+  </div>
+
+  <!-- Section 1 -->
+  <section id="nash-proof" style="scroll-margin-top: 2rem;">
+    <div class="section-header">
+      <div class="section-eyebrow"><span class="dot"></span> Rethinking the Foundation</div>
+      <h2>The New Nash Proof</h2>
+      <p>
+        Nash's 1950 proof relied on Kakutani's fixed-point theorem; his 1951 revision used Brouwer's. Carpentiere and Watson (2023) show there is another way—one that needs no fixed-point machinery at all.
+      </p>
+    </div>
+
+    <div class="card-grid two">
+      <div class="card">
+        <div class="card-icon">⚲</div>
+        <h3>Root Function Approach</h3>
+        <p>
+          A <strong>root function</strong> <em>r</em>: Σ → <em>S</em> maps any mixed strategy profile to a pure strategy profile. The key property: for each player <em>i</em>, the chosen pure strategy <em>r<sub>i</sub></em>(σ) must already have positive probability in their current mix, and it must yield zero incentive to deviate.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">◫</div>
+        <h3>Pre-equilibria</h3>
+        <p>
+          A <strong>pre-equilibrium</strong> is a subset <em>R</em> ⊂ Σ that a root function maps onto the entire set of pure strategy profiles. The proof shows arbitrarily small pre-equilibria always exist via a geometric volume argument.
+        </p>
+      </div>
+    </div>
+
+    <div class="math-block">
+      <em>T</em>(σ) = Σ<sub><em>i</em>∈<em>I</em></sub> <em>A<sub>i</sub></em>(σ) = 0 &nbsp;·&nbsp; The Sign of Equilibrium
+    </div>
+
+    <div class="insight">
+      <div class="insight-marker">✓</div>
+      <p><strong>Preserving the Equilibrium.</strong> Because the root-function structure constrains how strategies can evolve, cooperative updates to agents' behavior do not destabilize the game. The equilibrium remains robust even as the profile shifts.</p>
+    </div>
+  </section>
+
+  <!-- Section 2 -->
+  <section id="adalign" style="scroll-margin-top: 2rem;">
+    <div class="section-header">
+      <div class="section-eyebrow"><span class="dot"></span> Advantage Alignment in AI</div>
+      <h2>Moving Beyond Naive Learning</h2>
+      <p>
+        When AI agents optimize only their own objectives, they often collapse into the worst Nash equilibria. Duque <em>et al.</em> (ICLR 2025) introduce a family of algorithms that shape opponents by aligning advantages.
+      </p>
+    </div>
+
+    <div class="card-grid two">
+      <div class="card">
+        <div class="card-icon">⚠</div>
+        <h3>The Problem: Naive Learning</h3>
+        <p>
+          Standard RL agents are <strong>naive learners</strong>: they treat opponents as part of the stationary environment and optimize only their own return. In social dilemmas, this reliably leads to mutually destructive outcomes such as Always Defect.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⟲</div>
+        <h3>The AdAlign Solution</h3>
+        <p>
+          <strong>Advantage Alignment</strong> increases the log-probability of an action proportionally to how well an agent's <strong>cumulative past success</strong> aligns with the <strong>opponent's current potential</strong>. When historic interaction is positive, cooperative action becomes more probable.
+        </p>
+      </div>
+    </div>
+
+    <div class="math-block alt">
+      Increase action probability when cumulative past success aligns with opponent's current potential.
+    </div>
+
+    <div class="insight">
+      <div class="insight-marker" style="background: var(--accent-3);">★</div>
+      <p><strong>Key Properties.</strong> AdAlign preserves Nash equilibria, requires no imagined parameter updates (unlike LOLA/SOS), needs no DiCE-style gradient estimation (unlike POLA/COLA), and extends naturally to continuous action domains via Proximal Advantage Alignment (PAA).</p>
+    </div>
+  </section>
+
+  <!-- Section 3 -->
+  <section id="social-dilemmas" style="scroll-margin-top: 2rem;">
+    <div class="section-header">
+      <div class="section-eyebrow"><span class="dot"></span> Success in Social Dilemmas</div>
+      <h2>From Grid Worlds to Common Resources</h2>
+      <p>
+        Three benchmark domains demonstrate how aligning advantages converts conflict into cooperation.
+      </p>
+    </div>
+
+    <div class="card-grid three">
+      <div class="card">
+        <div class="card-icon">◉</div>
+        <h3>The Coin Game</h3>
+        <p>
+          Agents move on a grid collecting colored coins. Each scores only for coins matching its own color. Naive agents greedily grab any coin; AdAlign agents learn <strong>specialization</strong>—each collects only their own color, maximizing the collective score.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖</div>
+        <h3>The Negotiation Game</h3>
+        <p>
+          Agents split items with different private utilities. Where greed takes everything, AdAlign learns <strong>reciprocal fairness</strong>: splits reflect individual utility profiles, converging to cooperative reciprocity similar to Tit-for-Tat.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">♣</div>
+        <h3>Commons Harvest</h3>
+        <p>
+          A multi-agent tragedy of the commons: agents harvest apples from trees that regenerate slowly. Naive over-harvesting destroys the orchard. AdAlign agents learn <strong>sustainable restraint</strong>, preventing resource extinction.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4 -->
+  <section id="simplicity" style="scroll-margin-top: 2rem;">
+    <div class="section-header">
+      <div class="section-eyebrow"><span class="dot"></span> The Simplicity Factor</div>
+      <h2>Mechanisms for Bounded Agents</h2>
+      <p>
+        Even incentive-compatible mechanisms fail if agents cannot understand them. Pycia and Troyan (Econometrica, 2023) formalize simplicity through planning horizons.
+      </p>
+    </div>
+
+    <div class="card-grid two">
+      <div class="card">
+        <div class="card-icon">◐</div>
+        <h3>k-step OSP</h3>
+        <p>
+          An agent's <strong>planning horizon</strong> is the number of future decisions (<em>k</em>) they can plan for. <strong>Obviously Strategy-Proof (OSP)</strong> mechanisms require only that the current action is unambiguously good, regardless of what happens beyond the horizon.
+        </p>
+        <ul>
+          <li>Short horizon → simpler mechanisms</li>
+          <li>Long horizon → more complex mechanisms allowed</li>
+          <li>Simplicity is a spectrum of robustness</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">▣</div>
+        <h3>Planning Horizon</h3>
+        <p>
+          The longer the horizon, the more social choice rules a designer can implement in a simply dominant way. Yet any implementable rule can be implemented via a perfect-information extensive-form game.
+        </p>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-item good">
+        <h4>Reverse Greedy</h4>
+        <p>
+          Agents "clinch" outcomes by <strong>deferring commitment</strong>. At each step they can verify their action is safe without forecasting the entire future. This deferred-acceptance logic is markedly more robust to imperfect human or AI rationality.
+        </p>
+      </div>
+      <div class="compare-item bad">
+        <h4>Forward Greedy</h4>
+        <p>
+          Agents <strong>commit immediately</strong> to the best current option. Under bounded rationality, this often leads to suboptimal outcomes because agents cannot foresee how early commitments constrain later possibilities.
+        </p>
+      </div>
+    </div>
+
+    <div class="math-block gold">
+      Simplicity = robustness to the planning horizon. The best mechanism is one that flawed, real-world agents can actually play.
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <h2>Sources</h2>
+    <ul class="source-list">
+      <li>
+        Carpentiere, D. & Watson, S. (2023). "A new proof for the existence of Nash equilibrium." arXiv:2310.01528. 
+        <a href="https://ar5iv.labs.arxiv.org/html/2310.01528" target="_blank">ar5iv.labs.arxiv.org/html/2310.01528</a>
+      </li>
+      <li>
+        Duque, J., Aghajohari, M., Cooijmans, T., Ciuca, R., Zhang, T., Gidel, G. & Courville, A. (2025). "Advantage Alignment Algorithms." ICLR 2025 (Oral). 
+        <a href="https://openreview.net/forum?id=QFO1asgas2" target="_blank">openreview.net/forum?id=QFO1asgas2</a>
+      </li>
+      <li>
+        Pycia, M. & Troyan, P. (2023). "A Theory of Simplicity in Games and Mechanism Design." <em>Econometrica</em>, 91(4), 1495–1526. 
+        <a href="https://petertroyan.com/files/Pycia-Troyan-ECMA.pdf" target="_blank">petertroyan.com/files/Pycia-Troyan-ECMA.pdf</a>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether & Tomorrow | Archive of Retrofuturism</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0b0d12;
+            --bg-secondary: #141822;
+            --card-bg: #1c2130;
+            --accent-gold: #d4af37;
+            --accent-copper: #c87d55;
+            --text-light: #e6e8ec;
+            --text-muted: #9aa1b1;
+            --border-color: rgba(212, 175, 55, 0.25);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header & Hero Section */
+        header {
+            background: linear-gradient(180deg, rgba(11,13,18,0.95) 0%, rgba(20,24,34,0.85) 100%), 
+                        radial-gradient(circle at center, rgba(212,175,55,0.08) 0%, transparent 70%);
+            border-bottom: 2px solid var(--border-color);
+            padding: 4rem 1.5rem 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 10px;
+            background: var(--accent-gold);
+            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        }
+
+        .badge {
+            display: inline-block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            border: 1px solid var(--border-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            font-weight: 300;
+        }
+
+        /* Filter Controls */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .filter-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 8px 18px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            border-radius: 4px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Main Content Container */
+        main {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-gold);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.08);
+        }
+
+        .card-category-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(11, 13, 18, 0.85);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        .card-content {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 6, 8, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 900px;
+            max-height: 90vh;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .lightbox-img-container {
+            max-height: 65vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-img-container img {
+            max-width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+        }
+
+        .lightbox-details {
+            padding: 1.5rem;
+        }
+
+        .lightbox-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .lightbox-caption {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: var(--text-light);
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .subtitle { font-size: 0.95rem; }
+            .gallery-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="badge">Curated Exhibition</div>
+        <h1>AETHER & TOMORROW</h1>
+        <p class="subtitle">An archive of retro-futuristic visions, fantastic flying machines, and speculative technology from yesteryear to the stars.</p>
+        
+        <!-- Filter Controls -->
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All Artifacts</button>
+            <button class="filter-btn" data-filter="airship">Airships & Flight</button>
+            <button class="filter-btn" data-filter="transit">Cosmic & Transit</button>
+            <button class="filter-btn" data-filter="history">Foundations</button>
+        </div>
+    </header>
+
+    <!-- Main Gallery Container -->
+    <main>
+        <div class="gallery-grid" id="galleryGrid">
+
+            <!-- Card 1 -->
+            <div class="card" data-category="airship" onclick="openLightbox('BqxyU85CEAEW9Jq.jpeg', 'The Alpine Dirigible', 'A steam-and-gas powered airship traversing snow-covered mountain peaks during high altitude atmospheric surveys.')">
+                <div class="card-img-wrapper">
+                    <img src="BqxyU85CEAEW9Jq.jpeg" alt="The Alpine Dirigible">
+                    <span class="card-category-tag">Airships</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">The Alpine Dirigible</h2>
+                    <p class="card-desc">A heavy steam-powered airship charting unexplored alpine mountain ranges.</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card" data-category="airship" onclick="openLightbox('DHHIU4WXUAEgRWF.jpeg', 'Winged Ornithopter Cruiser', 'A mechanical winged vessel equipped with multi-tiered observation decks floating high over industrial tower networks.')">
+                <div class="card-img-wrapper">
+                    <img src="DHHIU4WXUAEgRWF.jpeg" alt="Winged Ornithopter Cruiser">
+                    <span class="card-category-tag">Airships</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Winged Ornithopter Cruiser</h2>
+                    <p class="card-desc">Bat-winged airborne machinery gliding gracefully over an industrial metropolis.</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card" data-category="airship" onclick="openLightbox('Dn9SS4RU4AAJuC9.jpeg', 'The Flying Automobile', 'An improvised personal sky-car tethered with dual hot-air lifting bladders and fan propulsion systems.')">
+                <div class="card-img-wrapper">
+                    <img src="Dn9SS4RU4AAJuC9.jpeg" alt="The Flying Automobile">
+                    <span class="card-category-tag">Airships</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">The Flying Automobile</h2>
+                    <p class="card-desc">A retrofitted coupe suspended by balloon rigs and low-altitude propulsion fans.</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card" data-category="airship" onclick="openLightbox('eddie-bennun-fishing-time-lr.jpg', 'Dusk Angling from the Sky Cruiser', 'A crew enjoying a quiet evening fishing trip from platforms suspended beneath an airborne twin-engine bomber airship.')">
+                <div class="card-img-wrapper">
+                    <img src="eddie-bennun-fishing-time-lr.jpg" alt="Dusk Angling from the Sky Cruiser">
+                    <span class="card-category-tag">Airships</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Dusk Angling from the Sky Fortress</h2>
+                    <p class="card-desc">Airmen casting fishing lines from suspended platforms beneath a hovering sky vessel at sunset.</p>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="card" data-category="transit" onclick="openLightbox('sara-tarr-sea-city-final.jpg', 'Sub-Aquatic Dome Habitat', 'A glowing deep-sea underwater city installation engineered to sustain human colonies beneath ocean currents.')">
+                <div class="card-img-wrapper">
+                    <img src="sara-tarr-sea-city-final.jpg" alt="Sub-Aquatic Dome Habitat">
+                    <span class="card-category-tag">Transit & Habitats</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Sub-Aquatic Dome Metropolis</h2>
+                    <p class="card-desc">A illuminated deep-sea aquatic habitat anchored firmly on the ocean floor.</p>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="card" data-category="transit" onclick="openLightbox('DrQa3XaX0AE7sZA.jpeg', 'Ring Transit Supercity', 'A mid-century concept of urban transit utilizing elevated ring accelerators for high-speed pod travel.')">
+                <div class="card-img-wrapper">
+                    <img src="DrQa3XaX0AE7sZA.jpeg" alt="Ring Transit Supercity">
+                    <span class="card-category-tag">Transit & Habitats</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Ring-Transit Supercity</h2>
+                    <p class="card-desc">Mid-century vision of elevated magnetic ring towers projecting high-speed passenger pods.</p>
+                </div>
+            </div>
+
+            <!-- Card 7 -->
+            <div class="card" data-category="transit" onclick="openLightbox('DqHgJkGXgAArRyI.jpeg', 'Lunar Ray Cruiser', 'An Art Deco streamlined spacecraft projecting an energy or optical beam toward the lunar cratered surface.')">
+                <div class="card-img-wrapper">
+                    <img src="DqHgJkGXgAArRyI.jpeg" alt="Lunar Ray Cruiser">
+                    <span class="card-category-tag">Transit & Habitats</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Lunar Ray Cruiser</h2>
+                    <p class="card-desc">A sleek Art-Deco space cruiser firing a focused energy beam to the Moon's surface.</p>
+                </div>
+            </div>
+
+            <!-- Card 8 -->
+            <div class="card" data-category="history" onclick="openLightbox('DqHgRPyWoAACel7.jpeg', 'Century of Technological Leap', 'An illustrated timeline mural illustrating humanity\'s technological evolution from early chemistry labs to interplanetary flight.')">
+                <div class="card-img-wrapper">
+                    <img src="DqHgRPyWoAACel7.jpeg" alt="Century of Technological Leap">
+                    <span class="card-category-tag">Foundations</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">A Century of Vision (1902–2002)</h2>
+                    <p class="card-desc">Historical artistic mural chronicling the rapid surge of industrial and scientific progress.</p>
+                </div>
+            </div>
+
+            <!-- Card 9 -->
+            <div class="card" data-category="history" onclick="openLightbox('Do_DfuWXkAAGhSa.jpeg', 'The Great Observatory', 'An early astronomer seated at the eyepiece of a massive refractor telescope observing celestial bodies.')">
+                <div class="card-img-wrapper">
+                    <img src="Do_DfuWXkAAGhSa.jpeg" alt="The Great Observatory">
+                    <span class="card-category-tag">Foundations</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">The Observatory Pioneer</h2>
+                    <p class="card-desc">Vintage photograph of an astronomer peering into a grand refractor telescope.</p>
+                </div>
+            </div>
+
+            <!-- Card 10 -->
+            <div class="card" data-category="airship" onclick="openLightbox('DptHhREV4AYHP6-.jpeg', 'Rotor-Powered Sky Galleon', 'An ornate gilded flying ship outfitted with vertical rotor blades sailing over mountain citadels.')">
+                <div class="card-img-wrapper">
+                    <img src="DptHhREV4AYHP6-.jpeg" alt="Rotor-Powered Sky Galleon">
+                    <span class="card-category-tag">Airships</span>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Rotor-Powered Sky Galleon</h2>
+                    <p class="card-desc">A majestic multi-rotor gilded airship soaring above ancient valley strongholds.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Lightbox Modal Container -->
+    <div class="lightbox" id="lightboxModal">
+        <span class="close-btn" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content">
+            <div class="lightbox-img-container">
+                <img id="lightboxImg" src="" alt="Expanded View">
+            </div>
+            <div class="lightbox-details">
+                <h3 class="lightbox-title" id="lightboxTitle">Title</h3>
+                <p class="lightbox-caption" id="lightboxCaption">Description goes here...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <h3>AETHER & TOMORROW ARCHIVE</h3>
+        <p>Celebrating human imagination, mechanical splendor, and visions of the future past.</p>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        // Category Filtering Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                cards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Lightbox Functions
+        const lightbox = document.getElementById('lightboxModal');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+
+        function openLightbox(imgSrc, title, caption) {
+            lightboxImg.src = imgSrc;
+            lightboxTitle.innerText = title;
+            lightboxCaption.innerText = caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Close lightbox on clicking dark overlay
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>

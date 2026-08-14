@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Access Programs & Black Projects Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        defense: {
+                            900: '#0a0f1d',
+                            800: '#111827',
+                            700: '#1f2937',
+                            border: '#374151',
+                            amber: '#f59e0b',
+                            cyan: '#06b6d4',
+                            red: '#ef4444',
+                            green: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scanline & Tactical Effects */
+        .scanline {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.3)
+            );
+            background-size: 100% 4px;
+        }
+        
+        /* Interactive Redaction Styling */
+        .redacted {
+            background-color: #111827;
+            color: #111827;
+            padding: 0 4px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .redacted:hover, .redacted.revealed {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-bottom: 1px dashed #f59e0b;
+        }
+
+        /* Glowing accents */
+        .glow-amber {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+        
+        /* Grid background pattern */
+        .grid-bg {
+            background-image: linear-gradient(to right, rgba(55, 65, 81, 0.15) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(55, 65, 81, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col grid-bg selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- Top Security Banner -->
+    <div class="bg-amber-950/80 border-b border-amber-600/40 text-amber-400 text-xs py-1.5 px-4 font-mono flex justify-between items-center z-50">
+        <div class="flex items-center space-x-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <span class="font-bold tracking-wider">UNCLASSIFIED // FOR EDUCATIONAL & RESEARCH USE ONLY</span>
+        </div>
+        <div class="hidden sm:flex items-center space-x-4">
+            <span>DOD SAP OVERSIGHT FRAMEWORK</span>
+            <span>FOIA ARCHIVE INDEX</span>
+            <span id="live-clock">13:37:45 BST</span>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Branding -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded bg-gradient-to-br from-amber-500 to-slate-900 flex items-center justify-center text-slate-950 font-bold font-mono text-xl shadow-lg border border-amber-400/30">
+                        SAP
+                    </div>
+                    <div>
+                        <h1 class="font-bold font-mono text-lg tracking-tight text-slate-100 flex items-center gap-2">
+                            PROJECT OVERSIGHT
+                            <span class="text-xs font-normal px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">v2.4</span>
+                        </h1>
+                        <p class="text-xs text-slate-400 font-mono">Special Access Programs & Declassified Black Projects Archive</p>
+                    </div>
+                </div>
+
+                <!-- Global Actions & Search -->
+                <div class="flex items-center space-x-3">
+                    <!-- Search Input -->
+                    <div class="relative hidden md:block w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-sm"></i>
+                        <input type="text" id="global-search" placeholder="Search archive (e.g. Horizon, SAP)..." 
+                            class="bg-slate-950 border border-slate-700 rounded-md pl-9 pr-4 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-mono transition">
+                    </div>
+
+                    <!-- Redaction Toggle Button -->
+                    <button id="toggle-redactions-btn" onclick="toggleAllRedactions()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-mono text-amber-400 rounded flex items-center gap-2 transition">
+                        <i class="fa-solid fa-eye"></i>
+                        <span id="redact-btn-text">Declassify Redactions</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-1 border-t border-slate-800/80 pt-1 overflow-x-auto no-scrollbar font-mono text-xs">
+                <button onclick="switchTab('overview')" id="tab-overview" class="nav-tab active px-4 py-2 border-b-2 border-amber-500 text-amber-400 font-medium flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i> Overview & Framework
+                </button>
+                <button onclick="switchTab('taxonomy')" id="tab-taxonomy" class="nav-tab px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-sitemap"></i> SAP Taxonomy & Types
+                </button>
+                <button onclick="switchTab('timeline')" id="tab-timeline" class="nav-tab px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History & Projects
+                </button>
+                <button onclick="switchTab('foia')" id="tab-foia" class="nav-tab px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark"></i> FOIA & Wiki Standards
+                </button>
+                <button onclick="switchTab('inspector')" id="tab-inspector" class="nav-tab px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 text-cyan-400">
+                    <i class="fa-solid fa-sliders"></i> Interactive Inspector
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- TAB 1: OVERVIEW & FRAMEWORK -->
+        <section id="sec-overview" class="tab-content space-y-6">
+            <!-- Hero Card -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/30 border border-slate-800 rounded-lg p-6 relative overflow-hidden shadow-2xl">
+                <div class="absolute right-0 top-0 opacity-10 p-4 font-mono text-9xl font-extrabold select-none pointer-events-none text-amber-500">
+                    SAP
+                </div>
+                <div class="max-w-3xl space-y-4 relative z-10">
+                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono">
+                        <i class="fa-solid fa-circle-info"></i> Definitive Definition
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 tracking-tight">
+                        Black Projects vs. Special Access Programs (SAPs)
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        <comment-tag id="1">A <strong class="text-amber-400">Black Project</strong> is defined as a project whose existence is officially denied by all involved parties (defense contractors and government branches). It is funded through concealed lines in the defense budget, publicly reported only as lump sums with no description.</comment-tag id="1" text="To ground this definition in official defense policy, consider referencing Executive Order 13526 and DoD Directive 5205.07. Adding explicit citations to the governing Executive Order strengthens academic authority and helps researchers understand the statutory framework behind budget line item concealment." type="suggestion">
+                    </p>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        In contrast, a <strong class="text-cyan-400">Special Access Program (SAP)</strong> is a formal security classification protocol within the Department of Defense (DoD) that enforces enhanced safeguarding and access requirements beyond standard Top Secret, Secret, or Confidential clearance levels.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3 font-mono text-xs">
+                        <span class="bg-slate-800/80 px-3 py-1.5 rounded border border-slate-700 text-slate-300">
+                            <i class="fa-solid fa-lock text-amber-400 mr-1.5"></i> standard Levels: TS / Secret / Confidential
+                        </span>
+                        <span class="bg-slate-800/80 px-3 py-1.5 rounded border border-slate-700 text-slate-300">
+                            <i class="fa-solid fa-user-shield text-cyan-400 mr-1.5"></i> Strict Need-to-Know Enforcement
+                        </span>
+                        <span class="bg-slate-800/80 px-3 py-1.5 rounded border border-slate-700 text-slate-300">
+                            <i class="fa-solid fa-building-columns text-emerald-400 mr-1.5"></i> Annual Congressional Reporting
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 hover:border-amber-500/50 transition">
+                    <div class="flex items-center justify-between text-amber-400 mb-2">
+                        <span class="text-xs uppercase tracking-wider text-slate-400">1980s Era Terminology</span>
+                        <i class="fa-solid fa-box-archive text-lg"></i>
+                    </div>
+                    <div class="text-xl font-bold text-slate-100">"Black Programs"</div>
+                    <p class="text-xs text-slate-400 mt-2 font-sans">
+                        Originally restricted primarily to DoD acquisition programs (e.g., Lockheed Skunk Works F-117A Stealth Fighter).
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 hover:border-cyan-500/50 transition">
+                    <div class="flex items-center justify-between text-cyan-400 mb-2">
+                        <span class="text-xs uppercase tracking-wider text-slate-400">1990s Transition</span>
+                        <i class="fa-solid fa-arrows-rotate text-lg"></i>
+                    </div>
+                    <div class="text-xl font-bold text-slate-100">SAP Integration</div>
+                    <p class="text-xs text-slate-400 mt-2 font-sans">
+                        Replaced "Black Program". Modified to cover Intelligence Programs, Operations, and Operations Support.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 hover:border-red-500/50 transition">
+                    <div class="flex items-center justify-between text-red-400 mb-2">
+                        <span class="text-xs uppercase tracking-wider text-slate-400">Catalyst Event</span>
+                        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                    </div>
+                    <div class="text-xl font-bold text-slate-100">Operation Yellow Fruit</div>
+                    <p class="text-xs text-slate-400 mt-2 font-sans">
+                        <comment-tag id="2">1980s covert special ops scandal involving illegal fund usage & court-martials, forcing major Congressional oversight reforms.</comment-tag id="2" text="Specify the exact statutory reform created by this event—specifically Title 10, United States Code, Section 119 (10 U.S.C. § 119). Highlighting the statutory codification clarifies for users how Operation Yellow Fruit directly established modern congressional SAP notification mandates." type="suggestion">
+                    </p>
+                </div>
+            </div>
+
+            <!-- Core Principles & Rules -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Principles of Black Projects -->
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 space-y-4">
+                    <h3 class="text-lg font-bold font-mono text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> The Fundamental Truth of Black Projects
+                    </h3>
+                    <div class="p-4 bg-slate-950 rounded border border-slate-800 font-mono text-xs text-slate-300 leading-relaxed italic">
+                        "Because the defining feature is secrecy, every project in this list has one thing in common: <strong class="text-amber-400">It is here only because it was eventually declassified.</strong> The ones that are still running have no names yet."
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-amber-400 mt-0.5"></i>
+                            <span><strong>Unacknowledged Status:</strong> Public officials will not confirm nor deny the program's existence.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-amber-400 mt-0.5"></i>
+                            <span><strong>Budget Concealment:</strong> Funded via lump-sum hidden line items in the defense budget ("Black Budget").</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-amber-400 mt-0.5"></i>
+                            <span><strong>Restricted Briefings:</strong> Briefings to Congress are restricted to designated leadership without staff present.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Governance Framework -->
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 space-y-4">
+                    <h3 class="text-lg font-bold font-mono text-cyan-400 flex items-center gap-2">
+                        <i class="fa-solid fa-file-contract"></i> DoD Joint SAP Implementation Guide (JSIG)
+                    </h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Security policies and procedures apply to all personnel with responsibility for protecting confidentiality, integrity, and availability of DoD SAP information, systems, and networks.
+                    </p>
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex justify-between items-center">
+                            <span class="text-slate-400">Mandatory Naming Rule:</span>
+                            <span class="text-slate-200">Assigned Nickname & Code Word</span>
+                        </div>
+                        <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex justify-between items-center">
+                            <span class="text-slate-400">Approval Authority:</span>
+                            <span class="text-slate-200">SECDEF / DEPSECDEF & SAPOC</span>
+                        </div>
+                        <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex justify-between items-center">
+                            <span class="text-slate-400">Annual Submissions Deadline:</span>
+                            <span class="text-amber-400">February 1st to Congress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SAP TAXONOMY & TYPES -->
+        <section id="sec-taxonomy" class="tab-content hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-bold font-mono text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-amber-400"></i> Special Access Program (SAP) Categories
+                </h2>
+                <p class="text-xs text-slate-400 font-mono mt-1">
+                    Classification taxonomy defined by DoD & CDSE guidelines. Click cards to view reporting requirements.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Acknowledged SAP -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-lg p-5 flex flex-col justify-between transition group">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-mono rounded">
+                                Category I
+                            </span>
+                            <i class="fa-solid fa-lock-open text-emerald-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100 group-hover:text-emerald-400 transition">
+                            Acknowledged SAP
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Program whose existence and general purpose may be openly recognized and acknowledged to the public or family.
+                        </p>
+                        <div class="space-y-2 pt-2 text-xs">
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>Existence:</strong> Unclassified / Publicly Known</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>Technical Details:</strong> Strictly Classified</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>Program Funding:</strong> Generally Unclassified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 font-mono">
+                        <span class="text-slate-300">Permitted Disclosure:</span> Personnel may state they work for the SAP, but cannot disclose technical specifics.
+                    </div>
+                </div>
+
+                <!-- Unacknowledged SAP -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-amber-500/50 rounded-lg p-5 flex flex-col justify-between transition group">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono rounded">
+                                Category II
+                            </span>
+                            <i class="fa-solid fa-user-secret text-amber-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100 group-hover:text-amber-400 transition">
+                            Unacknowledged SAP
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Program whose existence, purpose, technologies, and contractor involvement are protected and kept classified.
+                        </p>
+                        <div class="space-y-2 pt-2 text-xs">
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-exclamation text-amber-400 mt-0.5"></i>
+                                <span><strong>Existence:</strong> Classified</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-exclamation text-amber-400 mt-0.5"></i>
+                                <span><strong>Purpose & Tech:</strong> Classified</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-exclamation text-amber-400 mt-0.5"></i>
+                                <span><strong>Funding:</strong> Classified or unacknowledged budget line</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 font-mono">
+                        <span class="text-slate-300">Congressional Oversight:</span> Requires standard annual reporting to congressional defense committees.
+                    </div>
+                </div>
+
+                <!-- Unacknowledged - Waived SAP -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-red-500/50 rounded-lg p-5 flex flex-col justify-between transition group">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/30 text-xs font-mono rounded">
+                                Category III (Waived)
+                            </span>
+                            <i class="fa-solid fa-shield-cat text-red-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100 group-hover:text-red-400 transition">
+                            Unacknowledged - Waived
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <comment-tag id="3">An unacknowledged SAP for which the Secretary of Defense has formally waived standard Congressional reporting requirements due to extreme sensitivity.</comment-tag id="3" text="Clarify that a 'waived' status under 10 U.S.C. § 119(e) does not completely bypass Congress, but limits notification to the 'Gang of Eight' (chairs and ranking members of the defense and intelligence committees). This prevents common misconceptions about total lack of legislative oversight." type="suggestion">
+                        </p>
+                        <div class="space-y-2 pt-2 text-xs">
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-triangle-exclamation text-red-400 mt-0.5"></i>
+                                <span><strong>Existence:</strong> Highly Classified</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-triangle-exclamation text-red-400 mt-0.5"></i>
+                                <span><strong>Standard Reporting:</strong> Waived by SECDEF</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-400">
+                                <i class="fa-solid fa-triangle-exclamation text-red-400 mt-0.5"></i>
+                                <span><strong>Briefing Restrictions:</strong> Limited to Select Committee Leaders ("Gang of Eight")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 font-mono">
+                        <span class="text-slate-300">Special Handling:</span> Dissemination control marker <code class="text-red-400">WAIVED</code> included in page banner.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner & Portion Marking Standard Specifications -->
+            <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 space-y-4">
+                <h3 class="text-md font-bold font-mono text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-tags text-amber-400"></i> Marking & Security Control Standards
+                </h3>
+                
+                <!-- Sample Document Banner Inspector -->
+                <div class="bg-slate-950 p-4 rounded border border-slate-800 space-y-3 font-mono text-xs">
+                    <div class="text-center py-1 bg-red-950/80 border border-red-600/50 text-red-400 font-bold tracking-widest rounded">
+                        TOP SECRET // SAR - RED CAR - TIN BAKER // WAIVED
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300 pt-2">
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase">Overall Classification Banner</span>
+                            Must be placed at the top and bottom of each page in larger font. Spell out <code class="text-amber-400">Special Access Required</code> or use acronym <code class="text-amber-400">SAR</code>.
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase">Nicknames & Dissemination</span>
+                            Separate nicknames/code words with hyphens (e.g. <code class="text-cyan-400">RED CAR - TIN BAKER</code>). Never include Program Identifiers (PIDs) in the overall banner.
+                        </div>
+                    </div>
+
+                    <div class="text-center py-1 bg-red-950/80 border border-red-600/50 text-red-400 font-bold tracking-widest rounded">
+                        TOP SECRET // SAR - RED CAR - TIN BAKER // WAIVED
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: TIMELINE & CASE STUDIES -->
+        <section id="sec-timeline" class="tab-content hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-bold font-mono text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-timeline text-amber-400"></i> Historical Evolution & Declassified Case Studies
+                </h2>
+                <p class="text-xs text-slate-400 font-mono mt-1">
+                    Chronological progression from early cold war military studies to modern legislative intelligence mandates.
+                </p>
+            </div>
+
+            <!-- Timeline Stream -->
+            <div class="relative border-l-2 border-slate-800 ml-4 pl-6 space-y-8 font-sans">
+                
+                <!-- Timeline Item 1: 1959 Project Horizon -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-2 border-amber-500 group-hover:scale-125 transition"></div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-2">
+                        <div class="flex items-center justify-between font-mono">
+                            <span class="text-xs text-amber-400 font-bold">1959</span>
+                            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">U.S. ARMY STUDY</span>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100">Project Horizon (Lunar Outpost Study)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            A secret 1959 military study conducted by the U.S. Army to assess the feasibility of establishing a military lunar base and space transportation system, designed to be operational by late 1965 with defensive capabilities.
+                        </p>
+                        <div class="bg-slate-950 p-3 rounded border border-slate-800 font-mono text-xs text-slate-400 space-y-1">
+                            <div class="text-amber-400 font-bold text-[11px]">&gt; Declassified Directive Excerpt:</div>
+                            <p class="text-[11px] italic">"No contacts with agencies outside the Army will be made until after the results of the preliminary investigation have been presented to the Department of Defense... no public release will be made concerning this project."</p>
+                            <div class="text-[10px] text-slate-500 pt-1">— Lt. Gen. Arthur G. Trudeau, Chief of Research & Development</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2: 1980s Black Programs & Skunk Works -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-2 border-cyan-500 group-hover:scale-125 transition"></div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-2">
+                        <div class="flex items-center justify-between font-mono">
+                            <span class="text-xs text-cyan-400 font-bold">1980s</span>
+                            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">ACQUISITION ERA</span>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100">"Black Programs" & Lockheed Skunk Works</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Through the 1980s, close-hold programs protecting DoD acquisition were publicly referred to as "Black Programs." Key examples included Lockheed's Skunk Works development of stealth aircraft like the F-117A Nighthawk.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3: "Yellow Fruit" Scandal -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-2 border-red-500 group-hover:scale-125 transition"></div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-2">
+                        <div class="flex items-center justify-between font-mono">
+                            <span class="text-xs text-red-400 font-bold">1980s MID-ERA</span>
+                            <span class="text-[10px] bg-red-950/80 border border-red-700/50 px-2 py-0.5 rounded text-red-300">OVERSIGHT CATALYST</span>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100">Operation "Yellow Fruit" Investigation</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            A controversial covert special operations activity called <strong class="text-amber-400 font-mono">"Yellow Fruit"</strong> became public, revealing alleged illegal use of funds and systemic lack of oversight. The subsequent court-martials and imprisonments prompted Congress to enforce strict oversight rules.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 4: 1990s SAP Formalization -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-2 border-emerald-500 group-hover:scale-125 transition"></div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-2">
+                        <div class="flex items-center justify-between font-mono">
+                            <span class="text-xs text-emerald-400 font-bold">1990s</span>
+                            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">SECURITY REFORM</span>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100">Modern Special Access Program (SAP) Transition</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            The term "Special Access Program" officially replaced "Black Program." Security procedures expanded beyond hardware acquisition to encompass Intelligence Programs as well as Operations and Support Programs.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 5: Modern Intelligence Reform & H.R. 5412 -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-2 border-amber-500 group-hover:scale-125 transition"></div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-2">
+                        <div class="flex items-center justify-between font-mono">
+                            <span class="text-xs text-amber-400 font-bold">MODERN LEGISLATION</span>
+                            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">STATUTORY MANDATES</span>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono text-slate-100">Intelligence Authorization Act & Compartment Rules</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Legislative frameworks (including H.R. 5412 and Intelligence Oversight IOO standards) prohibit heads of intelligence elements from establishing compartments or subcompartments under covered SAPs without prior notification to congressional intelligence committees.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-[11px] pt-2">
+                            <div class="bg-slate-950 p-2.5 rounded border border-slate-800 text-slate-300">
+                                <span class="text-amber-400 font-bold block">Annual Requirement:</span>
+                                Certification by DNI & SECDEF justifying creation, revalidation, or termination.
+                            </div>
+                            <div class="bg-slate-950 p-2.5 rounded border border-slate-800 text-slate-300">
+                                <span class="text-cyan-400 font-bold block">UAP Declassification Mandate:</span>
+                                Federal agency records transfer directives (e.g. NARA AC 04.2025) for historical UAP records.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 4: FOIA & WIKIPEDIA RESEARCH STANDARDS -->
+        <section id="sec-foia" class="tab-content hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-bold font-mono text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-400"></i> FOIA Archives & Wikipedia Article Maintenance
+                </h2>
+                <p class="text-xs text-slate-400 font-mono mt-1">
+                    Methodology for researching declassified records and maintaining encyclopedic quality on military black projects.
+                </p>
+            </div>
+
+            <!-- Wikipedia WikiProject Guidelines -->
+            <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h3 class="text-md font-bold font-mono text-amber-400 flex items-center gap-2">
+                        <i class="fa-brands fa-wikipedia-w"></i> WikiProject Military History / Academy Standard
+                    </h3>
+                    <span class="text-xs font-mono text-slate-400">WP:VERIFY Standard</span>
+                </div>
+
+                <div class="p-4 bg-amber-950/20 border border-amber-500/30 rounded text-xs text-amber-200 font-mono">
+                    <strong>Core Inclusion Rule:</strong> "The threshold for inclusion on Wikipedia is <u>Verifiability, Not Truth</u>."
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="bg-slate-950 p-3.5 rounded border border-slate-800 space-y-1.5">
+                        <div class="font-bold text-slate-200 font-mono flex items-center gap-2">
+                            <i class="fa-solid fa-file-shield text-cyan-400"></i> 1. Reliable Sources
+                        </div>
+                        <p class="text-slate-400">
+                            Because official contractor/government sites are useless for active black projects, editors must locate reputable third-party investigative/historical sources.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-950 p-3.5 rounded border border-slate-800 space-y-1.5">
+                        <div class="font-bold text-slate-200 font-mono flex items-center gap-2">
+                            <i class="fa-solid fa-microchip text-emerald-400"></i> 2. Technical Data & Infoboxes
+                        </div>
+                        <p class="text-slate-400">
+                            Add plausible dimensions and technical specifications verified by sources. Use standardized military infoboxes to ensure professional appearance.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-950 p-3.5 rounded border border-slate-800 space-y-1.5">
+                        <div class="font-bold text-slate-200 font-mono flex items-center gap-2">
+                            <i class="fa-solid fa-ban text-red-400"></i> 3. Neutrality & Fringe Exclusion
+                        </div>
+                        <p class="text-slate-400">
+                            Avoid original research, unverified guesses, or fringe conspiracy theories. Substandard articles are routinely nominated for deletion (AfD).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading the Black Vault & FOIA Guide -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- FOIA Exemption Lookup -->
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 space-y-4">
+                    <h3 class="text-md font-bold font-mono text-cyan-400 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-tree"></i> Essential FOIA Exemption Codes
+                    </h3>
+                    <p class="text-xs text-slate-300">
+                        When reviewing declassified FOIA PDF releases from archives like <em>The Black Vault</em>, agency cover letters cite specific statutory exemptions for redactions:
+                    </p>
+
+                    <div class="space-y-2 font-mono text-xs">
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800">
+                            <comment-tag id="4"><span class="text-amber-400 font-bold">(b)(1) Classified National Security Information</span>
+                            <p class="text-[11px] text-slate-400 font-sans mt-0.5">Protects information properly classified under Executive Order in the interest of national defense or foreign policy.</p></comment-tag id="4" text="Mention Mandatory Declassification Review (MDR) under 32 CFR Part 2001 alongside Exemption (b)(1). Explaining MDR as an alternative administrative pathway gives researchers a concrete mechanism for challenging lingering (b)(1) redactions on older documents." type="suggestion">
+                        </div>
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800">
+                            <span class="text-amber-400 font-bold">(b)(3) Exempt by Other Federal Statutes</span>
+                            <p class="text-[11px] text-slate-400 font-sans mt-0.5">Protects information specifically prohibited from disclosure by statutes (e.g. CIA Act of 1949, NSA Act).</p>
+                        </div>
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800">
+                            <span class="text-amber-400 font-bold">(b)(6) Personal Privacy</span>
+                            <p class="text-[11px] text-slate-400 font-sans mt-0.5">Protects personnel, medical, and similar files whose disclosure would constitute a clearly unwarranted invasion of privacy.</p>
+                        </div>
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800">
+                            <span class="text-amber-400 font-bold">(b)(7) Law Enforcement Records</span>
+                            <p class="text-[11px] text-slate-400 font-sans mt-0.5">Protects records compiled for law enforcement purposes, operational techniques, or confidential sources.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Black Vault Reader Rules -->
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 space-y-4">
+                    <h3 class="text-md font-bold font-mono text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-vault text-amber-400"></i> Black Vault Citation Protocol
+                    </h3>
+                    <p class="text-xs text-slate-300">
+                        Maintained since 1996 by John Greenewald Jr., The Black Vault is the largest privately operated FOIA archive. Proper citation requires 5 core metadata elements:
+                    </p>
+
+                    <div class="bg-slate-950 p-4 rounded border border-slate-800 space-y-2 font-mono text-xs">
+                        <div class="text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800 pb-1">Mandatory Citation Format</div>
+                        <div class="text-amber-400">
+                            [Document Title] — [Originating Agency] ([Release Date]). FOIA Case #[Case Number]. Available via The Black Vault: [URL]
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-xs text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>
+                            <span>Always read the <strong>Agency Cover Letter</strong> first to verify if release is complete or redacted.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>
+                            <span>The Black Vault is not a leak site — all documents are obtained via lawful FOIA or declassification review.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>
+                            <span>Cross-reference with National Archives (NARA), CIA CREST, and FBI Vault for primary sources.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: INTERACTIVE INSPECTOR / SAP CHECKER -->
+        <section id="sec-inspector" class="tab-content hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-bold font-mono text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-cyan-400"></i> Interactive SAP Classification & Reporting Inspector
+                </h2>
+                <p class="text-xs text-slate-400 font-mono mt-1">
+                    <comment-tag id="5">Configure program attributes below to dynamically determine the exact SAP Category, Congressional reporting protocol, and public disclosure permissions.</comment-tag id="5" text="Add a reference to DoD Directive 5205.07 Volumes 1 through 4 (DoD Special Access Program Security Manual). Explicitly citing the policy volumes provides context on physical, personnel, and information security rules applied in the simulation." type="suggestion">
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Inspector Controls (Left) -->
+                <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-5">
+                    <h3 class="text-sm font-bold font-mono text-slate-200 border-b border-slate-800 pb-2">
+                        1. Program Status Parameters
+                    </h3>
+
+                    <!-- Parameter 1: Is existence public? -->
+                    <div class="space-y-1.5 font-mono text-xs">
+                        <label class="text-slate-300 block">Is Program Existence Publicly Acknowledged?</label>
+                        <select id="param-existence" onchange="evaluateSAP()" class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="public">Yes — Existence & general purpose are known</option>
+                            <option value="secret" selected>No — Existence and purpose are protected</option>
+                        </select>
+                    </div>
+
+                    <!-- Parameter 2: Is reporting waived? -->
+                    <div class="space-y-1.5 font-mono text-xs">
+                        <label class="text-slate-300 block">Has SECDEF Formally Waived Standard Reporting?</label>
+                        <select id="param-waived" onchange="evaluateSAP()" class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="no" selected>No — Standard reporting applies</option>
+                            <option value="yes">Yes — SECDEF operational waiver granted</option>
+                        </select>
+                    </div>
+
+                    <!-- Parameter 3: Program Type -->
+                    <div class="space-y-1.5 font-mono text-xs">
+                        <label class="text-slate-300 block">Program Scope / Type:</label>
+                        <select id="param-type" onchange="evaluateSAP()" class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="acquisition">DoD Acquisition / Hardware Development</option>
+                            <option value="intelligence">Intelligence Program / Surveillance</option>
+                            <option value="operations">Operations & Support Program</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3 bg-slate-950 rounded border border-slate-800 text-[11px] font-mono text-slate-400">
+                        <i class="fa-solid fa-info-circle text-cyan-400 mr-1"></i> Changes trigger real-time evaluation according to DoD 5205.07 & JSIG policies.
+                    </div>
+                </div>
+
+                <!-- Inspector Output Display (Right) -->
+                <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-lg p-6 flex flex-col justify-between space-y-4 glow-cyan">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span class="text-xs font-mono uppercase text-slate-400">Evaluation Result</span>
+                            <span id="output-badge" class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono rounded">
+                                UNACKNOWLEDGED SAP
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 id="output-title" class="text-xl font-bold font-mono text-slate-100">
+                                Unacknowledged Special Access Program
+                            </h3>
+                            <p id="output-desc" class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                Existence and purpose are protected. The details, technologies, and contractor involvement are strictly classified. Program funding is often classified or unacknowledged.
+                            </p>
+                        </div>
+
+                        <!-- Rule Breakdown -->
+                        <div class="space-y-2 font-mono text-xs">
+                            <div class="p-3 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-400">Congressional Notification:</span>
+                                <span id="out-congress" class="text-slate-200 font-bold">Standard Annual Report (Feb 1)</span>
+                            </div>
+                            <div class="p-3 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-400">Public/Family Disclosure:</span>
+                                <span id="out-disclosure" class="text-red-400 font-bold">Strictly Prohibited</span>
+                            </div>
+                            <div class="p-3 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-400">Dissemination Marking:</span>
+                                <span id="out-marking" class="text-amber-400 font-bold">SPECIAL ACCESS REQUIRED (SAR)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Redacted Sample Document Box -->
+                    <div class="bg-slate-950 p-4 rounded border border-slate-800 font-mono text-xs space-y-2">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-widest">Simulated Document Excerpt (Click redacted text to reveal)</div>
+                        <div class="text-slate-300 leading-relaxed">
+                            MEMORANDUM FOR THE RECORD: Project <span class="redacted" onclick="toggleRedaction(this)">NIGHT HAWK</span> is classified as an 
+                            <span id="sample-category-text" class="text-amber-400 font-bold">Unacknowledged SAP</span>. Contractor involvement by <span class="redacted" onclick="toggleRedaction(this)">Lockheed Skunk Works</span> 
+                            remains strictly protected under Executive Order directives. Funding line is allocated via <span class="redacted" onclick="toggleRedaction(this)">Classified Air Force Procurement Line 04</span>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sample Redacted Reference Drawer -->
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-5 font-mono text-xs space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-amber-400 font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines"></i> Interactive Historical Document Scanner
+                </span>
+                <span class="text-slate-500 text-[10px]">Click any blacked-out segment to reveal source text</span>
+            </div>
+            <div class="p-4 bg-slate-950 rounded border border-slate-800 text-slate-300 leading-relaxed font-mono">
+                "Special Access Programs (SAPs) require an assigned nickname or codeword. During the 1980s, covert operations such as <span class="redacted" onclick="toggleRedaction(this)">Yellow Fruit</span> demonstrated a severe lack of financial oversight, leading to courts-martial and the requirement for annual reporting to <span class="redacted" onclick="toggleRedaction(this)">Congressional Defense Committees</span> no later than <span class="redacted" onclick="toggleRedaction(this)">February 1st</span> of each fiscal year."
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 mt-12 font-mono text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-shield-halved text-amber-500"></i>
+                <span>PROJECT OVERSIGHT ARCHIVE // DECLASSIFIED KNOWLEDGE PORTAL</span>
+            </div>
+            <div class="flex space-x-6 text-slate-500">
+                <span>VERIFIABILITY: NOT TRUTH</span>
+                <span>FOIA REPOSITORY</span>
+                <span>DOD 5205.07 JSIG</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Remove active classes from buttons
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('border-amber-500', 'text-amber-400');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            // Show selected tab
+            const targetSec = document.getElementById('sec-' + tabId);
+            if(targetSec) targetSec.classList.remove('hidden');
+
+            // Highlight active button
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.add('border-amber-500', 'text-amber-400');
+                activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            }
+        }
+
+        // Single Redaction Toggle
+        function toggleRedaction(element) {
+            element.classList.toggle('revealed');
+        }
+
+        // Global Redactions Toggle Button
+        let allRevealed = false;
+        function toggleAllRedactions() {
+            const redactions = document.querySelectorAll('.redacted');
+            allRevealed = !allRevealed;
+            redactions.forEach(el => {
+                if(allRevealed) {
+                    el.classList.add('revealed');
+                } else {
+                    el.classList.remove('revealed');
+                }
+            });
+
+            const btnText = document.getElementById('redact-btn-text');
+            if(btnText) {
+                btnText.innerText = allRevealed ? "Re-Apply Redactions" : "Declassify Redactions";
+            }
+        }
+
+        // Live Clock Function
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0] + ' BST';
+            const clockEl = document.getElementById('live-clock');
+            if(clockEl) clockEl.innerText = timeStr;
+        }
+        setInterval(updateClock, 1000);
+
+        // Interactive Inspector Evaluator
+        function evaluateSAP() {
+            const existence = document.getElementById('param-existence').value;
+            const waived = document.getElementById('param-waived').value;
+            const type = document.getElementById('param-type').value;
+
+            const badge = document.getElementById('output-badge');
+            const title = document.getElementById('output-title');
+            const desc = document.getElementById('output-desc');
+            const congress = document.getElementById('out-congress');
+            const disclosure = document.getElementById('out-disclosure');
+            const marking = document.getElementById('out-marking');
+            const sampleText = document.getElementById('sample-category-text');
+
+            if(existence === 'public') {
+                // Acknowledged
+                badge.className = "px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-mono rounded";
+                badge.innerText = "ACKNOWLEDGED SAP";
+                title.innerText = "Acknowledged Special Access Program";
+                desc.innerText = "Program existence and general mission purpose may be openly recognized. However, technological specs, design details, and operational vulnerabilities remain strictly classified.";
+                congress.innerText = "Standard Annual SAP Listing (Feb 1)";
+                disclosure.className = "text-emerald-400 font-bold";
+                disclosure.innerText = "Permitted (General Existence Only)";
+                marking.innerText = "SPECIAL ACCESS REQUIRED (SAR)";
+                if(sampleText) sampleText.innerText = "Acknowledged SAP";
+            } else if(waived === 'yes') {
+                // Waived Unacknowledged
+                badge.className = "px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/30 text-xs font-mono rounded animate-pulse";
+                badge.innerText = "UNACKNOWLEDGED - WAIVED SAP";
+                title.innerText = "Unacknowledged Waived Special Access Program";
+                desc.innerText = "Extremely sensitive program where the Secretary of Defense has formally waived standard Congressional reporting requirements. Briefings are strictly restricted to the 'Gang of Eight' committee leaders.";
+                congress.innerText = "Waived — Restricted to Select Committee Chairs";
+                disclosure.className = "text-red-400 font-bold";
+                disclosure.innerText = "Strictly Prohibited (Deny Existence)";
+                marking.innerText = "SAR - [NICKNAME] // WAIVED";
+                if(sampleText) sampleText.innerText = "Unacknowledged Waived SAP";
+            } else {
+                // Unacknowledged
+                badge.className = "px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono rounded";
+                badge.innerText = "UNACKNOWLEDGED SAP";
+                title.innerText = "Unacknowledged Special Access Program";
+                desc.innerText = "Existence and purpose are protected and denied. Program funding is often classified, unacknowledged, or hidden within general defense procurement lines.";
+                congress.innerText = "Standard Annual Report to Defense Committees";
+                disclosure.className = "text-red-400 font-bold";
+                disclosure.innerText = "Strictly Prohibited";
+                marking.innerText = "SPECIAL ACCESS REQUIRED (SAR)";
+                if(sampleText) sampleText.innerText = "Unacknowledged SAP";
+            }
+        }
+
+        // Search Filter across active tab text
+        document.getElementById('global-search')?.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.bg-slate-900');
+            
+            cards.forEach(card => {
+                if(card.innerText.toLowerCase().includes(query)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is Inflammation Behind All Chronic Disease?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f9fa;
+  --surface: #ffffff;
+  --ink: #1a2332;
+  --muted: #5a6a7a;
+  --primary: #2a9d8f;
+  --primary-weak: color-mix(in oklab, var(--primary) 10%, var(--surface));
+  --accent: #e76f51;
+  --accent-weak: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  --accent-glow: color-mix(in oklab, var(--accent) 18%, transparent);
+  --line: color-mix(in oklab, var(--ink) 8%, transparent);
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -12px rgba(0,0,0,0.14);
+  --radius: 16px;
+  --step--1: clamp(0.875rem, 0.85rem + 0.15vw, 0.9375rem);
+  --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.08rem + 0.7vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.3rem + 1.6vw, 2.5rem);
+  --step-3: clamp(2.2rem, 1.6rem + 3vw, 4rem);
+  --space: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: var(--step-3); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); font-weight: 600; }
+
+/* Links */
+a {
+  color: var(--primary);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--primary) 30%, transparent);
+  transition: border-color 0.2s;
+}
+a:hover { border-bottom-color: var(--primary); }
+
+/* Layout */
+.container {
+  width: 92%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+/* Header / Hero */
+header {
+  background: linear-gradient(160deg, #1a2332 0%, #2d4a5a 60%, #2a9d8f 100%);
+  color: #fff;
+  padding: calc(var(--space) * 3) 0 calc(var(--space) * 4);
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(231,111,81,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(42,157,143,0.22) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+header .container { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 1rem;
+}
+
+.hero-eyebrow .dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(231,111,81,0.25);
+}
+
+header h1 {
+  max-width: 18ch;
+  margin-bottom: 1.25rem;
+  text-wrap: balance;
+}
+
+header h1 em {
+  font-style: italic;
+  color: #7fdbd0;
+}
+
+header .lead {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  max-width: 52ch;
+  font-family: "Crimson Pro", Georgia, serif;
+  font-weight: 400;
+}
+
+.hero-meta {
+  margin-top: 2rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  font-size: var(--step--1);
+  color: rgba(255,255,255,0.6);
+}
+
+.hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+/* Flame motif */
+.flame-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: calc(var(--space) * 1.5) 0;
+}
+.flame-rule::before,
+.flame-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.flame-rule svg {
+  flex-shrink: 0;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* Sections */
+section {
+  padding: calc(var(--space) * 2.5) 0;
+}
+
+.section-header {
+  max-width: 60ch;
+  margin-bottom: calc(var(--space) * 1.5);
+}
+
+.section-header h2 {
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  color: var(--muted);
+  font-size: var(--step-1);
+  font-family: "Crimson Pro", Georgia, serif;
+  line-height: 1.4;
+}
+
+/* Intro band */
+.intro-band {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.25);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  margin-bottom: calc(var(--space) * 1.5);
+}
+
+.intro-band p {
+  font-size: var(--step-1);
+  font-family: "Crimson Pro", Georgia, serif;
+  color: var(--ink);
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+/* Cards grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--space);
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 14px 32px -10px rgba(0,0,0,0.16);
+}
+
+.card-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.875rem;
+  font-size: 1.25rem;
+}
+
+.card h3 {
+  font-size: var(--step-0);
+  margin-bottom: 0.375rem;
+  color: var(--ink);
+}
+
+.card .tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.card p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Driver cards use teal tint */
+.driver-card .card-icon { background: var(--primary-weak); }
+
+/* Impact cards use coral tint */
+.impact-card .card-icon { background: var(--accent-weak); }
+
+/* Flow diagram */
+.flow-section {
+  background: linear-gradient(180deg, var(--bg) 0%, #eef3f5 50%, var(--bg) 100%);
+}
+
+.flow-diagram {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space);
+  align-items: center;
+  max-width: 64rem;
+  margin: 0 auto calc(var(--space) * 1.5);
+}
+
+.flow-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 0.875);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.flow-box h3 {
+  font-size: var(--step-1);
+  margin-bottom: 0.25rem;
+}
+
+.flow-box p {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent);
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-align: center;
+}
+
+.flow-center {
+  background: linear-gradient(135deg, var(--accent) 0%, #d45a3c 100%);
+  color: #fff;
+  border-radius: 50%;
+  width: 120px; height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 0 0 8px var(--accent-glow), var(--shadow);
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.flow-center strong {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.flow-center span {
+  font-size: 0.7rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* Mechanism list */
+.mechanism-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.875rem;
+}
+
+.mechanism-list li {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.mechanism-list .num {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary);
+  line-height: 1;
+  min-width: 1.8rem;
+}
+
+.mechanism-list h4 {
+  font-size: var(--step-0);
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
+.mechanism-list p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Conclusion */
+.conclusion-section {
+  background: linear-gradient(160deg, #1a2332 0%, #2d4a5a 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.conclusion-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 90% 10%, rgba(231,111,81,0.14) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.conclusion-section .container { position: relative; z-index: 1; }
+
+.conclusion-section h2 { color: #fff; margin-bottom: 1rem; }
+
+.conclusion-section p {
+  font-size: var(--step-1);
+  font-family: "Crimson Pro", Georgia, serif;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.5;
+  max-width: 58ch;
+}
+
+.conclusion-box {
+  margin-top: calc(var(--space) * 1.25);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1);
+  backdrop-filter: blur(6px);
+}
+
+.conclusion-box ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.conclusion-box li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--step--1);
+  color: rgba(255,255,255,0.8);
+}
+
+.conclusion-box li::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Source chips */
+.source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.source-chip a {
+  color: var(--muted);
+  border: none;
+}
+
+/* Footer */
+footer {
+  padding: calc(var(--space) * 1.5) 0;
+  text-align: center;
+  font-size: var(--step--1);
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
+/* Responsive flow */
+@media (max-width: 720px) {
+  .flow-diagram {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .flow-arrow {
+    transform: rotate(90deg);
+    margin: 0.5rem 0;
+  }
+  .flow-arrow span { display: none; }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  header, .conclusion-section { background: #1a2332 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .card, .flow-box, .mechanism-list li, .intro-band {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+@page { size: A4; margin: 16mm; }
+
+/* Reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="hero-eyebrow"><span class="dot"></span> A Science-Based Exploration</div>
+    <h1>Is Inflammation Behind <em>All</em> Chronic Disease?</h1>
+    <p class="lead">Chronic low-grade inflammation is increasingly recognized as a common thread connecting modern lifestyle, aging, and the world’s leading causes of death.</p>
+    <div class="hero-meta">
+      <span>📋 Evidence-based</span>
+      <span>🔬 Peer-reviewed sources</span>
+      <span>🩺 Medical review</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- INTRO -->
+<section>
+  <div class="container">
+    <div class="intro-band reveal">
+      <p>Acute inflammation is essential for survival — it heals wounds and fights infections. But when inflammatory signals persist at a low level throughout the body, a state called <strong>systemic chronic inflammation (SCI)</strong> quietly damages tissues and disrupts normal cellular function, often without symptoms for years.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DRIVERS -->
+<section style="padding-top:0;">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>The Drivers</h2>
+      <p>Six major categories of lifestyle and environmental factors that promote persistent, low-grade immune activation.</p>
+    </div>
+
+    <div class="cards-grid">
+      <article class="card driver-card reveal">
+        <div class="card-icon">🍔</div>
+        <span class="tag">Diet</span>
+        <h3>Poor Diet</h3>
+        <p>Diets high in refined carbohydrates, ultra-processed foods, and added sugars promote insulin resistance and increase pro-inflammatory cytokines. Excess sugar also drives gut barrier dysfunction ("leaky gut"), allowing bacterial endotoxins to enter the bloodstream and trigger persistent immune activation.</p>
+      </article>
+
+      <article class="card driver-card reveal">
+        <div class="card-icon">😰</div>
+        <span class="tag">Psychology</span>
+        <h3>Chronic Stress</h3>
+        <p>Psychological stress activates the HPA axis and sympathetic nervous system, leading to sustained cortisol and catecholamine release. Over time, this dysregulates immune function and elevates inflammatory markers like IL-6 and C-reactive protein (CRP).</p>
+      </article>
+
+      <article class="card driver-card reveal">
+        <div class="card-icon">🛋️</div>
+        <span class="tag">Behavior</span>
+        <h3>Lack of Exercise</h3>
+        <p>Physical inactivity is independently associated with elevated inflammatory markers. Regular moderate exercise reduces visceral fat (a major source of inflammatory cytokines), improves endothelial function, and enhances insulin sensitivity.</p>
+      </article>
+
+      <article class="card driver-card reveal">
+        <div class="card-icon">😴</div>
+        <span class="tag">Recovery</span>
+        <h3>Inadequate Sleep</h3>
+        <p>Sleep deprivation disrupts circadian immune regulation. Even short-term loss increases TNF-α and IL-6 while reducing anti-inflammatory cytokines. Chronic poor sleep is linked to oxidative stress and impaired glymphatic clearance in the brain.</p>
+      </article>
+
+      <article class="card driver-card reveal">
+        <div class="card-icon">🏭</div>
+        <span class="tag">Environment</span>
+        <h3>Environmental Toxins</h3>
+        <p>Air pollution, heavy metals, pesticides, and endocrine disruptors trigger inflammatory cascades. Environmental factors are estimated to play a causative or promotional role in 50–75% of chronic inflammatory disease cases.</p>
+      </article>
+
+      <article class="card driver-card reveal">
+        <div class="card-icon">🦠</div>
+        <span class="tag">Infection</span>
+        <h3>Chronic Infections</h3>
+        <p>Some pathogens evade complete immune clearance and establish persistent low-grade infections. This creates constant immune activation, contributing to "inflammaging" — the chronic low-grade inflammation seen in aging.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW DIAGRAM -->
+<section class="flow-section">
+  <div class="container">
+    <div class="flow-diagram reveal">
+      <div class="flow-box">
+        <h3>Lifestyle & Environment</h3>
+        <p>Diet · Stress · Sleep · Toxins · Inactivity · Infection</p>
+      </div>
+      <div class="flow-arrow">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="flow-box">
+        <h3>Disease Outcomes</h3>
+        <p>Cardiovascular · Diabetes · Cancer · Autoimmune · Neurodegenerative</p>
+      </div>
+    </div>
+
+    <div class="flow-center reveal">
+      <strong>Chronic Inflammation</strong>
+      <span>persistent, low-level</span>
+    </div>
+  </div>
+</section>
+
+<!-- MECHANISM -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>The Mechanism</h2>
+      <p>How persistent inflammation quietly damages the body at the cellular level.</p>
+    </div>
+
+    <ol class="mechanism-list">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h4>Cytokine Dysregulation</h4>
+          <p>Persistent elevation of TNF-α, IL-1β, and IL-6 damages blood vessels, alters metabolism, and promotes cell mutation throughout the body.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h4>Oxidative Stress</h4>
+          <p>Inflammation generates reactive oxygen species (ROS) that damage DNA, proteins, and cell membranes, accelerating tissue dysfunction.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h4>Cellular Senescence</h4>
+          <p>Inflammation accelerates cellular aging, causing cells to stop dividing and secrete inflammatory factors themselves — a self-perpetuating cycle.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h4>Epigenetic Changes</h4>
+          <p>Environmental triggers modify gene expression patterns related to immune regulation, making inflammation persistent and potentially transmissible across generations.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<div class="container">
+  <div class="flame-rule">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c0 0-2 4-2 8 0 2.5 1 4 2 5.5 1-1.5 2-3 2-5.5 0-4-2-8-2-8zm-1 13c-1.5-1-2.5-3-2.5-5.5 0-3 1.5-5.5 1.5-5.5s-3.5 3-3.5 7c0 3.5 2.5 6 4.5 7.5-1.5-1-2.5-2.5-2.5-3.5zm4 0c0 1-1 2.5-2.5 3.5 2-1.5 4.5-4 4.5-7.5 0-4-3.5-7-3.5-7s1.5 2.5 1.5 5.5c0 2.5-1 4.5-2.5 5.5z"/></svg>
+  </div>
+</div>
+
+<!-- IMPACT -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>The Impact</h2>
+      <p>Diseases linked to chronic inflammation — the leading causes of disability and mortality worldwide.</p>
+    </div>
+
+    <div class="cards-grid">
+      <article class="card impact-card reveal">
+        <div class="card-icon">❤️‍🩹</div>
+        <span class="tag">Cardiovascular</span>
+        <h3>Cardiovascular Disease</h3>
+        <p>Chronic inflammation directly drives atherosclerosis. Inflammatory cytokines damage the endothelial lining of blood vessels, allowing cholesterol to penetrate and accumulate. The CANTOS trial proved that anti-inflammatory therapy independently reduces cardiovascular events.</p>
+        <div class="source-row">
+          <span class="source-chip"><a href="https://www.nature.com/articles/s41591-019-0675-0">Nature Medicine</a></span>
+        </div>
+      </article>
+
+      <article class="card impact-card reveal">
+        <div class="card-icon">💧</div>
+        <span class="tag">Metabolic</span>
+        <h3>Type 2 Diabetes</h3>
+        <p>Adipose tissue in obesity secretes inflammatory mediators that interfere with insulin signaling — a process called "metaflammation." This creates a feedback loop where inflammation causes insulin resistance, which further promotes inflammation.</p>
+        <div class="source-row">
+          <span class="source-chip"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7919414/">Genes & Development</a></span>
+        </div>
+      </article>
+
+      <article class="card impact-card reveal">
+        <div class="card-icon">🎗️</div>
+        <span class="tag">Oncology</span>
+        <h3>Cancer</h3>
+        <p>Inflammation promotes cancer via ROS-induced DNA damage, stimulation of angiogenesis (blood vessel growth feeding tumors), and suppression of anti-tumor immune surveillance. Long-standing inflammatory conditions significantly increase tissue-specific cancer risk.</p>
+        <div class="source-row">
+          <span class="source-chip"><a href="https://www.nature.com/articles/s41591-019-0675-0">Nature Medicine</a></span>
+        </div>
+      </article>
+
+      <article class="card impact-card reveal">
+        <div class="card-icon">🧠</div>
+        <span class="tag">Neurology</span>
+        <h3>Neurodegenerative Diseases</h3>
+        <p>Chronic activation of microglia (the brain's immune cells) drives neuroinflammation, increasingly recognized as central to Alzheimer's and Parkinson's disease. Systemic inflammation can cross the compromised blood-brain barrier, accelerating cognitive decline.</p>
+        <div class="source-row">
+          <span class="source-chip"><a href="https://pubmed.ncbi.nlm.nih.gov/40842786/">PubMed</a></span>
+        </div>
+      </article>
+
+      <article class="card impact-card reveal">
+        <div class="card-icon">🛡️</div>
+        <span class="tag">Autoimmune</span>
+        <h3>Autoimmune Diseases</h3>
+        <p>In rheumatoid arthritis, lupus, and related disorders, the immune system attacks the body's own tissues. Systemic lupus erythematosus increases cardiometabolic disease risk six-fold, showing how autoimmune inflammation spills over to damage the entire body.</p>
+        <div class="source-row">
+          <span class="source-chip"><a href="https://heart.bmj.com/content/103/23/1867">Heart (BMJ)</a></span>
+        </div>
+      </article>
+
+      <article class="card impact-card reveal">
+        <div class="card-icon">🍽️</div>
+        <span class="tag">Digestive</span>
+        <h3>Digestive Disorders</h3>
+        <p>Inflammatory bowel disease (Crohn's and ulcerative colitis) represents a direct failure of immune regulation in the gut. Even outside IBD, low-grade gut inflammation is linked to depression, metabolic syndrome, and autoimmune conditions.</p>
+        <div class="source-row">
+          <span class="source-chip"><a href="https://www.frontiersin.org/journals/immunology/articles/10.3389/fimmu.2020.570083/full">Frontiers in Immunology</a></span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="conclusion-section">
+  <div class="container">
+    <h2 class="reveal">The Bottom Line</h2>
+    <p class="reveal">While not always the solitary cause, chronic inflammation is a key contributing factor in most chronic diseases. It sits at the intersection of modern lifestyle and disease — and the factors that drive it are, to a remarkable degree, within our capacity to modify.</p>
+
+    <div class="conclusion-box reveal">
+      <ul>
+        <li>Chronic inflammation is rarely the only cause, but acts as a common disease pathway.</li>
+        <li>Genetics, pathogens, and structural abnormalities also matter — inflammation amplifies them.</li>
+        <li>Reducing systemic chronic inflammation is one of the most actionable strategies for preventing multiple chronic diseases simultaneously.</li>
+        <li>Sex differences exist: women mount stronger immune responses, increasing autoimmune risk; men show higher baseline inflammatory cytokines.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>Compiled from peer-reviewed medical literature. Not a substitute for professional medical advice.</p>
+  </div>
+</footer>
+
+<script>
+// Simple intersection observer for reveal animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

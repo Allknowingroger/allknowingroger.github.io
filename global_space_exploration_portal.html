@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Space Exploration Roadmap</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        space: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        space: {
+                            900: '#0B0D17',
+                            800: '#15192B',
+                            700: '#232942',
+                            100: '#D0D6F9'
+                        },
+                        accent: {
+                            blue: '#4A90E2',
+                            cyan: '#00F0FF'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0B0D17;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .stars-bg {
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 15s linear infinite;
+        }
+
+        .glass-panel {
+            background: rgba(21, 25, 43, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes twinkle {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-200px); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #4A90E2, #00F0FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased stars-bg relative min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 cursor-pointer">
+                    <i class="fa-solid fa-earth-americas text-accent-cyan text-2xl"></i>
+                    <span class="font-space font-bold text-xl tracking-wider uppercase">ISECG <span class="font-light text-space-100">Portal</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#" class="text-white hover:text-accent-cyan px-3 py-2 rounded-md text-sm font-medium transition-colors">Roadmap</a>
+                        <a href="#research" class="text-space-100 hover:text-white hover:text-accent-cyan px-3 py-2 rounded-md text-sm font-medium transition-colors">Research & Tech</a>
+                        <a href="#agencies" class="text-space-100 hover:text-white hover:text-accent-cyan px-3 py-2 rounded-md text-sm font-medium transition-colors">Agencies</a>
+                        <a href="#community" class="text-space-100 hover:text-white hover:text-accent-cyan px-3 py-2 rounded-md text-sm font-medium transition-colors">Community</a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <button class="bg-transparent border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-space-900 px-5 py-2 rounded-full font-medium transition-all duration-300">
+                        Subscribe
+                    </button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-space-100 hover:text-white focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex-grow flex items-center border-b border-white/10">
+        <!-- Abstract planetary glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-blue/20 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="font-space text-5xl md:text-7xl font-bold tracking-tight mb-6">
+                The Global Exploration <br class="hidden md:block"/>
+                <span class="gradient-text">Roadmap</span>
+            </h1>
+            
+            <div class="h-12 overflow-hidden relative w-full flex justify-center items-center mb-8">
+                <div class="flex flex-col items-center justify-start absolute top-0 text-xl md:text-2xl font-light text-space-100 space-y-4 animate-[slide_20s_linear_infinite]" style="animation: slide-up 15s cubic-bezier(0.4, 0, 0.2, 1) infinite;">
+                    <span>We Explore Together</span>
+                    <span>Explorăm împreună</span>
+                    <span>Ми досліджуємо разом</span>
+                    <span>Vi utforskar tillsammans</span>
+                    <span>نحن نستكشف معًا</span>
+                    <span>Chúng ta cùng nhau khám phá</span>
+                    <span>Explorando juntos</span>
+                    <span>Nós exploramos juntos</span>
+                    <span>Esploriamo insieme</span>
+                    <span>Nous explorons ensemble</span>
+                    <span>我们一起探索</span>
+                    <span>Wir erkunden gemeinsam</span>
+                </div>
+            </div>
+
+            <style>
+                @keyframes slide-up {
+                    0%, 5% { transform: translateY(0px); }
+                    8.33%, 13.33% { transform: translateY(-44px); }
+                    16.66%, 21.66% { transform: translateY(-88px); }
+                    25%, 30% { transform: translateY(-132px); }
+                    33.33%, 38.33% { transform: translateY(-176px); }
+                    41.66%, 46.66% { transform: translateY(-220px); }
+                    50%, 55% { transform: translateY(-264px); }
+                    58.33%, 63.33% { transform: translateY(-308px); }
+                    66.66%, 71.66% { transform: translateY(-352px); }
+                    75%, 80% { transform: translateY(-396px); }
+                    83.33%, 88.33% { transform: translateY(-440px); }
+                    91.66%, 96.66% { transform: translateY(-484px); }
+                    100% { transform: translateY(-528px); }
+                }
+            </style>
+
+            <p class="max-w-2xl mx-auto text-lg text-gray-300 mb-10 font-light leading-relaxed">
+                A non-binding product of the International Space Exploration Coordination Group (ISECG) space agencies. Committed to partnerships that reflect a globally coordinated exploration effort towards the Moon, Mars, and beyond.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#research" class="bg-white text-space-900 px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition-colors inline-flex items-center justify-center gap-2">
+                    Explore Initiatives <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="http://www.globalspaceexploration.org" target="_blank" class="glass-panel px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-colors inline-flex items-center justify-center gap-2">
+                    View Official Document <i class="fa-solid fa-external-link-alt text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Research & Technology Section -->
+    <section id="research" class="py-24 relative bg-space-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-space text-3xl md:text-5xl font-bold mb-4">Key Focus Areas</h2>
+                <div class="w-24 h-1 bg-accent-cyan mx-auto rounded-full mb-6"></div>
+                <p class="text-space-100 max-w-3xl mx-auto text-lg">Advancing technologies to make sustainable human long-duration presence on the Moon and Mars possible.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-panel rounded-2xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-14 h-14 bg-accent-blue/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent-blue/40 transition-colors">
+                        <i class="fa-solid fa-seedling text-accent-cyan text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 font-space">Living Off the Land (ISRU)</h3>
+                    <p class="text-gray-400 font-light leading-relaxed mb-4">
+                        Harnessing Non-Terrestrial Resources for Exploration Technologies. Utilizing local regolith, water ice, and solar power to sustain outposts.
+                    </p>
+                    <a href="#" class="text-accent-cyan hover:text-white transition-colors text-sm font-medium flex items-center gap-1">Read Assessment <i class="fa-solid fa-chevron-right text-xs"></i></a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-panel rounded-2xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-14 h-14 bg-accent-blue/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent-blue/40 transition-colors">
+                        <i class="fa-solid fa-flask hover:scale-110 text-accent-cyan text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 font-space">Lunar Simulants & Feedstocks</h3>
+                    <p class="text-gray-400 font-light leading-relaxed mb-4">
+                        Replicating Average Lunar Highlands (e.g., OB-1A). Gap assessment of technologies useful for developing robust hardware on Earth.
+                    </p>
+                    <div class="text-xs text-space-100 bg-space-900/50 p-3 rounded-lg border border-white/5">
+                        <p class="mb-1"><i class="fa-solid fa-circle-check text-green-400 mr-2"></i> Currently available</p>
+                        <p><i class="fa-solid fa-circle-exclamation text-yellow-400 mr-2"></i> Stockpiles exist</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-panel rounded-2xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-14 h-14 bg-accent-blue/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent-blue/40 transition-colors">
+                        <i class="fa-solid fa-hammer text-accent-cyan text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 font-space">Space Construction</h3>
+                    <p class="text-gray-400 font-light leading-relaxed mb-4">
+                        Adapting Earth-Tested Methods for micro-gravity and high-radiation environments. 3D printing habitats using autonomous robotics.
+                    </p>
+                    <a href="#" class="text-accent-cyan hover:text-white transition-colors text-sm font-medium flex items-center gap-1">View Interactive Guide <i class="fa-solid fa-chevron-right text-xs"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community & Discussion Section (Reddit/Disqus Theme) -->
+    <section id="community" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-start">
+            
+            <!-- Left Side: Topic Intro -->
+            <div class="sticky top-32">
+                <span class="text-accent-cyan font-bold tracking-widest uppercase text-sm mb-2 block">Community Pulse</span>
+                <h2 class="font-space text-3xl md:text-5xl font-bold mb-6">The Race to Return</h2>
+                <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                    While the Global Exploration Roadmap outlines a cooperative future, competition continues to drive innovation. Join the ongoing debate about the next giant leap.
+                </p>
+                
+                <div class="bg-gradient-to-r from-space-800 to-transparent p-6 rounded-xl border-l-4 border-accent-blue mb-8">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fa-brands fa-reddit text-[#FF4500] text-2xl"></i>
+                        <span class="font-bold text-gray-200">r/NASA</span>
+                        <span class="text-xs text-gray-400">• Posted by [deleted]</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Is NASA or CNSA (China) best positioned to return humans to the moon first?</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-400">
+                        <span><i class="fa-solid fa-arrow-up mr-1 text-gray-300"></i> 4.2k</span>
+                        <span><i class="fa-solid fa-comment mr-1"></i> 842 Comments</span>
+                        <span><i class="fa-solid fa-share mr-1"></i> Share</span>
+                    </div>
+                </div>
+
+                <a href="https://www.reddit.com/r/nasa/" target="_blank" class="inline-flex items-center gap-2 text-white bg-[#FF4500] hover:bg-[#ff571a] px-6 py-3 rounded-full font-bold transition-colors">
+                    Join the Discussion on Reddit
+                </a>
+            </div>
+
+            <!-- Right Side: Simulated Comment Thread (Disqus style) -->
+            <div class="glass-panel rounded-2xl p-6 md:p-8">
+                <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-6">
+                    <span class="font-bold text-lg">Comments <span class="text-accent-blue bg-accent-blue/10 px-2 py-1 rounded text-sm ml-2">Powered by SpaceNet</span></span>
+                    <div class="text-sm text-gray-400 flex gap-4">
+                        <a href="#" class="hover:text-white transition-colors">Subscribe</a>
+                        <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    </div>
+                </div>
+
+                <!-- Comment 1 -->
+                <div class="flex gap-4 mb-8">
+                    <img src="https://placehold.co/40x40/4A90E2/ffffff?text=A" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex-1">
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="font-bold text-gray-200">AstroNerd99</span>
+                            <span class="text-xs text-gray-500">2 days ago</span>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-3">
+                            NASA's Artemis program has the heavy lift capability with SLS, and strong international partnerships (ESA, JAXA, CSA). But CNSA has been executing their Chang'e missions flawlessly and setting a very aggressive, focused timeline for the ILRS.
+                        </p>
+                        <div class="flex items-center gap-4 text-xs text-gray-400 font-medium">
+                            <button class="hover:text-accent-cyan flex items-center gap-1"><i class="fa-solid fa-angle-up"></i> 142</button>
+                            <button class="hover:text-red-400 flex items-center gap-1"><i class="fa-solid fa-angle-down"></i></button>
+                            <button class="hover:text-white">Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment 2 (Nested) -->
+                <div class="flex gap-4 mb-8 ml-10 pl-4 border-l-2 border-white/10">
+                    <img src="https://placehold.co/40x40/00F0FF/15192B?text=E" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex-1">
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="font-bold text-gray-200">EuroSpaceFan</span>
+                            <span class="text-xs text-gray-500">1 day ago</span>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-3">
+                            Don't forget the commercial sector! SpaceX's Starship HLS is the wildcard here. If it works as intended, it completely changes the payload math for NASA.
+                        </p>
+                        <div class="flex items-center gap-4 text-xs text-gray-400 font-medium">
+                            <button class="hover:text-accent-cyan flex items-center gap-1"><i class="fa-solid fa-angle-up"></i> 89</button>
+                            <button class="hover:text-red-400 flex items-center gap-1"><i class="fa-solid fa-angle-down"></i></button>
+                            <button class="hover:text-white">Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment 3 -->
+                <div class="flex gap-4 mb-6">
+                    <img src="https://placehold.co/40x40/333333/ffffff?text=L" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex-1">
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="font-bold text-gray-200">LunarGeologist</span>
+                            <span class="text-xs text-gray-500">5 hours ago</span>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-3">
+                            It's not just about getting there; it's about staying. The ISRU gap assessments mentioned by ISECG show we still have a lot of work to do on both sides regarding regolith handling and power generation.
+                        </p>
+                        <div class="flex items-center gap-4 text-xs text-gray-400 font-medium">
+                            <button class="hover:text-accent-cyan flex items-center gap-1"><i class="fa-solid fa-angle-up"></i> 56</button>
+                            <button class="hover:text-red-400 flex items-center gap-1"><i class="fa-solid fa-angle-down"></i></button>
+                            <button class="hover:text-white">Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="w-full text-center py-3 border border-white/20 rounded-lg text-sm text-gray-300 hover:bg-white/5 transition-colors mt-4">
+                    Load more comments
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Participating Agencies -->
+    <section id="agencies" class="py-16 bg-black/40 border-y border-white/5 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-10">Coordinating Space Agencies</h3>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
+                <!-- Text based logos to prevent broken links -->
+                <div class="font-bold text-2xl font-space flex items-center gap-2">
+                    <i class="fa-solid fa-meteor"></i> NASA
+                </div>
+                <div class="font-bold text-2xl font-space flex items-center gap-2">
+                    <i class="fa-solid fa-satellite"></i> ESA
+                </div>
+                <div class="font-bold text-2xl font-space flex items-center gap-2">
+                    <i class="fa-solid fa-moon"></i> CNSA
+                </div>
+                <div class="font-bold text-2xl font-space flex items-center gap-2">
+                    <i class="fa-solid fa-rocket"></i> JAXA
+                </div>
+                <div class="font-bold text-2xl font-space flex items-center gap-2">
+                    <i class="fa-solid fa-star"></i> CSA
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-space-900 border-t border-white/10 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-earth-americas text-accent-cyan text-2xl"></i>
+                        <span class="font-space font-bold text-xl tracking-wider uppercase">ISECG</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">
+                        National Aeronautics and Space Administration Headquarters<br>
+                        300 Hidden Figures Way SW<br>
+                        Washington, DC 20546
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        Anyone who wants to mirror or copy the information appeared here at this site should first consult the webmaster to get written permisson.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">Home</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">About ISECG</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">Publications</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">History</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Legal & Privacy</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">Terms and conditions</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">Privacy notice</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">Do Not Sell My Data</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-gray-500">
+                    © 2026 Space Exploration Coordination Portal. All rights reserved. (Simulated site based on public data)
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+            </div>
+            
+            <!-- Feedback Widget -->
+            <div class="mt-8 flex items-center justify-center gap-4 bg-white/5 py-3 px-6 rounded-full w-max mx-auto text-sm text-gray-300">
+                <span>Was this page helpful?</span>
+                <button class="hover:text-accent-cyan px-2 py-1 rounded transition-colors"><i class="fa-solid fa-check text-green-400 mr-1"></i> Yes</button>
+                <button class="hover:text-red-400 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-xmark text-red-400 mr-1"></i> No</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Elements Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navbar blur effect on scroll
+            const nav = document.querySelector('nav');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    nav.classList.add('shadow-lg', 'bg-space-900/90');
+                    nav.classList.remove('bg-transparent');
+                } else {
+                    nav.classList.remove('shadow-lg', 'bg-space-900/90');
+                    nav.classList.add('bg-transparent');
+                }
+            });
+
+            // Mobile menu toggle (simplified for layout)
+            const mobileBtn = document.querySelector('.fa-bars').parentElement;
+            mobileBtn.addEventListener('click', () => {
+                const menu = document.querySelector('.md\\:hidden.flex');
+                // Basic toggle simulation
+                alert("Mobile navigation menu would open here.");
+            });
+        });
+    </script>
+</body>
+</html>

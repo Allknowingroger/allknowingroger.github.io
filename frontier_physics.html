@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontiers of Physics: Nine Thresholds of the Unknown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #070A12;
+  --bg-surface: #0F1623;
+  --bg-elevated: #151D2E;
+  --ink: #E2E8F0;
+  --ink-secondary: #94A3B8;
+  --accent-cyan: #5EEAD4;
+  --accent-cyan-dim: color-mix(in oklab, var(--accent-cyan) 20%, transparent);
+  --accent-violet: #A78BFA;
+  --accent-violet-dim: color-mix(in oklab, var(--accent-violet) 20%, transparent);
+  --accent-amber: #FBBF24;
+  --accent-amber-dim: color-mix(in oklab, var(--accent-amber) 20%, transparent);
+  --line: #1E293B;
+  --line-bright: #334155;
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px -8px rgba(0,0,0,0.5);
+  --step--1: clamp(0.85rem, 0.82rem + 0.2vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.7vw, 1.75rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.8vw, 3rem);
+  --step-3: clamp(2.5rem, 1.8rem + 3.5vw, 5rem);
+  --space: clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: var(--bg-deep);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: var(--step-0);
+  overflow-x: hidden;
+}
+
+/* Background starfield */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, var(--accent-violet-dim) 0px, transparent 2px),
+    radial-gradient(circle at 80% 70%, var(--accent-cyan-dim) 0px, transparent 2px),
+    radial-gradient(circle at 50% 50%, var(--accent-amber-dim) 0px, transparent 1px);
+  background-size: 120px 120px, 180px 180px, 220px 220px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Typography */
+h1, h2, h3, .display {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.display {
+  font-size: var(--step-3);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--ink) 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+h2 {
+  font-size: var(--step-2);
+  margin-bottom: 0.5em;
+}
+
+h3 {
+  font-size: var(--step-1);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: var(--accent-cyan);
+}
+
+p {
+  max-width: 65ch;
+  margin-bottom: 1.2em;
+  color: var(--ink-secondary);
+}
+
+/* Layout shell */
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+/* Header / Hero */
+header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: var(--space) 0;
+}
+
+header .eyebrow {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-violet);
+  margin-bottom: 1rem;
+}
+
+header .subtitle {
+  font-size: var(--step-1);
+  color: var(--ink-secondary);
+  max-width: 50ch;
+  line-height: 1.5;
+  margin-top: 1.5rem;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-secondary);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: bounce 3s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* Field line navigation */
+.field-line {
+  position: fixed;
+  left: 2rem;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  z-index: 10;
+  display: none;
+}
+
+.field-line svg {
+  height: 100%;
+  width: 40px;
+  overflow: visible;
+}
+
+.field-line .track {
+  stroke: var(--line);
+  stroke-width: 2;
+  fill: none;
+}
+
+.field-line .progress {
+  stroke: var(--accent-cyan);
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  transition: stroke-dashoffset 0.2s linear;
+}
+
+.field-line .node {
+  fill: var(--bg-deep);
+  stroke: var(--line-bright);
+  stroke-width: 2;
+  r: 6;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.field-line .node.active {
+  stroke: var(--accent-cyan);
+  fill: var(--accent-cyan);
+  r: 9;
+  filter: drop-shadow(0 0 6px var(--accent-cyan));
+}
+
+.field-line .node:hover {
+  stroke: var(--ink);
+}
+
+.node-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  fill: var(--ink-secondary);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.field-line:hover .node-label {
+  opacity: 1;
+}
+
+@media (min-width: 1100px) {
+  .field-line { display: block; }
+  .shell { padding-left: 5rem; }
+}
+
+/* Sections */
+section {
+  padding: calc(var(--space) * 2) 0;
+  position: relative;
+}
+
+section::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
+  margin-top: calc(var(--space) * 2);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space);
+  align-items: start;
+  margin-bottom: var(--space);
+}
+
+@media (min-width: 768px) {
+  .section-header {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.section-number {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-violet);
+  border: 1px solid var(--line-bright);
+  padding: 0.2em 0.6em;
+  border-radius: 99px;
+  display: inline-block;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+
+/* Cards / Surfaces */
+.surface {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 0.8);
+  box-shadow: var(--shadow);
+}
+
+.surface h3 {
+  margin-top: 0;
+}
+
+/* Two-column text grid */
+.text-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--space) * 0.8);
+}
+
+@media (min-width: 768px) {
+  .text-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Inline SVG motif containers */
+.motif {
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+}
+
+/* Pull quotes / Key equations */
+.equation-box {
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+  border-left: 3px solid var(--accent-cyan);
+  padding: 1.5rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 1.5rem 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+.equation-box .label {
+  display: block;
+  font-size: var(--step--1);
+  color: var(--accent-violet);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+/* Lists */
+ul.physics-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+}
+
+ul.physics-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.8rem;
+  color: var(--ink-secondary);
+}
+
+ul.physics-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent-cyan-dim);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Synthesis band */
+.synthesis {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.2);
+  margin-top: calc(var(--space) * 2);
+}
+
+.synthesis h2 {
+  color: var(--accent-amber);
+}
+
+/* Footer */
+footer {
+  padding: calc(var(--space) * 2) 0;
+  text-align: center;
+  color: var(--ink-secondary);
+  font-size: var(--step--1);
+  border-top: 1px solid var(--line);
+  margin-top: calc(var(--space) * 2);
+}
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; }
+  body::before, .field-line, .scroll-hint { display: none; }
+  .surface, .synthesis, .motif { border: 1px solid #ccc; box-shadow: none; }
+  .display { background: none; -webkit-text-fill-color: #000; color: #000; }
+}
+@page { size: A4; margin: 18mm; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-hint { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Field line nav -->
+<nav class="field-line" aria-label="Section navigation">
+  <svg viewBox="0 0 40 1000" preserveAspectRatio="none">
+    <line class="track" x1="20" y1="20" x2="20" y2="980" />
+    <line class="progress" id="progressLine" x1="20" y1="20" x2="20" y2="980" />
+
+    <a href="#vacuum"><circle class="node" cx="20" cy="80" data-target="vacuum"/><text class="node-label" x="28" y="84">Vacuum</text></a>
+    <a href="#neutrino"><circle class="node" cx="20" cy="240" data-target="neutrino"/><text class="node-label" x="28" y="244">Neutrino</text></a>
+    <a href="#blackhole"><circle class="node" cx="20" cy="400" data-target="blackhole"/><text class="node-label" x="28" y="404">Black Holes</text></a>
+    <a href="#sono"><circle class="node" cx="20" cy="560" data-target="sono"/><text class="node-label" x="28" y="564">Sonoluminescence</text></a>
+    <a href="#navier"><circle class="node" cx="20" cy="700" data-target="navier"/><text class="node-label" x="28" y="704">Navier–Stokes</text></a>
+    <a href="#super"><circle class="node" cx="20" cy="820" data-target="super"/><text class="node-label" x="28" y="824">Superconductivity</text></a>
+    <a href="#quantum"><circle class="node" cx="20" cy="940" data-target="quantum"/><text class="node-label" x="28" y="944">Quantum Boundary</text></a>
+  </svg>
+</nav>
+
+<div class="shell">
+
+<header>
+  <div class="eyebrow">Frontiers of Physics</div>
+  <h1 class="display">Nine Thresholds<br>of the Unknown</h1>
+  <p class="subtitle">
+    From the decay of the quantum vacuum to the edge of superposition, these are the open problems that define where our knowledge ends and the universe's deepest machinery begins.
+  </p>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</header>
+
+<main>
+
+<!-- 1. Vacuum Decay -->
+<section id="vacuum" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">01</span>
+      <h2>Vacuum Decay</h2>
+      <p>The Higgs field may rest in a metastable “false vacuum.” Quantum tunneling permits the nucleation of a bubble of true vacuum that would expand at nearly the speed of light, reconfiguring the laws of physics as it grows.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="vacGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#A78BFA" stop-opacity="0.3"/><stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/></linearGradient>
+      </defs>
+      <path d="M 20 150 Q 80 150 100 80 Q 120 20 160 20 Q 200 20 220 80 Q 240 150 300 150" fill="none" stroke="#334155" stroke-width="3"/>
+      <path d="M 20 150 Q 80 150 100 80 Q 120 20 160 20 Q 200 20 220 80 Q 240 150 300 150 L 300 180 L 20 180 Z" fill="url(#vacGrad)"/>
+      <circle cx="100" cy="78" r="5" fill="#5EEAD4"><animate attributeName="opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite"/></circle>
+      <text x="140" y="170" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">False Vacuum</text>
+      <text x="260" y="170" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">True Vacuum</text>
+      <path d="M 110 70 Q 140 40 170 70" fill="none" stroke="#5EEAD4" stroke-width="1.5" stroke-dasharray="4 2"/>
+    </svg>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>Gravity & the Coleman–De Luccia Effect</h3>
+      <p>When gravity is included, the Euclidean Einstein equations coupled to the scalar field admit bounce solutions that can either stabilize the false vacuum or hasten its decay. Curvature inside the bubble can even trigger gravitational collapse rather than a benign phase transition.</p>
+    </div>
+    <div class="surface">
+      <h3>Black Holes as Catalysts</h3>
+      <p>Primordial black holes act as nucleation seeds. Like dust in raindrop formation, their extreme spacetime curvature lowers the tunneling barrier locally, potentially catalyzing vacuum decay in their vicinity.</p>
+    </div>
+  </div>
+
+  <div class="equation-box">
+    <span class="label">Type-I Seesaw (preview)</span>
+    m<sub>ν</sub> ≈ y²v² / M<sub>R</sub>
+  </div>
+
+  <p>Current Higgs and top masses place the electroweak vacuum in a metastable state. Its lifetime is estimated to far exceed 10¹⁰⁰ years—safe, but not eternal. New physics at the GUT scale or supersymmetry could restore absolute stability by altering the running of the Higgs self-coupling λ(μ).</p>
+</section>
+
+<!-- 2. Neutrino -->
+<section id="neutrino" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">02</span>
+      <h2>The Neutrino Solution</h2>
+      <p>The origin of the cosmological matter-antimatter asymmetry may be written in the properties of the neutrino. For every billion particle-antiparticle pairs annihilated in the early universe, roughly one extra matter particle survived.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <path d="M 20 100 Q 100 20 180 100 T 340 100" fill="none" stroke="#FBBF24" stroke-width="2" opacity="0.6"/>
+      <path d="M 20 100 Q 100 180 180 100 T 340 100" fill="none" stroke="#A78BFA" stroke-width="2" opacity="0.6"/>
+      <path d="M 20 100 Q 100 60 180 100 T 340 100" fill="none" stroke="#5EEAD4" stroke-width="2" opacity="0.6"/>
+      <text x="360" y="105" fill="#94A3B8" font-family="Space Grotesk" font-size="12">Flavor Oscillation</text>
+      <circle cx="180" cy="100" r="4" fill="#E2E8F0"/>
+    </svg>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>The Seesaw Mechanism</h3>
+      <p>To explain tiny neutrino masses, theorists introduce ultra-heavy right-handed neutrinos. A light neutrino acquires mass suppressed by the heavy scale, naturally yielding sub-eV masses when M<sub>R</sub> is near the GUT scale.</p>
+    </div>
+    <div class="surface">
+      <h3>Leptogenesis</h3>
+      <p>Heavy neutrinos decay out of equilibrium in the early universe. CP-violating interference in their decay channels creates a slight excess of leptons over antileptons—an asymmetry later converted into the baryon excess by sphaleron processes.</p>
+    </div>
+  </div>
+
+  <ul class="physics-list">
+    <li><strong>Majorana particles:</strong> If neutrinos are their own antiparticles, lepton number is fundamentally violated.</li>
+    <li><strong>Neutrinoless double-beta decay:</strong> Experiments like KamLAND-Zen, GERDA, and LEGEND search for this smoking-gun signature of the Seesaw mechanism.</li>
+    <li><strong>Sphaleron conversion:</strong> Non-perturbative Standard Model processes convert a lepton surplus (ΔL) into a baryon surplus (ΔB ∝ −ΔL).</li>
+  </ul>
+</section>
+
+<!-- 3. Black Hole Information -->
+<section id="blackhole" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">03</span>
+      <h2>The Black Hole Information Paradox</h2>
+      <p>Stephen Hawking’s 1976 calculation suggested that black holes destroy quantum information, emitting only thermal radiation. Modern physics has reframed the black hole as a quantum scrambler, not an eraser.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <radialGradient id="bhGrad"><stop offset="60%" stop-color="#000"/><stop offset="90%" stop-color="#5EEAD4" stop-opacity="0.3"/><stop offset="100%" stop-color="#5EEAD4" stop-opacity="0"/></radialGradient>
+      </defs>
+      <circle cx="200" cy="100" r="40" fill="url(#bhGrad)" stroke="#5EEAD4" stroke-width="1.5"/>
+      <circle cx="200" cy="100" r="12" fill="#070A12"/>
+      <path d="M 250 100 Q 300 80 340 60" fill="none" stroke="#A78BFA" stroke-width="1" stroke-dasharray="3 3" opacity="0.7">
+        <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 250 110 Q 300 120 340 130" fill="none" stroke="#A78BFA" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>
+      <circle cx="345" cy="58" r="2" fill="#A78BFA"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/></circle>
+      <circle cx="345" cy="132" r="2" fill="#A78BFA"><animate attributeName="opacity" values="0;1;0" dur="2.3s" repeatCount="indefinite"/></circle>
+      <text x="200" y="170" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">Quantum Scrambler</text>
+    </svg>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>The Page Curve</h3>
+      <p>The entanglement entropy of Hawking radiation should rise to a maximum at the Page time, then decrease to zero—signaling a pure total state. Before 2019, semiclassical gravity predicted ever-growing entropy, violating unitarity.</p>
+    </div>
+    <div class="surface">
+      <h3>The Island Rule (2019)</h3>
+      <p>Quantum extremal surfaces reveal an “island” inside the black hole that becomes entangled with exterior radiation after the Page time. Including this region reproduces the expected entropy curve and preserves information.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">The key finding is that black holes encode the universe’s past in a complex quantum language. Unitarity is preserved, but information is shredded across spacetime in a way that challenges our classical intuition about locality.</p>
+</section>
+
+<!-- 4. Sonoluminescence -->
+<section id="sono" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">04</span>
+      <h2>Sonoluminescence</h2>
+      <p>When driven by intense sound waves, microscopic bubbles in fluid collapse so violently that they emit flashes of light. The phenomenon sits at the intersection of fluid dynamics, plasma physics, and non-equilibrium thermodynamics.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <circle cx="200" cy="100" r="60" fill="none" stroke="#334155" stroke-width="1"/>
+      <circle cx="200" cy="100" r="45" fill="none" stroke="#334155" stroke-width="1"/>
+      <circle cx="200" cy="100" r="30" fill="none" stroke="#334155" stroke-width="1"/>
+      <circle cx="200" cy="100" r="15" fill="#FBBF24" opacity="0.8">
+        <animate attributeName="r" values="15;8;15" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M 140 100 L 120 100 M 260 100 L 280 100 M 200 40 L 200 20 M 200 160 L 200 180" stroke="#5EEAD4" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="200" y="190" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">Acoustic Cavitation</text>
+    </svg>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>Compression & Shock</h3>
+      <p>An acoustic standing wave traps a bubble at a pressure antinode. During collapse, the bubble walls act as an inertial piston, launching a convergent shock wave that focuses energy into the core.</p>
+    </div>
+    <div class="surface">
+      <h3>Micro-Plasma Core</h3>
+      <p>At peak collapse, temperatures exceed 10,000 K. Noble gases rectified into the bubble are ionized, creating a micro-plasma. Light emission is primarily thermal bremsstrahlung from electron-ion interactions.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">The flash duration is extraordinarily brief—on the order of 100 picoseconds—making sonoluminescence one of the most transient luminous events observable in a tabletop experiment.</p>
+</section>
+
+<!-- 5. Navier-Stokes -->
+<section id="navier" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">05</span>
+      <h2>The Navier–Stokes Equations</h2>
+      <p>Simple to write and applied daily in engineering, these equations hide a profound mathematical mystery. In three dimensions, it remains unknown whether smooth solutions always exist or whether non-linearity can produce a finite-time singularity.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <path d="M 20 100 C 60 40 100 160 140 100 S 220 40 260 100 S 340 160 380 100" fill="none" stroke="#5EEAD4" stroke-width="2" opacity="0.8"/>
+      <path d="M 20 120 C 60 60 100 180 140 120 S 220 60 260 120 S 340 180 380 120" fill="none" stroke="#A78BFA" stroke-width="2" opacity="0.5"/>
+      <path d="M 20 80 C 60 20 100 140 140 80 S 220 20 260 80 S 340 140 380 80" fill="none" stroke="#FBBF24" stroke-width="2" opacity="0.4"/>
+      <text x="200" y="180" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">Turbulent Cascade</text>
+    </svg>
+  </div>
+
+  <div class="equation-box">
+    <span class="label">Incompressible Navier–Stokes</span>
+    ρ(∂<strong>u</strong>/∂t + <strong>u</strong>·∇<strong>u</strong>) = −∇p + μ∇²<strong>u</strong> + <strong>f</strong>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>The Millennium Prize Problem</h3>
+      <p>The core issue is the non-linear advection term (u·∇)u: the velocity field advects itself, creating a self-referential energy cascade. Proving global smoothness or demonstrating finite-time blow-up remains one of mathematics’ most stubborn open problems.</p>
+    </div>
+    <div class="surface">
+      <h3>Kolmogorov Scales</h3>
+      <p>In turbulence, energy injected at large scales cascades down to the Kolmogorov scale, where viscosity dissipates it as heat. Statistical descriptions work well, but exact solutions are beyond reach.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Superconductivity -->
+<section id="super" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">06</span>
+      <h2>Superconductivity</h2>
+      <p>A tale of two regimes: conventional low-temperature superconductivity is solved by BCS theory, while high-temperature cuprates have defied a unified explanation for nearly four decades.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <line x1="50" y1="150" x2="350" y2="150" stroke="#334155" stroke-width="2"/>
+      <line x1="50" y1="150" x2="50" y2="50" stroke="#334155" stroke-width="2"/>
+      <path d="M 50 150 Q 100 150 120 120 Q 140 90 180 90 Q 220 90 240 120 Q 260 150 350 150" fill="none" stroke="#5EEAD4" stroke-width="3"/>
+      <text x="200" y="180" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">Superconducting Dome (T<sub>c</sub>)</text>
+      <text x="30" y="100" fill="#94A3B8" font-family="Space Grotesk" font-size="11" text-anchor="middle" transform="rotate(-90 30 100)">Temperature</text>
+      <text x="200" y="170" fill="#94A3B8" font-family="Space Grotesk" font-size="11" text-anchor="middle">Doping</text>
+      <rect x="60" y="60" width="60" height="20" fill="#A78BFA" opacity="0.3" rx="4"/>
+      <text x="90" y="75" fill="#A78BFA" font-family="Space Grotesk" font-size="10" text-anchor="middle">Mott Insulator</text>
+    </svg>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>BCS: Phonon-Mediated Pairing</h3>
+      <p>At low temperatures, lattice vibrations (phonons) glue electrons into Cooper pairs with opposite spins and momenta. These pairs condense into a macroscopic quantum state with a complex order parameter Ψ.</p>
+    </div>
+    <div class="surface">
+      <h3>The Cuprate Riddle</h3>
+      <p>The 2D Hubbard model—electrons hopping on a square lattice with strong Coulomb repulsion—is believed to capture cuprate physics, but it is intractable in the relevant non-perturbative regime. Leading candidates for pairing are spin fluctuations, not phonons.</p>
+    </div>
+  </div>
+
+  <ul class="physics-list">
+    <li><strong>Strange metal:</strong> A phase with linear-in-temperature resistivity, lacking well-defined quasiparticles.</li>
+    <li><strong>Pseudogap:</strong> A precursor regime above the superconducting dome where a partial gap opens in the electronic spectrum.</li>
+    <li><strong>Planckian dissipation:</strong> The strange metal may saturate a universal bound where the scattering rate is ℏ/(k<sub>B</sub>T).</li>
+  </ul>
+</section>
+
+<!-- 7. Quantum-Classical Boundary -->
+<section id="quantum" class="reveal">
+  <div class="section-header">
+    <div>
+      <span class="section-number">07</span>
+      <h2>The Quantum–Classical Boundary</h2>
+      <p>Why do we not see macroscopic superpositions? Standard quantum mechanics attributes the absence of large-scale quantumness to environmental decoherence. Objective collapse theories propose that spacetime superposition itself becomes unstable above a mass threshold.</p>
+    </div>
+    <svg class="motif" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <path d="M 40 100 Q 120 40 200 100 Q 280 160 360 100" fill="none" stroke="#5EEAD4" stroke-width="2" opacity="0.8"/>
+      <path d="M 200 100 L 200 140" stroke="#FBBF24" stroke-width="2"/>
+      <circle cx="200" cy="150" r="6" fill="#FBBF24">
+        <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <text x="200" y="180" fill="#94A3B8" font-family="Space Grotesk" font-size="12" text-anchor="middle">Spontaneous Collapse</text>
+    </svg>
+  </div>
+
+  <div class="text-grid">
+    <div class="surface">
+      <h3>Standard QM & Decoherence</h3>
+      <p>In perfect isolation, superpositions persist indefinitely. Environmental interactions—gas collisions, phonons, photons—cause the off-diagonal terms of the density matrix to decay, washing out interference.</p>
+    </div>
+    <div class="surface">
+      <h3>Objective Collapse (GRW / Diósi–Penrose)</h3>
+      <p>Collapse models modify the Schrödinger equation with stochastic or gravitational terms. In the Diósi–Penrose picture, superposing a mass in two locations creates incompatible spacetime curvatures. The gravitational self-energy E<sub>G</sub> sets a characteristic collapse time τ ≈ ℏ/E<sub>G</sub>.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">Levitated nanoparticle experiments in ultra-high vacuum are now approaching the mass scales where gravity-related collapse might appear. Standard QM predicts stable ground-state cooling; objective collapse predicts anomalous residual heating—a live experimental frontier.</p>
+</section>
+
+<!-- Synthesis -->
+<section class="synthesis reveal" id="synthesis">
+  <span class="section-number">Synthesis</span>
+  <h2>Common Threads at the Edge</h2>
+  <div class="text-grid">
+    <div>
+      <h3>Metastability</h3>
+      <p>From the Higgs vacuum to the Mott insulator awaiting doping, many systems sit in precarious states whose fate is determined by quantum or thermal fluctuations.</p>
+    </div>
+    <div>
+      <h3>Information</h3>
+      <p>Leptogenesis turns quantum CP violation into macroscopic matter. Black holes scramble but preserve information. Objective collapse proposes that information localization is fundamental, not emergent.</p>
+    </div>
+    <div>
+      <h3>Scale & Emergence</h3>
+      <p>The same quantum mechanics governing Cooper pairs may, according to collapse models, break down for a levitated nanoparticle. Simple Navier–Stokes rules generate infinite turbulent complexity.</p>
+    </div>
+    <div>
+      <h3>The Consistency of the Universe</h3>
+      <p>These frontiers remind us that nature is not obliged to be simple—only consistent. Our task is to read that consistency across twenty orders of magnitude, from picosecond bubble flashes to the lifetime of the quantum vacuum.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Frontiers of Physics · A synthesis of nine open problems in fundamental science</p>
+</footer>
+
+</div>
+
+<script>
+// Scroll reveal via IntersectionObserver
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+reveals.forEach(el => observer.observe(el));
+
+// Field line progress & active node
+const progressLine = document.getElementById('progressLine');
+const nodes = document.querySelectorAll('.field-line .node');
+const sections = ['vacuum','neutrino','blackhole','sono','navier','super','quantum','synthesis'];
+
+function updateFieldLine() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const progress = scrollTop / docHeight;
+  if (progressLine) {
+    progressLine.style.strokeDashoffset = 1200 - (progress * 1200);
+  }
+
+  let activeIndex = 0;
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.5) activeIndex = i;
+    }
+  });
+
+  nodes.forEach((node, i) => {
+    if (i === activeIndex) node.classList.add('active');
+    else node.classList.remove('active');
+  });
+}
+
+window.addEventListener('scroll', updateFieldLine);
+updateFieldLine();
+
+// Node click smooth scroll (fallback)
+nodes.forEach(node => {
+  node.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.getElementById(node.dataset.target);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

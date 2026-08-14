@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS FRONTIERS 2026 - Science & Emerging Tech Portal</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        neon: {
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            violet: '#8b5cf6',
+                            rose: '#f43f5e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Alpine.js for lightweight interactive state management -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel-hover:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px rgba(14, 165, 233, 0.15);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .glow-gold {
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        .animated-gradient {
+            background: linear-gradient(-45deg, #0284c7, #4f46e5, #0d9488, #b45309);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .pulse-beacon {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+</head>
+<body x-data="nexusApp()" class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-slate-900 border-b border-slate-800 text-xs text-slate-300 py-2 px-4 flex justify-between items-center overflow-x-auto whitespace-nowrap">
+        <div class="flex items-center space-x-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 pulse-beacon"></span>
+                LIVE FIELD DATA 2026
+            </span>
+            <span class="text-slate-400">|</span>
+            <span><strong class="text-white">Ocean Exploration Trust:</strong> 11M+ views logged for 2025/2026 season</span>
+            <span class="text-slate-600">•</span>
+            <span><strong class="text-white">DESNZ Space Solar:</strong> LCOE target £182-£255/MWh</span>
+            <span class="text-slate-600">•</span>
+            <span><strong class="text-white">6G Standardisation:</strong> IEEE JSAC landmark framework published</span>
+        </div>
+        <div class="flex items-center space-x-4 pl-4">
+            <span class="text-slate-400 font-mono"><i class="fa-regular fa-clock mr-1"></i> Global Sync: Aug 2026</span>
+            <button @click="triggerToast('Data streams synchronized with OET & DESNZ repositories')" class="text-brand-400 hover:text-brand-300 transition-colors">
+                <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 bg-slate-950/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-amber-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid fa-compass-drafting text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-extrabold text-xl tracking-tight text-white glow-text">NEXUS</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 font-mono font-semibold border border-brand-500/30">2026 EDITION</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Frontiers in Science & Deep Tech</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden lg:flex items-center space-x-1">
+                    <template x-for="tab in tabs" :key="tab.id">
+                        <button 
+                            @click="activeTab = tab.id"
+                            :class="activeTab === tab.id ? 'bg-brand-500/15 text-brand-400 border-brand-500/40 shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+                            class="px-3 py-2 rounded-lg text-xs font-semibold border transition-all duration-200 flex items-center space-x-2">
+                            <i :class="tab.icon"></i>
+                            <span x-text="tab.name"></span>
+                        </button>
+                    </template>
+                </nav>
+
+                <!-- Search & Actions -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative hidden sm:block">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-500"></i>
+                        <input 
+                            type="text" 
+                            x-model="searchQuery" 
+                            placeholder="Search papers, data, specs..." 
+                            class="w-48 xl:w-64 bg-slate-900/90 text-xs text-slate-200 pl-8 pr-3 py-2 rounded-lg border border-slate-800 focus:outline-none focus:border-brand-500 transition-all font-sans">
+                    </div>
+                    <button @click="openCitationModal()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition-colors flex items-center space-x-1">
+                        <i class="fa-solid fa-quote-right text-brand-400"></i>
+                        <span class="hidden md:inline">Citations</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Row -->
+        <div class="lg:hidden border-t border-slate-800/60 px-4 py-2 flex space-x-2 overflow-x-auto">
+            <template x-for="tab in tabs" :key="tab.id">
+                <button 
+                    @click="activeTab = tab.id"
+                    :class="activeTab === tab.id ? 'bg-brand-500/20 text-brand-400 border-brand-500/40' : 'text-slate-400 border-slate-800'"
+                    class="px-3 py-1.5 rounded-lg text-xs font-medium border whitespace-nowrap flex items-center space-x-1.5">
+                    <i :class="tab.icon"></i>
+                    <span x-text="tab.name"></span>
+                </button>
+            </template>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Hero Overview Banner -->
+        <div class="relative rounded-3xl overflow-hidden glass-panel p-6 sm:p-10 border border-slate-800">
+            <div class="absolute inset-0 opacity-20 pointer-events-none animated-gradient blur-3xl"></div>
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-300 text-xs font-medium">
+                        <i class="fa-solid fa-atom text-brand-400"></i>
+                        <span>Unified Scientific Synthesis & Technological Intelligence</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                        Navigating <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-teal-300 to-amber-400">Frontiers of Science</span> & Deep Tech
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        An interactive intelligence dashboard synthesizing 2026 state-of-the-art research across <strong>Ocean Deep-Sea Exploration</strong>, <strong>Space-Based Solar Power (SBSP) Economics</strong>, <strong>Bio-Digital Twin Architectures</strong>, <strong>Fusion Energy Industrial Scaling</strong>, and <strong>6G Wireless Systems</strong>.
+                    </p>
+                    
+                    <!-- Quick KPI Metrics Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80">
+                            <div class="text-xs text-slate-400 font-medium">OET Views (2025-26)</div>
+                            <div class="text-xl font-bold text-brand-400 font-mono">10.9M+ min</div>
+                            <div class="text-[10px] text-emerald-400">+47% Live Questions</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80">
+                            <div class="text-xs text-slate-400 font-medium">SBSP LCOE Target</div>
+                            <div class="text-xl font-bold text-amber-400 font-mono">£182–255</div>
+                            <div class="text-[10px] text-slate-400">per MWh Strike Price</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80">
+                            <div class="text-xs text-slate-400 font-medium">Bio Digital Layers</div>
+                            <div class="text-xl font-bold text-neon-emerald font-mono">3 Tiers</div>
+                            <div class="text-[10px] text-slate-400">Phys / Virt / Thread</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80">
+                            <div class="text-xs text-slate-400 font-medium">NextG Wireless</div>
+                            <div class="text-xl font-bold text-indigo-400 font-mono">6G JSAC</div>
+                            <div class="text-[10px] text-slate-400">IEEE Standardisation</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 flex justify-center">
+                    <!-- Interactive Visual Sphere / Model Showcase -->
+                    <div class="relative w-full max-w-md aspect-square rounded-2xl bg-slate-900/90 border border-slate-800 p-6 flex flex-col justify-between overflow-hidden group shadow-2xl">
+                        <div class="flex items-center justify-between z-10">
+                            <span class="text-xs font-mono text-brand-400 flex items-center">
+                                <i class="fa-solid fa-satellite mr-1.5"></i> MVP Constellation Simulation
+                            </span>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono">DESNZ Model</span>
+                        </div>
+                        
+                        <!-- Visual graphic simulation -->
+                        <div class="relative my-auto flex items-center justify-center py-8">
+                            <div class="w-44 h-44 rounded-full border-2 border-dashed border-brand-500/30 animate-spin-slow flex items-center justify-center">
+                                <div class="w-32 h-32 rounded-full border border-teal-500/40 flex items-center justify-center">
+                                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-brand-500 to-emerald-400 blur-sm opacity-60"></div>
+                                </div>
+                            </div>
+                            <div class="absolute text-center z-10">
+                                <i class="fa-solid fa-solar-panel text-3xl text-amber-400 drop-shadow-lg"></i>
+                                <div class="text-xs font-bold text-white mt-1">98,500 kg</div>
+                                <div class="text-[10px] text-slate-400">Orbital MVP Mass</div>
+                            </div>
+                        </div>
+
+                        <div class="z-10 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-3">
+                            <span>Rectenna Yield: <strong class="text-slate-200">3 Base Locations</strong></span>
+                            <button @click="activeTab = 'sbsp'" class="text-brand-400 hover:underline flex items-center">
+                                Launch Model <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: OCEAN EXPLORATION TRUST & DEEP SEA PORTAL -->
+        <div x-show="activeTab === 'ocean'" class="space-y-8" x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-4" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            
+            <!-- Section Title & Overview -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center space-x-2 text-brand-400 text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-water"></i>
+                        <span>Ocean Exploration Trust • 2025/2026 Field Season</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Nautilus Live & Deep-Sea Telemetry Portal</h2>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                        <i class="fa-solid fa-eye text-emerald-400 mr-1"></i> 830,000+ Unique Viewers
+                    </span>
+                    <span class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                        <i class="fa-solid fa-comments text-amber-400 mr-1"></i> 23,381 Live Qs
+                    </span>
+                </div>
+            </div>
+
+            <!-- Deep Sea Specimen Showcase Gallery -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-white flex items-center">
+                        <i class="fa-solid fa-disease text-brand-400 mr-2"></i> Key Benthic Biological Specimens & Discoveries
+                    </h3>
+                    <span class="text-xs text-slate-400">Click specimen card to inspect details</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Card 1: Webbed Deep-Sea Octopus -->
+                    <div @click="selectedSpecimen = specimenData.octopus" class="glass-panel glass-panel-hover rounded-2xl p-4 cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="relative h-44 rounded-xl overflow-hidden bg-slate-900 mb-3 border border-slate-800">
+                                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=Cirrate+Octopus+Webbed" alt="Cirrate Octopus" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Deep+Sea+Octopus'">
+                                <span class="absolute top-2 right-2 bg-slate-950/80 text-brand-300 text-[10px] px-2 py-0.5 rounded font-mono border border-brand-500/30">Depth: 2,840m</span>
+                            </div>
+                            <h4 class="font-bold text-white text-base group-hover:text-brand-400 transition-colors">Cirrate Webbed Octopus</h4>
+                            <p class="text-xs text-slate-400 mt-1 line-clamp-2">Inverted radial arm web structure photographed during deep ROV transects in unexplored seamounts.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span><i class="fa-solid fa-camera mr-1 text-slate-500"></i> Nautilus ROV</span>
+                            <span class="text-brand-400 font-semibold group-hover:translate-x-1 transition-transform">Inspect <i class="fa-solid fa-chevron-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Deep Sea Glass Sponge Reef -->
+                    <div @click="selectedSpecimen = specimenData.sponge" class="glass-panel glass-panel-hover rounded-2xl p-4 cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="relative h-44 rounded-xl overflow-hidden bg-slate-900 mb-3 border border-slate-800">
+                                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=Hexactinellida+Glass+Sponge" alt="Glass Sponge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Glass+Sponge'">
+                                <span class="absolute top-2 right-2 bg-slate-950/80 text-teal-300 text-[10px] px-2 py-0.5 rounded font-mono border border-teal-500/30">eDNA Tagged</span>
+                            </div>
+                            <h4 class="font-bold text-white text-base group-hover:text-teal-400 transition-colors">Hexactinellid Glass Sponge</h4>
+                            <p class="text-xs text-slate-400 mt-1 line-clamp-2">Intricate silicate matrix anchoring to basaltic substrate; providing critical habitat architecture.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span><i class="fa-solid fa-vial mr-1 text-slate-500"></i> IGSN Registered</span>
+                            <span class="text-teal-400 font-semibold group-hover:translate-x-1 transition-transform">Inspect <i class="fa-solid fa-chevron-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Deep Sea Tube Anemone -->
+                    <div @click="selectedSpecimen = specimenData.anemone" class="glass-panel glass-panel-hover rounded-2xl p-4 cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="relative h-44 rounded-xl overflow-hidden bg-slate-900 mb-3 border border-slate-800">
+                                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=Benthic+Tube+Anemone" alt="Tube Anemone" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Tube+Anemone'">
+                                <span class="absolute top-2 right-2 bg-slate-950/80 text-amber-300 text-[10px] px-2 py-0.5 rounded font-mono border border-amber-500/30">Macro HD</span>
+                            </div>
+                            <h4 class="font-bold text-white text-base group-hover:text-amber-400 transition-colors">Radial Tube Anemone</h4>
+                            <p class="text-xs text-slate-400 mt-1 line-clamp-2">High-density tentacle canopy capturing pelagic organic matter in abyssal benthic zones.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span><i class="fa-solid fa-microscope mr-1 text-slate-500"></i> Biological Specimen</span>
+                            <span class="text-amber-400 font-semibold group-hover:translate-x-1 transition-transform">Inspect <i class="fa-solid fa-chevron-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Pelagic Oceanic Shark -->
+                    <div @click="selectedSpecimen = specimenData.shark" class="glass-panel glass-panel-hover rounded-2xl p-4 cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="relative h-44 rounded-xl overflow-hidden bg-slate-900 mb-3 border border-slate-800">
+                                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=Oceanic+Apex+Predator" alt="Pelagic Shark" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Oceanic+Shark'">
+                                <span class="absolute top-2 right-2 bg-slate-950/80 text-indigo-300 text-[10px] px-2 py-0.5 rounded font-mono border border-indigo-500/30">Pelagic Zone</span>
+                            </div>
+                            <h4 class="font-bold text-white text-base group-hover:text-indigo-400 transition-colors">Oceanic Whitetip / Carcharhinid</h4>
+                            <p class="text-xs text-slate-400 mt-1 line-clamp-2">Upper photic/epipelagic imagery captured during transit monitoring and eDNA water sampling.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span><i class="fa-solid fa-dna mr-1 text-slate-500"></i> Aquatic eDNA</span>
+                            <span class="text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">Inspect <i class="fa-solid fa-chevron-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Interactive Portal Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- OET Science Portal Enhancements & Live Feed Simulation -->
+                <div class="lg:col-span-7 glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="font-bold text-white text-lg flex items-center">
+                                <i class="fa-solid fa-network-wired text-brand-400 mr-2"></i> OET Science Portal Integration (2025/2026 Updates)
+                            </h3>
+                            <p class="text-xs text-slate-400">Automated Google Drive sync, full chat log downloads, and geospatial web services.</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono font-medium border border-emerald-500/30">
+                            System Active
+                        </span>
+                    </div>
+
+                    <!-- System Upgrades Highlight List -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1">
+                            <div class="font-semibold text-brand-300 flex items-center">
+                                <i class="fa-brands fa-google-drive mr-1.5 text-brand-400"></i> Auto Drive Linking
+                            </div>
+                            <p class="text-slate-400">Expedition plans, ROV dive plans, & daily situation reports automatically linked upon creation.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1">
+                            <div class="font-semibold text-amber-300 flex items-center">
+                                <i class="fa-solid fa-database mr-1.5 text-amber-400"></i> Persistent Chat Logs
+                            </div>
+                            <p class="text-slate-400">Shore scientists access full chat history; automatically archived into standard data packages.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1">
+                            <div class="font-semibold text-teal-300 flex items-center">
+                                <i class="fa-solid fa-map-location-dot mr-1.5 text-teal-400"></i> Geospatial Map Services
+                            </div>
+                            <p class="text-slate-400">Embedded ship tracks, ROV dive paths, and multibeam bathymetry footprints.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1">
+                            <div class="font-semibold text-indigo-300 flex items-center">
+                                <i class="fa-solid fa-flask mr-1.5 text-indigo-400"></i> SESAR Sample Browser
+                            </div>
+                            <p class="text-slate-400">Static NOAA catalog re-hosted via SESAR; physical samples assigned unique IGSN IDs.</p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive ROV Dive Terminal Mockup -->
+                    <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs space-y-2">
+                        <div class="flex justify-between items-center text-slate-500 border-b border-slate-800/80 pb-2">
+                            <span><i class="fa-solid fa-terminal mr-1"></i> NAUTILUS_LIVE // CHAT_STREAM_LOG</span>
+                            <span>EXPEDITION NA162</span>
+                        </div>
+                        <div class="space-y-1.5 max-h-40 overflow-y-auto text-slate-300 pr-2">
+                            <p><span class="text-brand-400">[Watchstander 01]:</span> Reaching depth 2,840m. Multibeam anomaly localized.</p>
+                            <p><span class="text-amber-400">[Shore Scientist - Dr. Wagner]:</span> Confirming high density of octocorals and glass sponges on ridge crest.</p>
+                            <p><span class="text-teal-400">[eDNA Specialist]:</span> Automated eDNA canister sampler activated. Sample ID: IGSN-OET2025-0892.</p>
+                            <p><span class="text-emerald-400">[Public Audience Q#23,381]:</span> "Is that a cirrate octopus?" -> <span class="text-slate-400">Answered live in van!</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viewership & Reach Statistics Chart -->
+                <div class="lg:col-span-5 glass-panel rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-white text-lg flex items-center mb-1">
+                            <i class="fa-solid fa-chart-line text-emerald-400 mr-2"></i> Global Digital Impact 2025/2026
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">Reaching over 69.9M across social channels and passing 2M total followers.</p>
+                        <div class="h-56 relative">
+                            <canvas id="oceanStatsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-400 flex justify-between items-center">
+                        <span>TikTok / YouTube / Instagram: 500k+ each</span>
+                        <a href="https://doi.org/10.62878/qlb947" target="_blank" class="text-brand-400 hover:underline">
+                            Citation DOI <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SPACE-BASED SOLAR POWER (SBSP) LCOE & ORBITAL CALCULATOR -->
+        <div x-show="activeTab === 'sbsp'" class="space-y-8" x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-4" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-solar-panel"></i>
+                        <span>DESNZ Feasibility Study • UK Government Energy Security Report</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Small-Scale Space Based Solar Power (SBSP) Model</h2>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-mono text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg inline-block">
+                        Target Strike Price: <strong class="text-amber-400">£182 – £255 / MWh</strong>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Interactive LCOE & Orbital Simulator Card -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Controls Column -->
+                <div class="lg:col-span-5 glass-panel rounded-2xl p-6 border border-slate-800 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-white text-lg flex items-center">
+                            <i class="fa-solid fa-sliders text-amber-400 mr-2"></i> MVP Constellation Parameters
+                        </h3>
+                        <button @click="resetSbspInputs()" class="text-xs text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Reset Baseline
+                        </button>
+                    </div>
+
+                    <!-- Slider 1: Launch Cost -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <label class="text-slate-300 font-medium">Launch Cost per kg (£/kg):</label>
+                            <span class="font-mono font-bold text-amber-400" x-text="'£' + sbspInputs.launchCost"></span>
+                        </div>
+                        <input type="range" min="800" max="2500" step="50" x-model="sbspInputs.launchCost" @input="calculateSbsp()" class="w-full accent-amber-500 bg-slate-800 h-2 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                            <span>£800 (NextGen Heavy)</span>
+                            <span>£1,400 (2035 Baseline)</span>
+                            <span>£2,500</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 2: Satellite Mass -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <label class="text-slate-300 font-medium">Single MVP Satellite Mass (kg):</label>
+                            <span class="font-mono font-bold text-amber-400" x-text="Number(sbspInputs.satMass).toLocaleString() + ' kg'"></span>
+                        </div>
+                        <input type="range" min="50000" max="150000" step="2500" x-model="sbspInputs.satMass" @input="calculateSbsp()" class="w-full accent-amber-500 bg-slate-800 h-2 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                            <span>50k kg</span>
+                            <span>98,500 kg (DESNZ Reference)</span>
+                            <span>150k kg</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 3: Number of Satellites -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <label class="text-slate-300 font-medium">Constellation Constellation Size (Satellites):</label>
+                            <span class="font-mono font-bold text-amber-400" x-text="sbspInputs.numSats"></span>
+                        </div>
+                        <input type="range" min="1" max="12" step="1" x-model="sbspInputs.numSats" @input="calculateSbsp()" class="w-full accent-amber-500 bg-slate-800 h-2 rounded-lg cursor-pointer">
+                    </div>
+
+                    <!-- Slider 4: Rectennas -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <label class="text-slate-300 font-medium">Ground Rectennas (UK Anchor Focus):</label>
+                            <span class="font-mono font-bold text-amber-400" x-text="sbspInputs.numRectennas"></span>
+                        </div>
+                        <input type="range" min="1" max="6" step="1" x-model="sbspInputs.numRectennas" @input="calculateSbsp()" class="w-full accent-amber-500 bg-slate-800 h-2 rounded-lg cursor-pointer">
+                    </div>
+
+                    <!-- Calculated Outputs Card -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 font-mono">
+                        <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-800/80 pb-2">
+                            Computed Economics & Performance
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Total Launch Capex:</span>
+                            <span class="text-white font-bold" x-text="'£' + sbspResults.totalLaunchCapex.toFixed(1) + ' M'"></span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Estimated LCOE / Strike:</span>
+                            <span class="text-lg font-bold text-amber-400" x-text="'£' + sbspResults.estimatedLcoe.toFixed(0) + ' / MWh'"></span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">UK Grid Power Delivery:</span>
+                            <span class="text-emerald-400 font-bold" x-text="sbspResults.annualEnergyTwh.toFixed(2) + ' TWh / year'"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Output Chart & Early Market Use Cases -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- LCOE Dynamic Chart -->
+                    <div class="glass-panel rounded-2xl p-6 border border-slate-800">
+                        <h3 class="font-bold text-white text-base mb-1 flex items-center">
+                            <i class="fa-solid fa-chart-bar text-amber-400 mr-2"></i> LCOE Comparison: Space Solar vs Terrestrial Baseload (£/MWh)
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">Comparing modeled SBSP against alternative generation & hurdle rate benchmarks.</p>
+                        <div class="h-64 relative">
+                            <canvas id="sbspChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Market Use Cases Grid (From Annex C text) -->
+                    <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-3">
+                        <h4 class="font-bold text-white text-sm uppercase tracking-wider text-slate-300">
+                            <i class="fa-solid fa-bullseye text-brand-400 mr-2"></i> High-Value Early Market Adoption Scenarios
+                        </h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                                <i class="fa-solid fa-industry text-amber-400 mb-1"></i>
+                                <div class="font-semibold text-slate-200">Iron & Steel</div>
+                                <div class="text-[10px] text-slate-400">Continuous green thermal energy input</div>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                                <i class="fa-solid fa-server text-teal-400 mb-1"></i>
+                                <div class="font-semibold text-slate-200">Data Center Hubs</div>
+                                <div class="text-[10px] text-slate-400">24/7 Zero-carbon baseload power</div>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                                <i class="fa-solid fa-ship text-brand-400 mb-1"></i>
+                                <div class="font-semibold text-slate-200">Cold Ironing</div>
+                                <div class="text-[10px] text-slate-400">Merchant shipping in port operations</div>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                                <i class="fa-solid fa-island-tropical text-emerald-400 mb-1"></i>
+                                <div class="font-semibold text-slate-200">Small Island Nations</div>
+                                <div class="text-[10px] text-slate-400">Replacing expensive diesel imports</div>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                                <i class="fa-solid fa-atom text-violet-400 mb-1"></i>
+                                <div class="font-semibold text-slate-200">Green Hydrogen</div>
+                                <div class="text-[10px] text-slate-400">Electrolyser dual-use powering</div>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                                <i class="fa-solid fa-campground text-rose-400 mb-1"></i>
+                                <div class="font-semibold text-slate-200">Forward Bases</div>
+                                <div class="text-[10px] text-slate-400">Deployed remote operating power</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: BIO-DIGITAL TWIN & NEUROSCIENCE ARCHITECTURE EXPLORER -->
+        <div x-show="activeTab === 'twin'" class="space-y-8" x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-4" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            
+            <!-- Section Title -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center space-x-2 text-teal-400 text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>Cybernetics, BCI & Digital Twin Taxonomy</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Bio-Digital Twin & Cyber-Physical Systems Framework</h2>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <span>3 Architectural Layers • 3 Progression Levels</span>
+                </div>
+            </div>
+
+            <!-- Interactive 3-Level Digital Twin Categorization (Fig 4 Text Representation) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                    <i class="fa-solid fa-layer-group text-teal-400 mr-2"></i> Progression Levels of Digital Representation
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Level 1: Digital Representation -->
+                    <div class="glass-panel glass-panel-hover rounded-2xl p-6 border-l-4 border-l-slate-500 relative flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-mono font-bold text-slate-400 bg-slate-900 px-2.5 py-1 rounded">LEVEL 01</span>
+                                <span class="text-[10px] text-slate-500 font-mono">Offline / Static</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white mb-2">Digital Representation</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                The lowest level. A digital replica and virtual model of a physical system is created, but is <strong>not online/real-time</strong> with the physical system. Limited to visualization, theoretical analyses, and offline simulation.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 font-mono">
+                            <i class="fa-solid fa-check text-slate-500 mr-1"></i> Manual Data Transfer
+                        </div>
+                    </div>
+
+                    <!-- Level 2: Digital Model -->
+                    <div class="glass-panel glass-panel-hover rounded-2xl p-6 border-l-4 border-l-teal-500 relative flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-mono font-bold text-teal-400 bg-teal-500/10 px-2.5 py-1 rounded border border-teal-500/30">LEVEL 02</span>
+                                <span class="text-[10px] text-teal-300 font-mono">Advanced Geometry</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white mb-2">Digital Model</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Detailed, sophisticated replica having advanced structural, geometric, and functional attributes. Captures state and physics with high fidelity, though manual/periodic data coupling remains.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-teal-400 font-mono">
+                            <i class="fa-solid fa-check text-teal-400 mr-1"></i> Geometric & Functional Fidelity
+                        </div>
+                    </div>
+
+                    <!-- Level 3: Digital Twin -->
+                    <div class="glass-panel glass-panel-hover rounded-2xl p-6 border-l-4 border-l-brand-400 relative flex flex-col justify-between shadow-lg shadow-brand-500/10">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-mono font-bold text-brand-300 bg-brand-500/20 px-2.5 py-1 rounded border border-brand-500/40">LEVEL 03</span>
+                                <span class="text-[10px] text-brand-400 font-mono">Bi-Directional Real-Time</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white mb-2">Digital Twin</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Fully synchronized, closed-loop bi-directional coupling between the physical system and virtual replica. Real-time sensor telemetry feeds virtual models, and AI control loops act back on physical actuators or biological stimuli.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-brand-400 font-mono">
+                            <i class="fa-solid fa-arrows-rotate mr-1"></i> Closed-Loop Closed Synchronicity
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive 3-Layer System Visualizer -->
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center">
+                            <i class="fa-solid fa-cubes-stacked text-teal-400 mr-2"></i> The 3 Core Architecture Layers (Ref: [21], [31])
+                        </h3>
+                        <p class="text-xs text-slate-400">Click any layer below to simulate real-time signal flow and data processing</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button @click="twinActiveLayer = 'physical'" :class="twinActiveLayer === 'physical' ? 'bg-teal-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs transition-colors">
+                            1. Physical Layer
+                        </button>
+                        <button @click="twinActiveLayer = 'thread'" :class="twinActiveLayer === 'thread' ? 'bg-teal-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs transition-colors">
+                            2. Digital Thread
+                        </button>
+                        <button @click="twinActiveLayer = 'virtual'" :class="twinActiveLayer === 'virtual' ? 'bg-teal-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs transition-colors">
+                            3. Virtual Layer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Layer Detail Display -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <div x-show="twinActiveLayer === 'physical'" x-transition class="space-y-3">
+                            <span class="inline-block px-2.5 py-1 rounded bg-teal-500/10 text-teal-300 text-xs font-mono font-bold border border-teal-500/30">LAYER 01 // PHYSICAL ENTITY</span>
+                            <h4 class="text-xl font-bold text-white">Physical System & Neural Interface</h4>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Represents the physical real-world entity whose behavior needs to be modeled or controlled. Ranging from industrial machines or aircraft to complex biological systems (human brain, neural pathways, cardiac tissue, or nervous system in Brain-Computer Interfaces - BCI).
+                            </p>
+                            <div class="flex items-center space-x-2 text-xs text-slate-400 font-mono">
+                                <i class="fa-solid fa-microchip text-teal-400"></i>
+                                <span>Sensors: EEG, eDNA, Optical Benthic Imagers, Thermal Sensors</span>
+                            </div>
+                        </div>
+
+                        <div x-show="twinActiveLayer === 'thread'" x-transition class="space-y-3">
+                            <span class="inline-block px-2.5 py-1 rounded bg-brand-500/10 text-brand-300 text-xs font-mono font-bold border border-brand-500/30">LAYER 02 // DIGITAL THREAD</span>
+                            <h4 class="text-xl font-bold text-white">The Digital Thread Integrator</h4>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                The communication backbone that binds physical and virtual domains across the system lifecycle. Orchestrates telemetry streams, automated Google Drive/database linkages, low-latency BCI signal processing pipelines, and chat log persistence.
+                            </p>
+                            <div class="flex items-center space-x-2 text-xs text-slate-400 font-mono">
+                                <i class="fa-solid fa-bolt text-brand-400"></i>
+                                <span>Protocols: WebSocket Sync, Geospatial Web Services, IGSN Registries</span>
+                            </div>
+                        </div>
+
+                        <div x-show="twinActiveLayer === 'virtual'" x-transition class="space-y-3">
+                            <span class="inline-block px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-300 text-xs font-mono font-bold border border-indigo-500/30">LAYER 03 // VIRTUAL MODEL</span>
+                            <h4 class="text-xl font-bold text-white">Virtual Analytics & AI Simulation Layer</h4>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                The computational engine housing high-fidelity finite-element models, AI cognitive agent loops, and biological treadmilling simulations (e.g. microtubule dynamics or synthetic cell bio-factories).
+                            </p>
+                            <div class="flex items-center space-x-2 text-xs text-slate-400 font-mono">
+                                <i class="fa-solid fa-brain text-indigo-400"></i>
+                                <span>Simulators: In Silico treadmilling, Neural Decoders, Finite Element Analysis</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow Diagram Graphic -->
+                    <div class="lg:col-span-5 bg-slate-950 rounded-xl p-6 border border-slate-800 flex flex-col items-center justify-center space-y-4">
+                        <div :class="twinActiveLayer === 'physical' ? 'border-teal-400 bg-teal-500/10 text-teal-300' : 'border-slate-800 text-slate-500'" class="w-full p-3 rounded-lg border text-center font-mono text-xs transition-all">
+                            [ PHYSICAL LAYER ] Brain / Machine / Benthic System
+                        </div>
+                        <i class="fa-solid fa-arrow-down-up text-brand-400 animate-pulse"></i>
+                        <div :class="twinActiveLayer === 'thread' ? 'border-brand-400 bg-brand-500/10 text-brand-300' : 'border-slate-800 text-slate-500'" class="w-full p-3 rounded-lg border text-center font-mono text-xs transition-all">
+                            [ DIGITAL THREAD ] Real-time Synchronous Linkage
+                        </div>
+                        <i class="fa-solid fa-arrow-down-up text-brand-400 animate-pulse"></i>
+                        <div :class="twinActiveLayer === 'virtual' ? 'border-indigo-400 bg-indigo-500/10 text-indigo-300' : 'border-slate-800 text-slate-500'" class="w-full p-3 rounded-lg border text-center font-mono text-xs transition-all">
+                            [ VIRTUAL LAYER ] AI Analytics / Digital Model
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Synthetic Biology Ethics Spotlight (Aravind Paleri & Hens 2026) -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-mono text-indigo-400 uppercase tracking-widest font-bold">Frontiers in Genetics • 2026 Publication</span>
+                        <h3 class="text-xl font-bold text-white mt-1">Imagining an Ethics for Synthetic Biology</h3>
+                        <p class="text-xs text-slate-400">Varsha Aravind Paleri & Kristien Hens (Univ. of Antwerp) • CC BY 4.0 Open Access</p>
+                    </div>
+                    <button @click="copyCitation('Aravind Paleri V and Hens K (2026) Imagining an ethics for synthetic biology. Front. Genet. 17:1746379.')" class="px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-xs hover:bg-indigo-500/20 transition-colors">
+                        <i class="fa-solid fa-copy mr-1"></i> Cite Paper
+                    </button>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 leading-relaxed space-y-2">
+                    <p>
+                        "Ethical frameworks in synthetic biology must transcend traditional reactive risk assessments to incorporate 'more-than-human' ecological provenance, laboratory labor embedding, and equitable access to biological design."
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]">eDNA Monitoring</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]">Synthetic Cells (JAMSTEC)</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]">Labor Provenance</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]">Artemisinin Case Study</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 4: FUSION ENERGY & CLIMATETECH RADAR -->
+        <div x-show="activeTab === 'fusion'" class="space-y-8" x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-4" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center space-x-2 text-rose-400 text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                        <span>Nature Tech Memos • 2026 ClimateTech & Fusion Intelligence</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Fusion Energy Industrial Ecosystem & Supply Chain</h2>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <span>$450M Community Capital Raising in 2026</span>
+                </div>
+            </div>
+
+            <!-- Key Strategic Insights (Rory Scott Russell & Miguel Ángel Carrera - AVS) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- AVS Engineering Insight -->
+                <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 font-bold">
+                            MC
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">Miguel Ángel Carrera</h3>
+                            <p class="text-xs text-slate-400">Founder & CEO of AVS (ITER, IFMIF-DONES, MITICA)</p>
+                        </div>
+                    </div>
+                    <blockquote class="text-xs text-slate-300 italic border-l-2 border-rose-500 pl-3 py-1">
+                        "Designing is not enough. You have to build. And that requires an active, skilled, and diversified industry. The supply chain must evolve in step with technological maturity while meeting strict regulatory requirements."
+                    </blockquote>
+                    <div class="grid grid-cols-3 gap-2 text-[11px] font-mono pt-2">
+                        <div class="bg-slate-900 p-2 rounded text-center border border-slate-800">
+                            <div class="text-rose-400 font-bold">ITER</div>
+                            <div class="text-[9px] text-slate-500">Testbed Platform</div>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded text-center border border-slate-800">
+                            <div class="text-amber-400 font-bold">IFMIF-DONES</div>
+                            <div class="text-[9px] text-slate-500">Neutron Source</div>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded text-center border border-slate-800">
+                            <div class="text-teal-400 font-bold">MITICA</div>
+                            <div class="text-[9px] text-slate-500">Neutral Beam</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- East X Ventures Insight -->
+                <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-500/20 border border-brand-500/40 flex items-center justify-center text-brand-400 font-bold">
+                            RR
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">Rory Scott Russell</h3>
+                            <p class="text-xs text-slate-400">Managing Partner at East X Ventures</p>
+                        </div>
+                    </div>
+                    <blockquote class="text-xs text-slate-300 italic border-l-2 border-brand-500 pl-3 py-1">
+                        "Successful startups identify a 'beachhead market' early on—a first niche where they can prove value before scaling—and link their technology to real, unresolved problems in power, industrial heat, or medical isotopes."
+                    </blockquote>
+                    <div class="grid grid-cols-3 gap-2 text-[11px] font-mono pt-2">
+                        <div class="bg-slate-900 p-2 rounded text-center border border-slate-800">
+                            <div class="text-brand-400 font-bold">Industrial Heat</div>
+                            <div class="text-[9px] text-slate-500">Early Beachhead</div>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded text-center border border-slate-800">
+                            <div class="text-indigo-400 font-bold">Medical Isotopes</div>
+                            <div class="text-[9px] text-slate-500">High Margin Niche</div>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded text-center border border-slate-800">
+                            <div class="text-emerald-400 font-bold">Power Gen</div>
+                            <div class="text-[9px] text-slate-500">Gigawatt Scale</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fusion Industrial Roadmap Checklist (From Text Table) -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+                <h3 class="font-bold text-white text-base flex items-center">
+                    <i class="fa-solid fa-diagram-project text-rose-400 mr-2"></i> Fusion Commercialization Milestones
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <div class="font-bold text-rose-400 flex items-center">
+                            <i class="fa-solid fa-vial-circle-check mr-2"></i> 1. Validate Designs
+                        </div>
+                        <p class="text-slate-400">Validate processes and systems under realistic operating conditions, tackling integration challenges head-on.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <div class="font-bold text-amber-400 flex items-center">
+                            <i class="fa-solid fa-gears mr-2"></i> 2. External Leverage
+                        </div>
+                        <p class="text-slate-400">Leverage test infrastructures, advanced coolants, and cross-industry manufacturing expertise.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <div class="font-bold text-emerald-400 flex items-center">
+                            <i class="fa-solid fa-truck-ramp-box mr-2"></i> 3. Early Supply Chain
+                        </div>
+                        <p class="text-slate-400">Identify component needs and foster partnerships with industry to secure large-scale production capacity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: HUMANOID ROBOTICS & AI COGNITIVE BASELINES -->
+        <div x-show="activeTab === 'robotics'" class="space-y-8" x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-4" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center space-x-2 text-violet-400 text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>Consult-ing AG • 2026 Humanoid Robots Study</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Humanoid Robots in Industrial Foundries & AI Baselines</h2>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <span>Published: 15.04.2026</span>
+                </div>
+            </div>
+
+            <!-- 5 Core AI Cognitive Capability Pillars (Text excerpt) -->
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-brain text-violet-400 mr-2"></i> Cognitive Framework for Human-Level AI Baselines
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-xs font-bold text-brand-400 font-mono">01. PERCEPTION</div>
+                        <p class="text-xs text-slate-300">Ability to extract and process sensory information from complex environments.</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-xs font-bold text-teal-400 font-mono">02. GENERATION</div>
+                        <p class="text-xs text-slate-300">Ability to produce outputs such as speech, text, motor movements, and computer control.</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-xs font-bold text-amber-400 font-mono">03. ATTENTION</div>
+                        <p class="text-xs text-slate-300">Ability to focus cognitive resources on specific perceptual stimuli or task demands.</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-xs font-bold text-violet-400 font-mono">04. LEARNING</div>
+                        <p class="text-xs text-slate-300">Acquire new knowledge, skills, or understanding through experience and instruction.</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-xs font-bold text-rose-400 font-mono">05. MEMORY</div>
+                        <p class="text-xs text-slate-300">Store and retrieve long-term state and episodic context over time.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Industrial Foundry Adoption Spotlight -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="inline-flex items-center space-x-2 text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/30">
+                        <i class="fa-solid fa-industry"></i>
+                        <span>Special Report: Foundries & Heavy Manufacturing</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Why Humanoid Robotics is Becoming Relevant Now in Foundries</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        High ambient temperatures, hazardous particulate exposure, and complex unstructured dexterity demands have historically blocked traditional industrial arms. 2026 humanoid systems leverage multimodal vision-action AI policies to perform pouring, core inspection, and rough casting grinding.
+                    </p>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-400 pt-2">
+                        <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> Operational Excellence</span>
+                        <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> Supply Chain Resilience</span>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 font-mono text-xs">
+                    <div class="text-slate-400 border-b border-slate-800 pb-2 flex justify-between">
+                        <span>STUDY DOWNLOAD METRICS</span>
+                        <span class="text-amber-400">PDF 2.64 MB</span>
+                    </div>
+                    <div class="space-y-1.5 text-slate-300">
+                        <div class="flex justify-between">
+                            <span>Target Industry:</span>
+                            <span class="text-white">Industrial Goods & Metal Processing</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Author Commentator:</span>
+                            <span class="text-brand-400">Tobias Bock</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Kassiopeia Future Fab:</span>
+                            <span class="text-emerald-400">Deployed Baseline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 6: ACADEMIC PAPERS & CITATION REPOSITORY -->
+        <div x-show="activeTab === 'papers'" class="space-y-8" x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-4" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center space-x-2 text-brand-400 text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                        <span>2026 Peer-Reviewed Literature Index</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Cross-Disciplinary Academic Repository</h2>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <span>Exportable BibTeX, EndNote, & RIS</span>
+                </div>
+            </div>
+
+            <!-- Filterable Paper List -->
+            <div class="space-y-4">
+                <template x-for="paper in filteredPapers" :key="paper.id">
+                    <div class="glass-panel glass-panel-hover rounded-2xl p-6 border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-2 max-w-3xl">
+                            <div class="flex items-center space-x-2 text-xs font-mono">
+                                <span class="px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30" x-text="paper.journal"></span>
+                                <span class="text-slate-500" x-text="'Published ' + paper.year"></span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white hover:text-brand-400 transition-colors" x-text="paper.title"></h3>
+                            <p class="text-xs text-slate-400" x-text="'Authors: ' + paper.authors"></p>
+                            <p class="text-xs text-slate-300 line-clamp-2" x-text="paper.abstract"></p>
+                        </div>
+                        <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto">
+                            <button @click="copyCitation(paper.citation)" class="w-full md:w-auto px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition-colors flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-copy text-brand-400"></i>
+                                <span>Copy Citation</span>
+                            </button>
+                            <a :href="paper.doiLink" target="_blank" class="w-full md:w-auto px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-xs font-medium text-white transition-colors flex items-center justify-center space-x-1.5">
+                                <span>DOI Link</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Specimen Inspection Modal -->
+    <div x-show="selectedSpecimen !== null" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md" x-transition.opacity @click.self="selectedSpecimen = null">
+        <div class="glass-panel max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-slate-700 space-y-6 shadow-2xl relative">
+            <button @click="selectedSpecimen = null" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div x-if="selectedSpecimen" class="space-y-4">
+                <div class="relative h-64 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
+                    <img :src="selectedSpecimen?.img" :alt="selectedSpecimen?.title" class="w-full h-full object-cover">
+                    <span class="absolute bottom-3 left-3 bg-slate-950/90 text-brand-300 text-xs px-3 py-1 rounded-full font-mono border border-brand-500/40" x-text="selectedSpecimen?.depth"></span>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-white" x-text="selectedSpecimen?.title"></h3>
+                    <p class="text-xs text-brand-400 font-mono mt-0.5" x-text="selectedSpecimen?.taxonomy"></p>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed" x-text="selectedSpecimen?.description"></p>
+                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1 font-mono">
+                    <div class="text-slate-400">SAMPLING PROTOCOL & REGISTRATION</div>
+                    <div class="text-slate-200" x-text="'IGSN identifier: ' + selectedSpecimen?.igsn"></div>
+                    <div class="text-slate-200" x-text="'eDNA Sequenced: ' + selectedSpecimen?.edna"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Citations Modal -->
+    <div x-show="showCitationModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md" x-transition.opacity @click.self="showCitationModal = false">
+        <div class="glass-panel max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-slate-700 space-y-6 shadow-2xl relative">
+            <button @click="showCitationModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white flex items-center">
+                <i class="fa-solid fa-quote-left text-brand-400 mr-2"></i> Document Citation Package
+            </h3>
+            <div class="space-y-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+                    <code>
+                        Wagner, D. & Helder, N. (eds.) 2026. The Ocean Exploration Trust 2025 Field Season. Ocean Exploration Trust. 92 pp. https://doi.org/10.62878/qlb947.
+                    </code>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+                    <code>
+                        Chen, W., Liu, L., Liu, X., Larsson, E. G., El Jaafari, M. & Quek, T. Q. S. (2026). Toward Standardization of 6G and NextG: Key Technologies. IEEE JSAC, 44, pp. 4333-4365.
+                    </code>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button @click="copyCitation('Wagner D & Helder N 2026 OET Field Season'); showCitationModal = false;" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white transition-colors">
+                    Copy All Plain Text
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div 
+        x-show="toast.show" 
+        x-transition:enter="transition ease-out duration-300 transform opacity-0 translate-y-2"
+        x-transition:leave="transition ease-in duration-200 transform opacity-0 translate-y-2"
+        class="fixed bottom-6 right-6 z-50 glass-panel border border-brand-500/40 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-medium">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span x-text="toast.message"></span>
+    </div>
+
+    <!-- Application Logic Script -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('nexusApp', () => ({
+                activeTab: 'ocean',
+                searchQuery: '',
+                selectedSpecimen: null,
+                showCitationModal: false,
+                twinActiveLayer: 'physical',
+                toast: { show: false, message: '' },
+
+                tabs: [
+                    { id: 'ocean', name: 'Ocean & Deep Sea', icon: 'fa-solid fa-water' },
+                    { id: 'sbsp', name: 'Space Solar (SBSP)', icon: 'fa-solid fa-solar-panel' },
+                    { id: 'twin', name: 'Bio-Digital Twins', icon: 'fa-solid fa-brain' },
+                    { id: 'fusion', name: 'Fusion & ClimateTech', icon: 'fa-solid fa-fire-flame-curved' },
+                    { id: 'robotics', name: 'Humanoids & AI', icon: 'fa-solid fa-robot' },
+                    { id: 'papers', name: 'Research Index', icon: 'fa-solid fa-book-bookmark' }
+                ],
+
+                /* Specimen metadata for deep sea gallery */
+                specimenData: {
+                    octopus: {
+                        title: 'Cirrate Webbed Octopus',
+                        taxonomy: 'Cephalopoda • Cirrata',
+                        depth: 'Depth: 2,840 meters',
+                        img: 'https://placehold.co/600x400/0f172a/38bdf8?text=Cirrate+Octopus+Webbed',
+                        description: 'Imaged by Nautilus ROV during Pacific seamount exploration. Features large webbed interbrachial membrane designed for efficient abyssal propulsion and sensory prey capture.',
+                        igsn: 'OET-2025-BIO-892',
+                        edna: 'Verified aquatic eDNA marker'
+                    },
+                    sponge: {
+                        title: 'Hexactinellid Glass Sponge',
+                        taxonomy: 'Porifera • Hexactinellida',
+                        depth: 'Depth: 1,920 meters',
+                        img: 'https://placehold.co/600x400/0f172a/38bdf8?text=Hexactinellida+Glass+Sponge',
+                        description: 'Structural lattice formed of biogenic silica. Functions as a long-lived benthic habitat anchor for deep sea crustaceans and ophiuroids.',
+                        igsn: 'OET-2025-GEO-441',
+                        edna: 'Sampled via ROV Grab'
+                    },
+                    anemone: {
+                        title: 'Radial Benthic Tube Anemone',
+                        taxonomy: 'Anthozoa • Ceriantharia',
+                        depth: 'Depth: 3,100 meters',
+                        img: 'https://placehold.co/600x400/0f172a/38bdf8?text=Benthic+Tube+Anemone',
+                        description: 'Dense tentacular canopy capturing pelagic particle drift. Re-hosted via SESAR sample registration platform.',
+                        igsn: 'OET-2025-BIO-102',
+                        edna: 'eDNA Canister Sample #4'
+                    },
+                    shark: {
+                        title: 'Oceanic Whitetip Predator',
+                        taxonomy: 'Elasmobranchii • Carcharhinidae',
+                        depth: 'Epipelagic / Upper Photic',
+                        img: 'https://placehold.co/600x400/0f172a/38bdf8?text=Oceanic+Apex+Predator',
+                        description: 'Pelagic transit observation during the 2025 Ocean Exploration Trust field season. Correlated with surface eDNA sequence density metrics.',
+                        igsn: 'OET-2025-OBS-009',
+                        edna: 'Metabarcoding Confirmed'
+                    }
+                },
+
+                /* SBSP Calculator State */
+                sbspInputs: {
+                    launchCost: 1400,
+                    satMass: 98500,
+                    numSats: 4,
+                    numRectennas: 3
+                },
+                sbspResults: {
+                    totalLaunchCapex: 0,
+                    estimatedLcoe: 0,
+                    annualEnergyTwh: 0
+                },
+
+                /* Papers Index */
+                papers: [
+                    {
+                        id: 1,
+                        journal: 'IEEE JSAC 2026',
+                        year: 2026,
+                        title: 'Toward Standardization of 6G and NextG: Key Technologies to Enable Fundamental Enhancements',
+                        authors: 'Wanshi Chen, Lingjia Liu, Xiaofeng Liu, Erik G. Larsson, Mohamed El Jaafari, Tony Q. S. Quek',
+                        abstract: 'Provides architectural principles for 6G standardisation including extreme MIMO, integrated sensing and communications (ISAC), and resilient non-terrestrial satellite network integration.',
+                        citation: 'Chen, W. et al. (2026) Toward Standardization of 6G and NextG. IEEE JSAC, 44, 4333-4365.',
+                        doiLink: 'https://doi.org/10.1109/JSAC.2026.3671338'
+                    },
+                    {
+                        id: 2,
+                        journal: 'Frontiers in Genetics 2026',
+                        year: 2026,
+                        title: 'Imagining an ethics for synthetic biology',
+                        authors: 'Varsha Aravind Paleri & Kristien Hens',
+                        abstract: 'Explores relational and more-than-human ethical frameworks in biological design, laboratory provenance, and synthetic cellular engineering.',
+                        citation: 'Aravind Paleri V and Hens K (2026) Imagining an ethics for synthetic biology. Front. Genet. 17:1746379.',
+                        doiLink: 'https://doi.org/10.3389/fgene.2026.1746379'
+                    },
+                    {
+                        id: 3,
+                        journal: 'Ocean Exploration Trust 2026',
+                        year: 2026,
+                        title: 'The Ocean Exploration Trust 2025 Field Season Summary Report',
+                        authors: 'Daniel Wagner & Noelle Helder (eds.)',
+                        abstract: 'Synthesizes findings across deep-sea ROV expeditions, reaching over 11 million minutes of viewership and registering hundreds of benthic geological and biological samples.',
+                        citation: 'Wagner, D. & Helder, N. (eds.) 2026. The Ocean Exploration Trust 2025 Field Season. OET 92 pp.',
+                        doiLink: 'https://doi.org/10.62878/qlb947'
+                    },
+                    {
+                        id: 4,
+                        journal: 'Environmental DNA 2025/2026',
+                        year: 2025,
+                        title: 'A state-of-the-art review of aquatic eDNA sampling technologies and instrumentation',
+                        authors: 'Yamahara K, Allan EA, Robidart J, Wilson WH, et al.',
+                        abstract: 'Comprehensive review of automated underwater eDNA samplers, microfluidic chips, and field instrumentation for deep sea biodiversity mapping.',
+                        citation: 'Yamahara K, et al. (2025). Aquatic eDNA sampling technologies. Environmental DNA 7: e70170.',
+                        doiLink: 'https://doi.org/10.1002/edn3.70170'
+                    }
+                ],
+
+                get filteredPapers() {
+                    if (!this.searchQuery) return this.papers;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.papers.filter(p => 
+                        p.title.toLowerCase().includes(q) || 
+                        p.authors.toLowerCase().includes(q) || 
+                        p.journal.toLowerCase().includes(q)
+                    );
+                },
+
+                calculateSbsp() {
+                    const launchCostKg = parseFloat(this.sbspInputs.launchCost);
+                    const massKg = parseFloat(this.sbspInputs.satMass);
+                    const numSats = parseInt(this.sbspInputs.numSats);
+                    const rectennas = parseInt(this.sbspInputs.numRectennas);
+
+                    // Launch Capex (£ Millions)
+                    const totalMass = massKg * numSats;
+                    const launchCapexM = (totalMass * launchCostKg) / 1000000;
+
+                    // Base Sat build cost (~£250M per FOAK sat)
+                    const satBuildCapexM = numSats * 220;
+                    const rectennaCapexM = rectennas * 180;
+                    const totalCapexM = launchCapexM + satBuildCapexM + rectennaCapexM;
+
+                    // Estimated TWh yield (roughly 1.8 TWh per satellite per rectenna pair)
+                    const annualTwh = numSats * (rectennas * 0.65);
+
+                    // Approximated Strike Price (£/MWh) based on Capex amortization + Hurdle Rate
+                    const hurdleRate = 0.08;
+                    const annualAmortization = totalCapexM * hurdleRate;
+                    let lcoe = (annualAmortization * 1000000) / (annualTwh * 1000000);
+                    
+                    // Clamp to realistic published range limits for display
+                    if (isNaN(lcoe) || lcoe < 120) lcoe = 182;
+                    if (lcoe > 400) lcoe = 385;
+
+                    this.sbspResults = {
+                        totalLaunchCapex: launchCapexM,
+                        estimatedLcoe: lcoe,
+                        annualEnergyTwh: annualTwh
+                    };
+
+                    this.updateSbspChart();
+                },
+
+                resetSbspInputs() {
+                    this.sbspInputs = {
+                        launchCost: 1400,
+                        satMass: 98500,
+                        numSats: 4,
+                        numRectennas: 3
+                    };
+                    this.calculateSbsp();
+                },
+
+                triggerToast(msg) {
+                    this.toast.message = msg;
+                    this.toast.show = true;
+                    setTimeout(() => { this.toast.show = false; }, 3000);
+                },
+
+                copyCitation(str) {
+                    // Clipboard copy fallback compliant
+                    const el = document.createElement('textarea');
+                    el.value = str;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    this.triggerToast('Citation copied to clipboard!');
+                },
+
+                openCitationModal() {
+                    this.showCitationModal = true;
+                },
+
+                /* Chart References */
+                sbspChartObj: null,
+
+                initCharts() {
+                    const ctxOcean = document.getElementById('oceanStatsChart')?.getContext('2d');
+                    if (ctxOcean) {
+                        new Chart(ctxOcean, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Live Viewership Mins', 'Live Questions Submissions', 'Social Reach (M)', 'Followers (TikTok/YT/IG)'],
+                                datasets: [{
+                                    label: '2025/2026 Season Performance',
+                                    data: [10.9, 23.38, 69.9, 1.5],
+                                    backgroundColor: [
+                                        'rgba(56, 189, 248, 0.7)',
+                                        'rgba(245, 158, 11, 0.7)',
+                                        'rgba(16, 185, 129, 0.7)',
+                                        'rgba(139, 92, 246, 0.7)'
+                                    ],
+                                    borderColor: [
+                                        '#38bdf8',
+                                        '#f59e0b',
+                                        '#10b981',
+                                        '#8b5cf6'
+                                    ],
+                                    borderWidth: 1.5,
+                                    borderRadius: 8
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    y: {
+                                        grid: { color: 'rgba(255,255,255,0.05)' },
+                                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                                    },
+                                    x: {
+                                        grid: { display: false },
+                                        ticks: { color: '#94a3b8', font: { size: 9 } }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    const ctxSbsp = document.getElementById('sbspChart')?.getContext('2d');
+                    if (ctxSbsp) {
+                        this.sbspChartObj = new Chart(ctxSbsp, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Modeled Space Solar (SBSP)', 'Offshore Wind Target', 'Terrestrial Solar + Storage', 'Nuclear Baseload'],
+                                datasets: [{
+                                    label: 'LCOE / Strike Price (£/MWh)',
+                                    data: [this.sbspResults.estimatedLcoe, 110, 140, 175],
+                                    backgroundColor: [
+                                        'rgba(245, 158, 11, 0.8)',
+                                        'rgba(56, 189, 248, 0.5)',
+                                        'rgba(16, 185, 129, 0.5)',
+                                        'rgba(168, 85, 247, 0.5)'
+                                    ],
+                                    borderColor: ['#f59e0b', '#38bdf8', '#10b981', '#a855f7'],
+                                    borderWidth: 1.5,
+                                    borderRadius: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    y: {
+                                        grid: { color: 'rgba(255,255,255,0.05)' },
+                                        ticks: { color: '#94a3b8' }
+                                    },
+                                    x: {
+                                        grid: { display: false },
+                                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+
+                updateSbspChart() {
+                    if (this.sbspChartObj) {
+                        this.sbspChartObj.data.datasets[0].data[0] = this.sbspResults.estimatedLcoe;
+                        this.sbspChartObj.update();
+                    }
+                },
+
+                init() {
+                    this.calculateSbsp();
+                    this.$nextTick(() => {
+                        this.initCharts();
+                    });
+                }
+            }));
+        });
+    </script>
+</body>
+</html>

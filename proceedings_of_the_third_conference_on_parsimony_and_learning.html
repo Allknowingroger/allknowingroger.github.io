@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proceedings of the Third Conference on Parsimony and Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #111827;
+        }
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .header-bg {
+            background-color: #1e3a8a;
+            color: white;
+        }
+        .header-bg a {
+            color: #93c5fd;
+        }
+        .header-bg a:hover {
+            color: white;
+        }
+        .paper-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .paper-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        .paper-authors {
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        .paper-venue {
+            font-style: italic;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .paper-links a {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #374151;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #d1d5db;
+        }
+        .paper-links a:hover {
+            background-color: #e5e7eb;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header-bg py-6 shadow-md">
+        <div class="container mx-auto px-4 md:px-8 max-w-7xl">
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">Proceedings of Machine Learning Research</h1>
+            <nav class="flex flex-wrap gap-4 text-sm font-medium mt-4">
+                <a href="https://proceedings.mlr.press/">PMLR</a>
+                <a href="https://www.jmlr.org/">JMLR</a>
+                <a href="https://data.mlr.press/">DMLR</a>
+                <a href="https://jmlr.org/tmlr/">TMLR</a>
+                <a href="https://www.jmlr.org/mloss">MLOSS</a>
+                <a href="https://proceedings.mlr.press/faq.html">FAQ</a>
+                <a href="https://proceedings.mlr.press/spec.html">Submission Format</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 md:px-8 py-8 max-w-7xl">
+        <div class="flex justify-end mb-4">
+            <a href="https://github.com/mlresearch/v328/edit/gh-pages/index.html" class="text-sm text-gray-500 hover:text-gray-700">[ edit ]</a>
+        </div>
+
+        <h2 class="text-xl md:text-2xl font-bold mb-4 border-b pb-2 border-gray-200">Volume 328: Third Conference on Parsimony and Learning, 23-26 March 2026, Tübingen, Germany</h2>
+        
+        <div class="flex justify-end mb-4">
+             <a href="https://github.com/mlresearch/v328/edit/gh-pages/_config.yml" class="text-sm text-gray-500 hover:text-gray-700">[ edit ]</a>
+        </div>
+
+        <p class="font-medium text-lg mb-4"><strong>Editors:</strong> Rebekka Burkholz, Shiwei Liu, Saiprasad Ravishankar, William Redman, Wei Huang, Weijie Su, Zhihui Zhu</p>
+        
+        <div class="flex gap-4 mb-8">
+            <a href="https://proceedings.mlr.press/v328/assets/bib/bibliography.bib" class="text-sm bg-gray-100 px-3 py-1 rounded border border-gray-300 hover:bg-gray-200">[ bib ]</a>
+            <a href="https://proceedings.mlr.press/v328/assets/bib/citeproc.yaml" class="text-sm bg-gray-100 px-3 py-1 rounded border border-gray-300 hover:bg-gray-200">[ citeproc ]</a>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 mb-8 items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <label for="filter-authors" class="font-medium whitespace-nowrap">Filter Authors:</label>
+            <input type="text" id="filter-authors" class="border border-gray-300 rounded px-3 py-2 w-full sm:max-w-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="e.g., Smith">
+            
+            <label for="filter-titles" class="font-medium whitespace-nowrap sm:ml-4">Filter Titles:</label>
+            <input type="text" id="filter-titles" class="border border-gray-300 rounded px-3 py-2 w-full sm:max-w-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="e.g., Learning">
+        </div>
+
+        <div class="space-y-6">
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Semantic Homogeneity As Demonstration: Batch-Structured Semi-Supervised In-Context Learning for Natural Language Understanding</h3>
+                <p class="paper-authors">Cheng Chen, Yuangang Pan, Ivor Tsang</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:1-23</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/chen26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/chen26a/chen26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=y5bJXgBx6a">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Improving Medical Visual Reinforcement Fine-Tuning via Perception and Reasoning Augmentation</h3>
+                <p class="paper-authors">Guangjing Yang, ZhangYuan Yu, Ziyuan Qin, Xinyuan Song, Huahui Yi, Qingbo Kang, Jun Gao, Yiyue Li, Chenlin Du, Qicheng Lao</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:24-41</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/yang26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/yang26a/yang26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=y3TlQ7nYOA">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">ROSE: Reordered SparseGPT for More Accurate One-Shot Large Language Models Pruning</h3>
+                <p class="paper-authors">Mingluo Su, Huan Wang</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:42-60</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/su26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/su26a/su26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=x43pVuRwGM">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">AlphaFormer: End-to-End Symbolic Regression of Alpha Factors with Transformers</h3>
+                <p class="paper-authors">Haotong Huang, Jie Peng, Zezhen Ding, Pingzhi Li, Tianlong Chen</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:61-82</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/huang26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/huang26a/huang26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=tpnr6ZHSBD">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">From sparse recovery to plug-and-play priors, understanding trade-offs for stable recovery with generalized projected gradient descent</h3>
+                <p class="paper-authors">Ali Joundi, Yann Traonmilin, Jean-François Aujol</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:83-103</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/joundi26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/joundi26a/joundi26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=tFPDgYd2B6">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Panza: Investigating the Feasibility of Fully-Local Personalized Text Generation</h3>
+                <p class="paper-authors">Armand Mihai Nicolicioiu, Eugenia Iofinova, Andrej Jovanovic, Eldar Kurtic, Mahdi Nikdan, Andrei Panferov, Ilia Markov, Nir N Shavit, Dan Alistarh</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:104-130</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/nicolicioiu26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/nicolicioiu26a/nicolicioiu26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=soFWnTqd23">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Enhancing Low-Cost Video Editing with Lightweight Adaptors and Temporal-Aware Inversion</h3>
+                <p class="paper-authors">Yangfan He, Sida Li, Jianhui Wang, Xinyuan Song, Kun Li, Xinhang Yuan, Kuan Lu, Menghao Huo, Jingqun Tang, Yi Xin, Jiaqi Chen, Keqin Li, Miao Zhang, Xueqian Wang</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:131-163</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/he26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/he26a/he26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=qUDhbQUstF">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">SPIKE: Sparse Koopman Regularization for Physics-Informed Neural Networks</h3>
+                <p class="paper-authors">Jose Marie Antonio Miñoza</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:164-191</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/minoza26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/minoza26a/minoza26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=qPm2f2OE7j">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Cannistraci-Hebb Training with N:M Semi-Structured Sparsity for Pre-Training and Re-Training</h3>
+                <p class="paper-authors">Jiaqing Lyu, Ruijie Wang, Kangyou Bao, Yingtao Zhang, Carlo Vittorio Cannistraci</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:192-217</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/lyu26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/lyu26a/lyu26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=oo7G9mheNo">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Lattice-Based Vector Quantization for Low-Bit Quantization-Aware Training</h3>
+                <p class="paper-authors">Rishika Kohli, Soma S Dhavala, Shaifu Gupta, Manoj Singh Gaur</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:218-241</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/kohli26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/kohli26a/kohli26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=oTbUCHufvj">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">ShapLoRA: Allocation of Low-rank Adaption on Large Language Models via Shapley Value Inspired Importance Estimation</h3>
+                <p class="paper-authors">Colin Zhao, Qinghua Yao, Xinyuan Song, Wei Zhu</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:242-264</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/zhao26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/zhao26a/zhao26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=nWFDLoxSqL">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">LLMQ: Efficient Lower-Precision LLM Training for Consumer GPUs</h3>
+                <p class="paper-authors">Erik Schultheis, Dan Alistarh</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:265-284</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/schultheis26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/schultheis26a/schultheis26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=nEev1u9Kzm">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Parameter-Efficient Distributional RL via Normalizing Flows and a Geometry-Aware Cramér Surrogate</h3>
+                <p class="paper-authors">Simo Alami Chehboune, Rim Kaddah, Marie-Paule CANI, Jesse Read</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:285-313</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/chehboune26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/chehboune26a/chehboune26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=k2alUGhVlP">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Analyzing and Mitigating Model Collapse in Reflow Methods</h3>
+                <p class="paper-authors">Huminhao Zhu, Fangyikang Wang, Tianyu Ding, Qing Qu, Zhihui Zhu</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:314-340</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/zhu26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/zhu26a/zhu26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=hWsYMCMOze">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Stochastic Unrolled Neural Networks</h3>
+                <p class="paper-authors">Samar Hadou, Navid NaderiAlizadeh, Alejandro Ribeiro</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:341-359</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/hadou26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/hadou26a/hadou26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=hQQMk0IOPv">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Prompt Stability Matters: Evaluating and Optimizing Auto-Generated Prompt in General-Purpose Systems</h3>
+                <p class="paper-authors">Ke Chen, Xucheng Yu, Yufei Zhou, Haohan Wang</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:360-374</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/chen26b.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/chen26b/chen26b.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=gwf9E5M14g">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Symbiotic Cooperation for Web Agents: Harnessing Complementary Strengths of Large and Small LLMs</h3>
+                <p class="paper-authors">Ruichen Zhang, Mufan Qiu, Zhen Tan, Mohan Zhang, Xiaopeng Lu, Jie Peng, Kaidi Xu, Leandro Z. Agudelo, Peter Zhenghao Qian, Tianlong Chen</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:375-427</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/zhang26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/zhang26a/zhang26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=gvYCdNQ3Wp">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Matrix Sensing with Kernel Optimal Loss: Robustness and Optimization Landscape</h3>
+                <p class="paper-authors">Xinyuan Song, Ziye Ma</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:428-500</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/song26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/song26a/song26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=flemTyWd0m">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Pruned Adaptation Modules: A Simple yet Strong Baseline for Continual Foundation Models</h3>
+                <p class="paper-authors">Elif Ceren Gok Yildirim, Murat Onur Yildirim, Joaquin Vanschoren</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:501-515</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/yildirim26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/yildirim26a/yildirim26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=eGofyQoLrr">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Token-Aware Representation Augmentation for Fine-Grained Semi-Supervised Learning</h3>
+                <p class="paper-authors">Hongyang He, Yan Zhong, Xinyuan Song, Daizong Liu, Victor Sanchez</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:516-528</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/he26b.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/he26b/he26b.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=dTLvE5EP7p">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+             <div class="paper-container">
+                <h3 class="paper-title">MMA:Benchmarking Multi-ModalLarge Language Models in Ambiguity Contexts</h3>
+                <p class="paper-authors">Ru Wang, Selena Song, Yuquan Wang, Liang Ding, Mingming Gong, Yusuke Iwasawa, Yutaka Matsuo, Jiaxian Guo</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:529-551</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/wang26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/wang26a/wang26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=dC5Y1U9USM">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Optimal k-Discretization Learning</h3>
+                <p class="paper-authors">Tong Wang, Zhangyang Wang</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:552-564</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/wang26b.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/wang26b/wang26b.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=cj9yL8kzTf">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Deep Neural Regression Collapse</h3>
+                <p class="paper-authors">Akshay Rangamani, Altay Unal</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:565-591</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/rangamani26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/rangamani26a/rangamani26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=c8sA4N17Bw">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+             <div class="paper-container">
+                <h3 class="paper-title">HINT: Harnessing IN-context Training to enhance continual generalization</h3>
+                <p class="paper-authors">Francesco D'Amore, Emanuele Maiorana</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:592-604</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/d-amore26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/d-amore26a/d-amore26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=b5s5E9XoBw">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">A Continuous Measure of Simplicity for Supervised Learning</h3>
+                <p class="paper-authors">Arne Nordmann, Xiaoyu Shen</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:605-645</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/nordmann26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/nordmann26a/nordmann26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=a6Bovk77iK">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+             <div class="paper-container">
+                <h3 class="paper-title">In-context Pre-training of Graph Neural Networks for Recommendation</h3>
+                <p class="paper-authors">Yunpeng Li, Yan Wang</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:646-659</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/li26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/li26a/li26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=Za7dM5kPno">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Revisiting Subnetwork Similarity in Random Pre-trained Transformers</h3>
+                <p class="paper-authors">Yi Zhong, Li Jing</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:660-673</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/zhong26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/zhong26a/zhong26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=VlT4eM0s3F">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Rethinking Parameter-Efficient Fine-Tuning: An Implicit Regularization Perspective</h3>
+                <p class="paper-authors">Xinyuan Song, Ziye Ma</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:674-722</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/song26b.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/song26b/song26b.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=R6K2v8W4pZ">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Efficient Continual Pre-training by Subnetwork Selection</h3>
+                <p class="paper-authors">Xinyuan Song, Zhenyu Liu, Yang Li</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:723-744</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/song26c.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/song26c/song26c.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=Pj9g1vA0wK">[ OpenReview ]</a>
+                </div>
+            </div>
+
+             <div class="paper-container">
+                <h3 class="paper-title">Generalization Properties of Matrix Factorization via Explicit Rank Penalty</h3>
+                <p class="paper-authors">Zhihui Zhu</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:745-763</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/zhu26b.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/zhu26b/zhu26b.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=My4sB0oG8e">[ OpenReview ]</a>
+                </div>
+            </div>
+
+            <div class="paper-container">
+                <h3 class="paper-title">Sparse Model Identification: Algorithms and Applications</h3>
+                <p class="paper-authors">Wei Huang, Saiprasad Ravishankar</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:764-793</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/huang26b.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/huang26b/huang26b.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=J2aY7oN5kQ">[ OpenReview ]</a>
+                </div>
+            </div>
+            
+            <div class="paper-container">
+                <h3 class="paper-title">Towards Better Understanding of Parsimonious Models</h3>
+                <p class="paper-authors">William Redman, Weijie Su</p>
+                <p class="paper-venue">Conference on Parsimony and Learning, PMLR 328:794-817</p>
+                <div class="paper-links">
+                    <a href="https://proceedings.mlr.press/v328/redman26a.html">[ abs ]</a>
+                    <a href="https://raw.githubusercontent.com/mlresearch/v328/main/assets/redman26a/redman26a.pdf">[ Download PDF ]</a>
+                    <a href="https://openreview.net/forum?id=H8cR3fE1uT">[ OpenReview ]</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-100 text-gray-600 text-sm py-8 mt-12 text-center">
+        <div class="container mx-auto px-4">
+             <a href="https://proceedings.mlr.press/v328/assets/rss/feed.xml" class="text-blue-600 hover:underline mb-2 inline-block">subscribe via RSS</a>
+             <p class="mb-2">This site last compiled Tue, 11 Aug 2026 12:44:03 +0000</p>
+             <p class="mb-2"><a href="#" class="text-blue-600 hover:underline">Github Account</a></p>
+             <p>Copyright © <a href="https://proceedings.mlr.press/" class="text-blue-600 hover:underline">The authors and PMLR</a> 2026. <a href="https://twitter.com/MLResearchPress" class="text-blue-600 hover:underline">MLResearchPress</a></p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const authorInput = document.getElementById('filter-authors');
+            const titleInput = document.getElementById('filter-titles');
+            const papers = document.querySelectorAll('.paper-container');
+
+            function filterPapers() {
+                const authorFilter = authorInput.value.toLowerCase();
+                const titleFilter = titleInput.value.toLowerCase();
+
+                papers.forEach(paper => {
+                    const authors = paper.querySelector('.paper-authors').textContent.toLowerCase();
+                    const title = paper.querySelector('.paper-title').textContent.toLowerCase();
+
+                    const matchesAuthor = authors.includes(authorFilter);
+                    const matchesTitle = title.includes(titleFilter);
+
+                    if (matchesAuthor && matchesTitle) {
+                        paper.style.display = '';
+                    } else {
+                        paper.style.display = 'none';
+                    }
+                });
+            }
+
+            authorInput.addEventListener('input', filterPapers);
+            titleInput.addEventListener('input', filterPapers);
+        });
+    </script>
+</body>
+</html>

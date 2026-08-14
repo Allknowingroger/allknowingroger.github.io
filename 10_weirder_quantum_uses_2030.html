@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 Weirder Quantum Uses by 2030</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #05040a;
+  --surface: #0e0c14;
+  --surface-2: #161321;
+  --ink: #e2e0e9;
+  --muted: #7a7791;
+  --acid: #39ff14;
+  --violet: #bf4bff;
+  --cyan: #00f0ff;
+  --amber: #ffaa33;
+  --acid-weak: rgba(57,255,20,0.06);
+  --violet-weak: rgba(191,75,255,0.06);
+  --cyan-weak: rgba(0,240,255,0.06);
+  --amber-weak: rgba(255,170,51,0.06);
+  --line: rgba(122,119,145,0.12);
+  --step--2: clamp(0.64rem, 0.61rem + 0.18vw, 0.78rem);
+  --step--1: clamp(0.80rem, 0.74rem + 0.32vw, 1.05rem);
+  --step-0: clamp(1rem, 0.90rem + 0.5vw, 1.25rem);
+  --step-1: clamp(1.25rem, 1.08rem + 0.85vw, 1.75rem);
+  --step-2: clamp(1.56rem, 1.28rem + 1.4vw, 2.5rem);
+  --step-3: clamp(1.95rem, 1.50rem + 2.25vw, 3.5rem);
+  --step-4: clamp(2.44rem, 1.75rem + 3.45vw, 5rem);
+  --space: clamp(1.5rem, 1.1rem + 2vw, 3rem);
+  --radius: 18px;
+  --shadow: 0 2px 4px rgba(0,0,0,0.4), 0 16px 40px -12px rgba(0,0,0,0.7);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: var(--void);
+  color: var(--ink);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Scanline + noise texture */
+body::before, body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+body::before {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+  opacity: 0.25;
+}
+body::after {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* Floating void blobs */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.22;
+}
+.blob-1 { width: 600px; height: 600px; background: var(--violet); top: -15%; right: -10%; animation: drift 22s ease-in-out infinite; }
+.blob-2 { width: 450px; height: 450px; background: var(--acid); bottom: 5%; left: -12%; animation: drift 19s ease-in-out infinite reverse; }
+.blob-3 { width: 350px; height: 350px; background: var(--cyan); top: 45%; left: 55%; opacity: 0.12; animation: drift 25s ease-in-out infinite 3s; }
+
+@keyframes drift {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  33% { transform: translate(40px,-25px) rotate(2deg); }
+  66% { transform: translate(-30px,35px) rotate(-1deg); }
+}
+
+/* Typography */
+h1, h2, h3, .display {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+/* Header */
+header {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--space) * 2) var(--space);
+  z-index: 1;
+}
+
+.eyebrow {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--acid);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+}
+.eyebrow::before {
+  content: "";
+  width: 40px; height: 1px;
+  background: var(--acid);
+  box-shadow: 0 0 8px var(--acid);
+}
+
+header h1 {
+  font-size: var(--step-4);
+  font-weight: 700;
+  max-width: 14ch;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--ink) 20%, var(--cyan) 70%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lead {
+  font-size: var(--step-1);
+  color: var(--muted);
+  max-width: 55ch;
+  font-weight: 300;
+  line-height: 1.55;
+  margin-bottom: 3rem;
+}
+
+/* Weirdness meter in hero */
+.hero-meta {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+.meta-block {
+  border-left: 1px solid var(--line);
+  padding-left: 1.2rem;
+}
+.meta-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 0.4em;
+}
+.meta-value {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-1);
+  font-weight: 600;
+}
+.meta-value.acid { color: var(--acid); text-shadow: 0 0 12px rgba(57,255,20,0.3); }
+.meta-value.violet { color: var(--violet); text-shadow: 0 0 12px rgba(191,75,255,0.3); }
+
+/* Main */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+/* Section header */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: calc(var(--space) * 1.2);
+  flex-wrap: wrap;
+}
+.section-head h2 {
+  font-size: var(--step-2);
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line), transparent);
+  min-width: 50px;
+}
+.section-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-1);
+  color: var(--violet);
+  opacity: 0.35;
+  font-weight: 300;
+}
+
+/* Asymmetric card grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: calc(var(--space) * 0.7);
+  margin-bottom: calc(var(--space) * 3);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px) rotate(0.3deg);
+  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+  box-shadow: var(--shadow), 0 0 40px -10px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.card:hover::before { opacity: 1; }
+
+/* Card color variants */
+.card.acid { --accent: var(--acid); --weak: var(--acid-weak); }
+.card.violet { --accent: var(--violet); --weak: var(--violet-weak); }
+.card.cyan { --accent: var(--cyan); --weak: var(--cyan-weak); }
+.card.amber { --accent: var(--amber); --weak: var(--amber-weak); }
+
+/* Span definitions for asymmetry */
+.col-4 { grid-column: span 4; }
+.col-6 { grid-column: span 6; }
+.col-8 { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+@media (max-width: 900px) {
+  .col-4, .col-6, .col-8 { grid-column: span 6; }
+  .col-12 { grid-column: span 12; }
+}
+@media (max-width: 580px) {
+  .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; }
+}
+
+/* Card internals */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.card-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.5;
+  line-height: 1;
+}
+
+/* Weirdness meter SVG */
+.meter {
+  flex-shrink: 0;
+}
+.meter-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-align: right;
+  margin-bottom: 3px;
+}
+
+.card h3 {
+  font-size: var(--step-1);
+  margin-bottom: 0.7rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.7;
+  flex: 1;
+}
+
+.card-footer {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.principle {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: var(--weak);
+  border: 1px solid color-mix(in oklab, var(--accent) 15%, transparent);
+  padding: 0.3em 0.8em;
+  border-radius: 100px;
+}
+
+.year {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--2);
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* Full-width insight strip between cards */
+.insight-strip {
+  grid-column: span 12;
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.2);
+  position: relative;
+  overflow: hidden;
+  margin: calc(var(--space) * 0.5) 0;
+}
+.insight-strip::before {
+  content: "";
+  position: absolute;
+  top: -30%; left: -10%;
+  width: 50%; height: 200%;
+  background: radial-gradient(circle, var(--violet-weak), transparent 70%);
+  pointer-events: none;
+}
+.insight-strip p {
+  position: relative;
+  font-size: var(--step-0);
+  font-weight: 300;
+  max-width: 65ch;
+  line-height: 1.6;
+}
+.insight-strip strong {
+  color: var(--cyan);
+  font-weight: 500;
+}
+
+/* Closing section */
+.closing {
+  margin: calc(var(--space) * 3) auto;
+  max-width: 70ch;
+  text-align: center;
+  padding: calc(var(--space) * 2) var(--space);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.closing h2 {
+  font-size: var(--step-2);
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, var(--acid), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.closing p {
+  color: var(--muted);
+  font-size: var(--step-0);
+  line-height: 1.7;
+}
+
+/* Footer */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: calc(var(--space) * 2) var(--space);
+  color: var(--muted);
+  font-size: var(--step--1);
+  border-top: 1px solid var(--line);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; }
+  body::before, body::after, .blob { display: none; }
+  .card, .insight-strip { background: #f5f5f5; border-color: #ccc; break-inside: avoid; }
+}
+@page { size: A4; margin: 14mm; }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<header>
+  <div class="eyebrow">Speculative Forecast / 2030</div>
+  <h1>10 Weirder Quantum Uses by 2030</h1>
+  <p class="lead">Quantum mechanics is not just a faster computer or a sharper sensor. It is a set of hacks against reality itself. Here are ten uses that treat entanglement as intimacy, superposition as urban planning, and the vacuum as memory.</p>
+  <div class="hero-meta">
+    <div class="meta-block">
+      <div class="meta-label">Speculation Level</div>
+      <div class="meta-value acid">High</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Physics Fidelity</div>
+      <div class="meta-value violet">Real</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Weirdness Index</div>
+      <div class="meta-value acid">9.2 / 10</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<div class="section-head">
+  <span class="section-num">01</span>
+  <h2>The Fringe List</h2>
+  <div class="section-line"></div>
+</div>
+
+<div class="grid">
+
+  <!-- 1 -->
+  <article class="card cyan col-6">
+    <div class="card-header">
+      <span class="card-num">01</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(0,240,255,0.1)"/>
+          <rect x="0" y="0" width="62" height="10" rx="5" fill="var(--cyan)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Archaeology — Magnetic Memory of Artifacts</h3>
+    <p>Quantum diamond microscopes read not just the direction but the full quantum noise signature of magnetic remnants locked in fired clay. In principle, you could reconstruct the geomagnetic conditions inside a kiln 3,000 years ago with seasonal precision—or detect ancient lightning strikes.</p>
+    <div class="card-footer">
+      <span class="principle">NV-center magnetometry</span>
+      <span class="year">2028–2030</span>
+    </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="card violet col-6">
+    <div class="card-header">
+      <span class="card-num">02</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(191,75,255,0.1)"/>
+          <rect x="0" y="0" width="68" height="10" rx="5" fill="var(--violet)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Dream Harvesting via Quantum Neural Tomography</h3>
+    <p>Quantum optically pumped magnetometers approach the sensitivity to detect single-neuron magnetic signatures non-invasively. A headset records the electromagnetic “shadow” of neural activity during REM sleep, feeding a generative model that reconstructs rough video of dreams from quantum-classified magnetic patterns.</p>
+    <div class="card-footer">
+      <span class="principle">Quantum magnetometry + QML</span>
+      <span class="year">2029–2030</span>
+    </div>
+  </article>
+
+  <!-- 3 -->
+  <article class="card acid col-4">
+    <div class="card-header">
+      <span class="card-num">03</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(57,255,20,0.1)"/>
+          <rect x="0" y="0" width="70" height="10" rx="5" fill="var(--acid)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Emotional Entanglement Wearables</h3>
+    <p>Two people wear quantum-dot biochemical sensors linked by entangled photon pairs. When one experiences a sharp hormonal spike, the local sensor disturbs its entangled partner. The partner’s device warms or vibrates—no classical signal sent, just a correlation encrypted by physics itself.</p>
+    <div class="card-footer">
+      <span class="principle">Entanglement + quantum dots</span>
+      <span class="year">2029+</span>
+    </div>
+  </article>
+
+  <!-- 4 -->
+  <article class="card amber col-8">
+    <div class="card-header">
+      <span class="card-num">04</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(255,170,51,0.1)"/>
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="var(--amber)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Ghost Rooms — Filming Virtual Particle Footprints</h3>
+    <p>Change the boundary conditions of a room and you alter its quantum vacuum modes. Arrays of dynamical Casimir effect detectors could map how a room’s vacuum state has been disturbed over time. A mass movement—a crowd fleeing, a person dying—alters the vacuum history enough that an advanced sensor could detect the “quantum afterimage” by staring at the nothingness left behind.</p>
+    <div class="card-footer">
+      <span class="principle">Dynamical Casimir effect</span>
+      <span class="year">2030?</span>
+    </div>
+  </article>
+
+  <!-- Mid-strip -->
+  <div class="insight-strip">
+    <p>These are not just “applications.” They are <strong>ontological tools</strong>—technologies that treat reality as a set of quantum variables to be read, entangled, collapsed, and rewound.</p>
+  </div>
+
+  <!-- 5 -->
+  <article class="card violet col-6">
+    <div class="card-header">
+      <span class="card-num">05</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(191,75,255,0.1)"/>
+          <rect x="0" y="0" width="64" height="10" rx="5" fill="var(--violet)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Taste Teleportation</h3>
+    <p>Flavor is the quantum electronic structure of molecules binding to receptors. A device performs quantum state tomography on a meal’s electron cloud, transmits the quantum data, and a remote molecular assembler reconstructs the exact Hamiltonian of the original dish. You could taste a Parisian truffle in Tokyo without knowing its molecular formula.</p>
+    <div class="card-footer">
+      <span class="principle">State tomography</span>
+      <span class="year">2030+</span>
+    </div>
+  </article>
+
+  <!-- 6 -->
+  <article class="card cyan col-6">
+    <div class="card-header">
+      <span class="card-num">06</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(0,240,255,0.1)"/>
+          <rect x="0" y="0" width="66" height="10" rx="5" fill="var(--cyan)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Shadow Cities — Infrastructure in Superposition</h3>
+    <p>Urban planners encode a neighborhood as a quantum superposition of thousands of layouts in a topological quantum computer. As residents move through it, their usage patterns act as repeated measurements, collapsing the wavefunction toward the most ergonomic configuration. Streets that nobody uses fade; organic shortcuts become permanent.</p>
+    <div class="card-footer">
+      <span class="principle">Topological QC + measurement</span>
+      <span class="year">2029–2030</span>
+    </div>
+  </article>
+
+  <!-- 7 -->
+  <article class="card acid col-4">
+    <div class="card-header">
+      <span class="card-num">07</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(57,255,20,0.1)"/>
+          <rect x="0" y="0" width="60" height="10" rx="5" fill="var(--acid)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Forest Telepathy</h3>
+    <p>Engineered fungi incorporate quantum-coherent electron transport chains. When a tree is attacked, the chemical alarm propagates not as slow diffusion, but as a quantum tunneling wave through the mycorrhizal web. Distant trees raise defenses before any classical signal could arrive.</p>
+    <div class="card-footer">
+      <span class="principle">Bio tunneling</span>
+      <span class="year">2028–2030</span>
+    </div>
+  </article>
+
+  <!-- 8 -->
+  <article class="card amber col-8">
+    <div class="card-header">
+      <span class="card-num">08</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(255,170,51,0.1)"/>
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="var(--amber)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Chronovision — Retroactive Imaging with Delayed-Choice Photons</h3>
+    <p>Light bouncing between Earth and the Moon can remain in path superposition for years. A satellite with a delayed-choice quantum eraser intercepts such ancient photons. By choosing whether to erase which-path information now, it forces those photons to retroactively behave as waves or particles when they passed Earth decades ago. With enough statistics, you could reconstruct coarse historical images from light that had not yet decided what it was doing in the past.</p>
+    <div class="card-footer">
+      <span class="principle">Delayed-choice eraser</span>
+      <span class="year">2030?</span>
+    </div>
+  </article>
+
+  <!-- 9 -->
+  <article class="card violet col-6">
+    <div class="card-header">
+      <span class="card-num">09</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(191,75,255,0.1)"/>
+          <rect x="0" y="0" width="58" height="10" rx="5" fill="var(--violet)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Precipitation Seeding with Entangled Aerosols</h3>
+    <p>Drones release entangled nanoparticle pairs—one into a cloud, one kept in a ground lab in superposition. When operators want rain, they measure the ground particle to collapse its partner inside the cloud into a highly hygroscopic quantum state. The cloud particle nucleates droplets on demand via remote wavefunction collapse.</p>
+    <div class="card-footer">
+      <span class="principle">Entanglement + aerosols</span>
+      <span class="year">2029–2030</span>
+    </div>
+  </article>
+
+  <!-- 10 -->
+  <article class="card cyan col-6">
+    <div class="card-header">
+      <span class="card-num">10</span>
+      <div class="meter">
+        <div class="meter-label">Weirdness</div>
+        <svg width="72" height="10" viewBox="0 0 72 10">
+          <rect x="0" y="0" width="72" height="10" rx="5" fill="rgba(0,240,255,0.1)"/>
+          <rect x="0" y="0" width="70" height="10" rx="5" fill="var(--cyan)" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Quantum Afterlife Simulations — Schrödinger’s Estate</h3>
+    <p>Before death, a connectome scan is maintained by a quantum computer as a superposition of all possible future mental states the person could have had. Legally, they exist in quantum purgatory. Family members “observe” specific branches by asking questions that collapse the wavefunction into coherent personality avatars, while countless other versions persist unobserved.</p>
+    <div class="card-footer">
+      <span class="principle">Many-worlds + neural superposition</span>
+      <span class="year">2030+</span>
+    </div>
+  </article>
+
+</div>
+
+<div class="closing">
+  <h2>The Common Thread</h2>
+  <p>These ten ideas do not treat quantum mechanics as a faster computer or a sharper sensor. They treat it as a <strong>fundamental feature of reality</strong> that can be hacked: entanglement as intimacy, superposition as urban planning, vacuum fluctuations as memory, and measurement itself as a tool for retroactive engineering.</p>
+</div>
+
+</main>
+
+<footer>
+  <p>10 Weirder Quantum Uses by 2030 · A speculative forecast · August 2026</p>
+</footer>
+
+</body>
+</html>

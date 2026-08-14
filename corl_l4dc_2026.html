@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CORL/L4DC 2026: Innovation in Learning for Dynamics & Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ececf0;
+  --surface: #ffffff;
+  --ink: #141426;
+  --muted: #5a5a6e;
+  --line: color-mix(in oklab, var(--ink) 10%, transparent);
+  --line-strong: color-mix(in oklab, var(--ink) 18%, transparent);
+
+  --dynamics: #5b6ec0;
+  --dynamics-weak: color-mix(in oklab, var(--dynamics) 10%, var(--surface));
+  --safety: #6aaa6a;
+  --safety-weak: color-mix(in oklab, var(--safety) 10%, var(--surface));
+  --agentic: #e09b5a;
+  --agentic-weak: color-mix(in oklab, var(--agentic) 10%, var(--surface));
+  --game: #d66a6a;
+  --game-weak: color-mix(in oklab, var(--game) 10%, var(--surface));
+
+  --step--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.75vw, 3rem);
+  --step-3: clamp(2.5rem, 1.8rem + 3.5vw, 5rem);
+
+  --space: clamp(1.25rem, 1rem + 1.25vw, 2.5rem);
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -10px rgba(0,0,0,0.12);
+  --shadow-hover: 0 1px 2px rgba(0,0,0,0.04), 0 20px 48px -12px rgba(0,0,0,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Source Serif 4", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+h1 { font-size: var(--step-3); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); font-weight: 500; }
+h4 { font-size: var(--step-0); font-weight: 600; }
+
+a {
+  color: var(--dynamics);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--dynamics) 30%, transparent);
+  transition: border-color 0.2s, color 0.2s;
+}
+a:hover {
+  border-color: var(--dynamics);
+}
+
+/* Layout */
+.container {
+  width: min(1100px, 92vw);
+  margin-inline: auto;
+}
+
+/* Header */
+header {
+  padding: calc(var(--space) * 3) 0 calc(var(--space) * 2.5);
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(600px 400px at 20% 10%, color-mix(in oklab, var(--dynamics) 18%, transparent) 0%, transparent 70%),
+    radial-gradient(500px 350px at 80% 20%, color-mix(in oklab, var(--agentic) 14%, transparent) 0%, transparent 70%),
+    radial-gradient(450px 400px at 50% 90%, color-mix(in oklab, var(--safety) 12%, transparent) 0%, transparent 70%),
+    radial-gradient(400px 300px at 90% 80%, color-mix(in oklab, var(--game) 12%, transparent) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+header h1 {
+  max-width: 14ch;
+  position: relative;
+  font-weight: 700;
+}
+
+header .lead {
+  font-size: var(--step-1);
+  color: var(--muted);
+  max-width: 52ch;
+  margin-top: 1.25rem;
+  line-height: 1.5;
+  position: relative;
+}
+
+/* Quadrant hero diagram */
+.hero-quadrants {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: calc(var(--space) * 1.5);
+  position: relative;
+}
+
+.quad-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.quad-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+.quad-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--accent, var(--ink));
+}
+.quad-card.dyn { --accent: var(--dynamics); }
+.quad-card.saf { --accent: var(--safety); }
+.quad-card.age { --accent: var(--agentic); }
+.quad-card.gam { --accent: var(--game); }
+
+.quad-card h3 {
+  font-size: var(--step-0);
+  margin-bottom: 0.5rem;
+}
+.quad-card p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.quad-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  display: grid;
+  place-items: center;
+  background: var(--accent-weak, #f0f0f0);
+  color: var(--accent, var(--ink));
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.quad-card.dyn .quad-icon { --accent-weak: var(--dynamics-weak); --accent: var(--dynamics); }
+.quad-card.saf .quad-icon { --accent-weak: var(--safety-weak); --accent: var(--safety); }
+.quad-card.age .quad-icon { --accent-weak: var(--agentic-weak); --accent: var(--agentic); }
+.quad-card.gam .quad-icon { --accent-weak: var(--game-weak); --accent: var(--game); }
+
+/* Connecting SVG */
+.hero-connect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Sections */
+main > section {
+  padding: calc(var(--space) * 2) 0;
+  border-top: 1px solid var(--line);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  margin-bottom: calc(var(--space) * 0.75);
+}
+
+.section-marker {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #fff;
+  flex-shrink: 0;
+  background: var(--accent, var(--ink));
+}
+
+.section-title-group h2 {
+  font-weight: 700;
+}
+.section-title-group p {
+  color: var(--muted);
+  font-size: var(--step-0);
+  margin-top: 0.25rem;
+  max-width: 60ch;
+}
+
+/* Subsections */
+.subsection {
+  margin-top: calc(var(--space) * 1);
+  padding-left: calc(48px + 1rem);
+}
+
+.subsection h3 {
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+
+.subsection p + p {
+  margin-top: 0.75rem;
+}
+
+/* Cards within sections */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.25rem;
+  margin-top: calc(var(--space) * 0.75);
+  padding-left: calc(48px + 1rem);
+}
+
+.info-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+.info-card h4 {
+  margin-bottom: 0.5rem;
+  color: var(--accent, var(--ink));
+}
+.info-card p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.6;
+}
+.info-card .tag {
+  display: inline-block;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 99px;
+  background: var(--accent-weak, #f0f0f0);
+  color: var(--accent, var(--muted));
+  margin-bottom: 0.6rem;
+}
+
+/* Source chips */
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: color-mix(in oklab, var(--bg) 60%, var(--surface));
+  border: 1px solid var(--line);
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  text-decoration: none;
+  white-space: nowrap;
+  margin: 0.15rem 0.15rem 0 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.source-chip:hover {
+  background: var(--surface);
+  border-color: var(--line-strong);
+}
+.source-chip svg {
+  width: 12px; height: 12px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.source-list {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Integration section is special */
+.integration {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.5);
+  margin-top: calc(var(--space) * 1);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.integration-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: var(--step--1);
+}
+.integration-table th,
+.integration-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.integration-table th {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+}
+.integration-table td:first-child {
+  font-weight: 600;
+  color: var(--ink);
+  width: 30%;
+}
+.integration-table tr:last-child th,
+.integration-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Footer */
+footer {
+  padding: calc(var(--space) * 2) 0 calc(var(--space) * 3);
+  border-top: 1px solid var(--line);
+  margin-top: calc(var(--space) * 1);
+}
+footer p {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .quad-card, .info-card { transition: none; }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  .quad-card, .info-card, .integration {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  header::before { display: none; }
+}
+@page { size: A4; margin: 16mm; }
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .hero-quadrants { grid-template-columns: 1fr; }
+  .subsection, .card-grid { padding-left: 0; }
+  .section-header { grid-template-columns: 1fr; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="eyebrow">L4DC 2026 · USC · June 17–19</div>
+    <h1>Innovation in Learning for Dynamics & Control</h1>
+    <p class="lead">From Koopman operators to game-theoretic planning — a synthesis of how modern robot learning is evolving from isolated techniques toward an integrated pipeline.</p>
+
+    <div class="hero-quadrants">
+      <article class="quad-card dyn">
+        <div class="quad-icon">01</div>
+        <h3>Dynamics & Control</h3>
+        <p>Koopman operators, delay compensation, and data-driven adaptation for nonlinear systems.</p>
+      </article>
+      <article class="quad-card age">
+        <div class="quad-icon">02</div>
+        <h3>Agentic & System Modeling</h3>
+        <p>Humanoid force control, cable-driven robot simulation, and scalable multi-agent RL.</p>
+      </article>
+      <article class="quad-card saf">
+        <div class="quad-icon">03</div>
+        <h3>Safety & Robustness</h3>
+        <p>Conformal prediction coverage guarantees and latent control barrier functions.</p>
+      </article>
+      <article class="quad-card gam">
+        <div class="quad-icon">04</div>
+        <h3>Game Theory & Planning</h3>
+        <p>Markov game equilibria and dynamic informative path planning in changing environments.</p>
+      </article>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- DYNAMICS & CONTROL -->
+<section id="dynamics">
+  <div class="section-header">
+    <div class="section-marker" style="background: var(--dynamics);">01</div>
+    <div class="section-title-group">
+      <h2>Dynamics & Control</h2>
+      <p>The classical feedback loop updated with modern learning-based tools for nonlinear, delayed, and data-rich systems.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Koopman Operators for Control</h3>
+    <p>Koopman theory lifts nonlinear dynamics into a higher-dimensional space where the system evolves linearly. This enables the use of powerful linear control and estimation tools — such as LQR and Kalman filtering — on inherently nonlinear robots. Rather than wrestling directly with nonlinearities, the system learns a representation where prediction and control become linear algebra problems.</p>
+    <div class="source-list">
+      <a class="source-chip" href="https://www.annualreviews.org/content/journals/10.1146/annurev-control-071020-010108" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Annual Review of Control, Robotics, and Autonomous Systems
+      </a>
+      <a class="source-chip" href="https://proceedings.mlr.press/v283/zeng25a.html" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        L4DC 2025 / Zeng et al.
+      </a>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Observation Delay Compensation</h3>
+    <p>Real-world sensors and networks introduce latency. If a humanoid or drone acts on stale observations, the Markov property is violated and standard RL theory breaks down. Recent work addresses this through augmented state representations and resampling techniques that reconstruct or compensate for missing and delayed information before it reaches the controller.</p>
+    <div class="source-list">
+      <a class="source-chip" href="https://proceedings.neurips.cc/paper_files/paper/2025/file/5991785875cf5eee9c29e2ed7d26d1c0-Paper-Conference.pdf" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        NeurIPS 2025 / Rainbow Delay Compensation
+      </a>
+      <a class="source-chip" href="https://arxiv.org/html/2503.23478" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Handling Delay in Real-Time RL
+      </a>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Data-Driven Adaptation</h3>
+    <p>Modern dynamics and control is no longer purely model-first. Data continuously refines models — whether through online Koopman updates, delay estimators, or adaptive gain tuning. The flowing data streams connecting all modules in the research vision emphasize that learning and control now co-evolve in closed loop.</p>
+  </div>
+</section>
+
+<!-- AGENTIC & SYSTEM MODELING -->
+<section id="agentic">
+  <div class="section-header">
+    <div class="section-marker" style="background: var(--agentic);">02</div>
+    <div class="section-title-group">
+      <h2>Agentic & System Modeling</h2>
+      <p>Scaling from individual complex morphologies to multi-robot systems through learned simulators and local coordination.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <article class="info-card" style="--accent: var(--agentic); --accent-weak: var(--agentic-weak);">
+      <span class="tag">Humanoid Control</span>
+      <h4>FALCON</h4>
+      <p>A dual-agent RL framework enabling humanoid robots to simultaneously locomote and manipulate heavy objects while adapting to interaction forces. Traditional approaches decouple walking from arm control, which fails when the robot must lean into a door or pull a cart. FALCON learns a unified force-aware policy.</p>
+      <div class="source-list">
+        <a class="source-chip" href="https://lecar-lab.github.io/falcon-humanoid/" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          FALCON Project
+        </a>
+        <a class="source-chip" href="https://arxiv.org/html/2505.06776v1" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          arXiv:2505.06776
+        </a>
+      </div>
+    </article>
+
+    <article class="info-card" style="--accent: var(--agentic); --accent-weak: var(--agentic-weak);">
+      <span class="tag">Learned Simulation</span>
+      <h4>CableRobotGraphSim</h4>
+      <p>A Graph Neural Network simulator for cable-driven robots. These systems are notoriously hard to model because dynamics depend on tension, friction, and geometric configurations that are partially observable. CableRobotGraphSim uses rigid-body nodes and cable/contact edges to enable accurate prediction without full-state measurements.</p>
+      <div class="source-list">
+        <a class="source-chip" href="https://arxiv.org/html/2602.21331" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          arXiv:2602.21331
+        </a>
+      </div>
+    </article>
+
+    <article class="info-card" style="--accent: var(--agentic); --accent-weak: var(--agentic-weak);">
+      <span class="tag">Multi-Agent RL</span>
+      <h4>MARL Locality</h4>
+      <p>Scalable Multi-Agent RL where agents coordinate only within their local neighborhood. By factorizing value functions or policies over local graphs, teams of robots achieve near-global coordination without central bottlenecks — critical for swarm robotics and distributed autonomy.</p>
+      <div class="source-list">
+        <a class="source-chip" href="https://arxiv.org/html/2602.16966" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          A Unified Framework for Locality in Scalable MARL
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- SAFETY & ROBUSTNESS -->
+<section id="safety">
+  <div class="section-header">
+    <div class="section-marker" style="background: var(--safety);">03</div>
+    <div class="section-title-group">
+      <h2>Safety & Robustness</h2>
+      <p>Wrapping learned components in rigorous statistical and control-theoretic safety certificates.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Conformal Coverage Guarantees</h3>
+    <p>Conformal prediction turns point predictions into sets or regions with guaranteed coverage probabilities. If a learned model predicts a pedestrian's future position, conformal methods output a predicted region such that the true position lies inside with a user-specified probability — for example, 95%. This provides a rigorous statistical foundation for safe planning in uncertain dynamic environments.</p>
+    <div class="source-list">
+      <a class="source-chip" href="https://www.georgejpappas.org/wp-content/uploads/2023/08/Safe_Planning_in_Dynamic_Environments_Using_Conformal_Prediction.pdf" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Safe Planning with Conformal Prediction
+      </a>
+      <a class="source-chip" href="https://sites.google.com/usc.edu/l4dc2026/program/technical-program" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        L4DC 2026 Technical Program
+      </a>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Latent Control Barrier Functions</h3>
+    <p>Control Barrier Functions define a "safe set" and ensure the system never leaves it. Rather than hand-designing these in the full state space, recent work learns CBFs in a low-dimensional latent space. These differentiable, learnable safety filters can be integrated directly into end-to-end training, making safety a native component of the learning pipeline rather than an afterthought.</p>
+    <div class="source-list">
+      <a class="source-chip" href="https://sites.google.com/usc.edu/l4dc2026/program/technical-program" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        L4DC 2026 — Smooth Safety
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- GAME THEORY & PLANNING -->
+<section id="game">
+  <div class="section-header">
+    <div class="section-marker" style="background: var(--game);">04</div>
+    <div class="section-title-group">
+      <h2>Game Theory & Planning</h2>
+      <p>When robots share spaces with humans or other robots, they must plan not just against nature, but against other decision-makers.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Markov Games & Coarse Correlated Equilibria</h3>
+    <p>A Markov game generalizes a Markov Decision Process to multiple agents. Finding Nash equilibria is computationally hard, so researchers turn to Coarse Correlated Equilibria (CCE) — a more tractable solution concept where a coordinator can recommend strategies that no agent wants to unilaterally deviate from. This is critical for merging, intersection navigation, and collaborative lifting where agents must reason about each other's goals.</p>
+    <div class="source-list">
+      <a class="source-chip" href="https://proceedings.mlr.press/v242/mao24a.html" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        L4DC 2024 / Mao et al.
+      </a>
+      <a class="source-chip" href="https://proceedings.mlr.press/v238/cai24a/cai24a.pdf" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Near-Optimal Policy Optimization for CCE
+      </a>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>DyPNIPP: Dynamic Informative Path Planning</h3>
+    <p>DyPNIPP addresses exploration in changing environments such as ocean monitoring and search-and-rescue. Rather than assuming a static map, it uses reinforcement learning to plan paths that maximize information gain while predicting how the environment itself evolves. As new data arrives, the robot updates its model of the world and recomputes its path — a continuous loop of replanning under uncertainty.</p>
+    <div class="source-list">
+      <a class="source-chip" href="https://arxiv.org/html/2410.17186" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        DyPNIPP — arXiv:2410.17186
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CROSS-DOMAIN INTEGRATION -->
+<section id="integration">
+  <div class="section-header">
+    <div class="section-marker" style="background: linear-gradient(135deg, var(--dynamics), var(--agentic));">★</div>
+    <div class="section-title-group">
+      <h2>Cross-Domain Integration</h2>
+      <p>The future of robot learning is not better isolated algorithms, but tightly integrated systems where dynamics, safety, learning, and strategic reasoning co-design.</p>
+    </div>
+  </div>
+
+  <div class="integration">
+    <p style="max-width: 68ch; margin-bottom: 1.25rem;">The humanoid figure at the center of the research vision embodies the synthesis of all four themes. Each capability layer builds on the others:</p>
+    <table class="integration-table">
+      <thead>
+        <tr>
+          <th>Capability Layer</th>
+          <th>What it Represents</th>
+          <th>Source Technique</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Learned model with Koopman structure</td>
+          <td>The robot's internal dynamics model is linearized in a learned latent space, enabling efficient prediction and control.</td>
+          <td>Dynamics & Control</td>
+        </tr>
+        <tr>
+          <td>Models multi-jointed body with GNNs</td>
+          <td>Like CableRobotGraphSim, the robot represents its own body as a graph of links and joints for accurate simulation.</td>
+          <td>Agentic & System Modeling</td>
+        </tr>
+        <tr>
+          <td>Checks safety with conformal guarantees</td>
+          <td>Before executing a motion, it verifies that predicted trajectories stay within probabilistically safe regions.</td>
+          <td>Safety & Robustness</td>
+        </tr>
+        <tr>
+          <td>Plans based on opponent strategy</td>
+          <td>Using game-theoretic equilibrium selection, it anticipates how humans or other robots will react to its actions.</td>
+          <td>Game Theory & Planning</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong>CORL/L4DC 2026:</strong> 8th Annual Learning for Dynamics & Control Conference, University of Southern California, June 17–19, 2026.</p>
+    <p style="margin-top: 0.5rem;">This page synthesizes research from L4DC 2026, CoRL, NeurIPS, and related venues. All source links open the original papers and project pages.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaping the Future: The 2026 Machine Learning Research Landscape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F2EBE3;
+  --surface: #FAF6F1;
+  --ink: #2A2118;
+  --muted: #7A6F64;
+  --accent: #B85C3F;
+  --accent-weak: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  --accent-strong: #8F4128;
+  --sage: #5E7560;
+  --sage-weak: color-mix(in oklab, var(--sage) 10%, var(--surface));
+  --clay: #C48A6E;
+  --line: color-mix(in oklab, var(--ink) 10%, transparent);
+  --step--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.75vw, 3rem);
+  --step-3: clamp(2.5rem, 1.8rem + 3.5vw, 5rem);
+  --space: clamp(1.5rem, 1.2rem + 1.5vw, 3rem);
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(42,33,24,0.04), 0 12px 32px -10px rgba(42,33,24,0.14);
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Source Sans 3", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: "Cormorant Garamond", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: var(--step-3); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+
+/* Links */
+a {
+  color: var(--accent-strong);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  transition: border-color 0.2s, color 0.2s;
+}
+a:hover {
+  border-bottom-color: var(--accent-strong);
+}
+
+/* Layout primitives */
+.container {
+  width: min(90%, 1100px);
+  margin-inline: auto;
+}
+
+/* Header / Hero */
+header {
+  position: relative;
+  padding-block: calc(var(--space) * 3) calc(var(--space) * 2.5);
+  overflow: hidden;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(184,92,63,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 80%, rgba(94,117,96,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  display: inline-block;
+  position: relative;
+}
+
+.hero-eyebrow::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+  margin-top: 0.6rem;
+  opacity: 0.5;
+}
+
+.hero-title {
+  font-weight: 700;
+  max-width: 14ch;
+  position: relative;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent-strong);
+}
+
+.hero-subtitle {
+  margin-top: 1.25rem;
+  font-size: var(--step-1);
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  color: var(--muted);
+  max-width: 40ch;
+  line-height: 1.35;
+}
+
+.hero-meta {
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.hero-meta .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--clay);
+}
+
+/* Terrain line — signature element */
+.terrain-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  pointer-events: none;
+}
+.terrain-line svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sections */
+main > section {
+  padding-block: calc(var(--space) * 2);
+  position: relative;
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 1.5rem;
+  align-items: baseline;
+  margin-bottom: calc(var(--space) * 1.2);
+}
+
+.section-number {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: var(--clay);
+  line-height: 1;
+  opacity: 0.55;
+}
+
+.section-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.section-label {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.section-title {
+  color: var(--ink);
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  gap: var(--space);
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.1);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1px 2px rgba(42,33,24,0.04), 0 20px 40px -12px rgba(42,33,24,0.18);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 0 0 2px 2px;
+  opacity: 0.25;
+  transition: opacity 0.3s, left 0.3s, right 0.3s;
+}
+
+.card:hover::before {
+  opacity: 0.55;
+  left: 1rem;
+  right: 1rem;
+}
+
+.card h3 {
+  margin-bottom: 0.6rem;
+  color: var(--accent-strong);
+}
+
+.card p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.card .tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sage);
+  background: var(--sage-weak);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+/* Theme variations */
+.theme-efficiency .card::before { background: var(--accent); }
+.theme-bias .card::before { background: #8C7AA6; }
+.theme-lifelong .card::before { background: var(--sage); }
+.theme-safety .card::before { background: #A6593D; }
+.theme-causal .card::before { background: #4F7A8C; }
+
+.theme-bias .card h3 { color: #6B5A7F; }
+.theme-lifelong .card h3 { color: #3E5A40; }
+.theme-safety .card h3 { color: #7A3B26; }
+.theme-causal .card h3 { color: #3A5F70; }
+
+/* Asymmetric layouts per section */
+@media (min-width: 720px) {
+  .theme-efficiency .card-grid { grid-template-columns: 1.2fr 1fr; }
+  .theme-efficiency .card:first-child { grid-row: span 2; }
+
+  .theme-bias .card-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .theme-lifelong .card-grid { grid-template-columns: 1fr 1.3fr; }
+  .theme-lifelong .card:last-child { grid-column: span 2; }
+
+  .theme-safety .card-grid { grid-template-columns: 1fr 1fr; }
+  .theme-safety .card:first-child { grid-column: span 2; }
+
+  .theme-causal .card-grid { grid-template-columns: 1.1fr 1fr; }
+}
+
+/* Synthesis band */
+.synthesis {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.synthesis::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 50%, rgba(184,92,63,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 60%, rgba(94,117,96,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.synthesis-inner {
+  position: relative;
+}
+
+.synthesis h2 {
+  max-width: 20ch;
+  margin-bottom: 1.25rem;
+}
+
+.synthesis-text {
+  columns: 1;
+  color: var(--muted);
+}
+
+@media (min-width: 720px) {
+  .synthesis-text {
+    columns: 2;
+    column-gap: calc(var(--space) * 1.5);
+  }
+}
+
+.synthesis-text p + p {
+  margin-top: 1em;
+}
+
+/* Footer */
+footer {
+  padding-block: calc(var(--space) * 1.5);
+  text-align: center;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+footer .mark {
+  width: 32px;
+  height: 4px;
+  background: var(--clay);
+  border-radius: 2px;
+  margin: 0 auto 1rem;
+  opacity: 0.4;
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  .no-print { display: none; }
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+}
+@page {
+  size: A4;
+  margin: 16mm;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <span class="hero-eyebrow">Research Landscape</span>
+    <h1 class="hero-title">Shaping the Future: The <em>2026</em> Machine Learning Research Landscape</h1>
+    <p class="hero-subtitle">Core themes and breakthroughs in AI efficiency, ethics, and control.</p>
+    <div class="hero-meta">
+      <span>Five frontiers</span><span class="dot"></span><span>One interconnected field</span>
+    </div>
+  </div>
+  <div class="terrain-line" aria-hidden="true">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path d="M0,45 C150,55 300,20 450,35 C600,50 750,15 900,30 C1050,45 1150,25 1200,40 L1200,60 L0,60 Z" fill="rgba(184,92,63,0.06)"/>
+      <path d="M0,50 C200,60 400,25 600,40 C800,55 1000,20 1200,35" fill="none" stroke="rgba(184,92,63,0.18)" stroke-width="1.5"/>
+    </svg>
+  </div>
+</header>
+
+<main>
+
+<section class="theme-efficiency">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">01</span>
+      <div class="section-title-group">
+        <span class="section-label">Parsimony & Efficiency</span>
+        <h2 class="section-title">Doing More with Less</h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="tag">Compression</span>
+        <h3>ROSE: Reordered SparseGPT</h3>
+        <p>A new method for more surgical one-shot pruning of Large Language Models, enabling massive models to run on modest hardware. By reordering the structure of pruning, it better preserves emergent reasoning pathways while achieving aggressive sparsity. The result is generative AI that can operate on consumer GPUs and mobile accelerators without the heavy artifacts of crude quantization.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Fine-Tuning</span>
+        <h3>LoRA Evolution</h3>
+        <p>Low-Rank Adaptation and its successors freeze pretrained weights and inject trainable low-rank matrices, cutting fine-tuning memory by orders of magnitude. The next evolution introduces adaptive rank selection—dynamically allocating parameter budget to the layers that need it most, turning efficient fine-tuning into a resource allocation problem.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Small Models</span>
+        <h3>Parameter Reasoning at 0.5B</h3>
+        <p>With careful data curation, distillation, and training curricula, sub-billion-parameter models can exhibit strong chain-of-thought and tool-use capabilities. This challenges the assumption that scale is the only path to reasoning, opening the door to private, on-device assistants that never leak data to the cloud.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="theme-bias" style="background: linear-gradient(180deg, transparent 0%, rgba(140,122,166,0.04) 100%);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">02</span>
+      <div class="section-title-group">
+        <span class="section-label">Bias & the Multimodal Lens</span>
+        <h2 class="section-title">Seeing Across Modalities</h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="tag">Representation</span>
+        <h3>Cultural Representation Bias</h3>
+        <p>Vision-language models often embed alignment gaps: Western norms and symbols are over-represented, while others are stereotyped or erased. Repair now requires cultural calibration—fine-tuning on locally curated corpora and evaluating with culturally situated benchmarks rather than universalist assumptions.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Evaluation</span>
+        <h3>MMA: Multi-Model Ambiguity Benchmarking</h3>
+        <p>A framework for testing how VLMs handle ambiguity across text and images. When prompts are underspecified, does the model resolve referents from visual context, or hallucinate details? MMA forces systems to expose uncertainty instead of collapsing to a single confident answer.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Human Factors</span>
+        <h3>Annotator Risk Preference</h3>
+        <p>Human labelers bring their own risk profiles—some conservative, some permissive—when tagging sensitive content. Homogeneous annotator pools silently encode majority privilege into model behavior. New methods treat annotator disagreement as signal, not noise, and build consensus mechanisms that surface these preferences explicitly.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="theme-lifelong">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">03</span>
+      <div class="section-title-group">
+        <span class="section-label">Lifelong Learning & Adaptation</span>
+        <h2 class="section-title">Learning Without Forgetting</h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="tag">Continual Learning</span>
+        <h3>Stability-Plasticity Balancing</h3>
+        <p>Curriculum-driven continual learning organizes tasks so new knowledge builds on old without overwriting it. Dynamic expansion of network capacity—adding modules when novelty is detected—keeps core representations stable while letting the model grow. The goal is human-like gradual learning, not brittle retraining from scratch.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Robotics</span>
+        <h3>Single-Life Robot Deployment</h3>
+        <p>Many robots cannot return to the lab for retraining. An "Adapt On-the-Co" framework enables online, self-supervised adaptation: the robot monitors its own behavior, detects distribution shift, and adjusts policies in real time—without ever sacrificing safety guarantees during deployment.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Memory</span>
+        <h3>The Replay Paradox</h3>
+        <p>Replay—rehearsing old data while learning new tasks—is the standard cure for catastrophic forgetting. Yet in certain scenarios, especially with out-of-distribution memories or limited buffer sizes, replay can increase interference and accelerate forgetting of rare but critical events. Understanding when replay helps versus hurts is essential for safe memory architectures.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="theme-safety" style="background: linear-gradient(180deg, rgba(166,89,61,0.03) 0%, transparent 100%);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">04</span>
+      <div class="section-title-group">
+        <span class="section-label">Dynamics, Control & Safety</span>
+        <h2 class="section-title">Guarantees in the Physical World</h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="tag">Robotics</span>
+        <h3>FALCON: Loco-Manipulation</h3>
+        <p>Locomotion and manipulation are traditionally siloed. Force-adaptive whole-body control unifies them, enabling a robot to open a heavy door while balancing on uneven ground. Learning these policies demands sim-to-real transfer with careful domain randomization and contact-rich dynamics that standard reinforcement learning often fails to capture.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Control Theory</span>
+        <h3>Koopman Operators for Safety</h3>
+        <p>Koopman theory lifts nonlinear dynamics into a higher-dimensional linear space where they can be controlled with convex methods. For safety, this means computing reachable and invariant sets efficiently—mathematically proving that a neural controller will keep a system within safe limits. These guarantees are crucial for certification in aerospace, automotive, and medical robotics.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Physics</span>
+        <h3>Physics-Informed Neural Networks</h3>
+        <p>PINNs embed differential equations—conservation laws, Navier-Stokes, and more—directly into the network loss. In chaotic environments, pure data-driven models fail at extrapolation. By regularizing predictions to respect known physics, PINNs maintain accuracy outside the training distribution, essential for digital twins and real-time control.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="theme-causal">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">05</span>
+      <div class="section-title-group">
+        <span class="section-label">Causal Reasoning & Fairness</span>
+        <h2 class="section-title">Asking "What If?"</h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="tag">Ethics</span>
+        <h3>Counterfactual Fairness</h3>
+        <p>A decision is counterfactually fair if it would remain the same had an individual’s protected attributes been different, holding their underlying causal features constant. This moves beyond demographic parity—metrics that can be gamed—to a structural criterion rooted in causal graphs. Implementing it requires explicit models of how sensitive attributes influence outcomes.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Causality</span>
+        <h3>Causal-ICM Data Fusion</h3>
+        <p>Independent Causal Mechanisms assume that generative processes consist of autonomous modules that do not change when others are intervened upon. In data fusion, this means combining heterogeneous datasets by identifying shared causal mechanisms and domain-specific ones. Gaussian Processes model these mechanisms and their uncertainty, enabling robust transfer even when correlation-based models break.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="synthesis">
+  <div class="container synthesis-inner">
+    <h2 class="reveal">Synthesis: From Bigger to Smarter, Safer, and Fairer</h2>
+    <div class="synthesis-text reveal">
+      <p>These five frontiers are not isolated research silos. Efficient sparse models make lifelong learning feasible on-device; multimodal bias auditing is incomplete without causal counterfactuals; safe physical control relies on physics-informed representations; and continual adaptation in robots is dangerous without reachability guarantees. Together, they signal a maturation of the field.</p>
+      <p>The 2026 landscape is defined by a shift from raw scale to deliberate design: models that reason with fewer parameters, systems that question their own training data, agents that learn without forgetting, controllers that respect physical law, and fairness metrics grounded in causality rather than correlation. The future of machine learning is not just more powerful—it is more principled.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="mark" aria-hidden="true"></div>
+  <p>Shaping the Future: The 2026 Machine Learning Research Landscape</p>
+</footer>
+
+<script>
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

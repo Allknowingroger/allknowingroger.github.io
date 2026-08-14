@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Levitation: From Hovercrafts to Holograms — EMF 2026 Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── Design Tokens ─── */
+:root {
+  --bg-deep: #070d17;
+  --bg-surface: #0f1929;
+  --bg-elevated: #162236;
+  --bg-glass: rgba(15, 25, 41, 0.72);
+  --ink: #e0f7ff;
+  --ink-muted: #7a9eb5;
+  --ink-dim: #4a6b82;
+  --cyan: #00d4ff;
+  --cyan-dim: rgba(0, 212, 255, 0.12);
+  --cyan-glow: rgba(0, 212, 255, 0.35);
+  --green: #00e5a0;
+  --green-dim: rgba(0, 229, 160, 0.12);
+  --green-glow: rgba(0, 229, 160, 0.35);
+  --amber: #ff9e42;
+  --amber-dim: rgba(255, 158, 66, 0.12);
+  --amber-glow: rgba(255, 158, 66, 0.35);
+  --line: rgba(224, 247, 255, 0.09);
+  --line-strong: rgba(224, 247, 255, 0.18);
+
+  --step--1: clamp(0.875rem, 0.85rem + 0.15vw, 1rem);
+  --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.8vw, 3rem);
+  --step-3: clamp(2.75rem, 1.9rem + 4vw, 5.5rem);
+  --space: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.25), 0 12px 32px -8px rgba(0,0,0,0.45);
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg-deep);
+  overflow-x: hidden;
+}
+h1, h2, h3, h4 {
+  font-family: "Space Grotesk", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+p { margin: 0; text-wrap: pretty; }
+img { max-width: 100%; display: block; }
+
+/* ─── Background Grid ─── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Hero ─── */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(4rem, 12vh, 10rem) var(--space) clamp(3rem, 8vh, 6rem);
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,212,255,0.10), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+.eyebrow {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+.hero h1 {
+  font-size: var(--step-3);
+  max-width: 18ch;
+  background: linear-gradient(135deg, var(--ink) 30%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-lead {
+  margin-top: 1.25rem;
+  font-size: var(--step-1);
+  color: var(--ink-muted);
+  max-width: 52ch;
+  line-height: 1.5;
+}
+
+/* ─── Circuit Trace (Signature Element) ─── */
+.trace-wrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  display: none;
+  pointer-events: none;
+}
+@media (min-width: 900px) {
+  .trace-wrap { display: block; }
+}
+.trace-svg {
+  position: sticky;
+  top: 30vh;
+  width: 80px;
+  height: 340px;
+  overflow: visible;
+}
+.trace-line {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+.trace-node {
+  fill: var(--bg-surface);
+  stroke: var(--cyan);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px var(--cyan-glow));
+}
+.trace-node--green { stroke: var(--green); filter: drop-shadow(0 0 6px var(--green-glow)); }
+.trace-node--amber { stroke: var(--amber); filter: drop-shadow(0 0 6px var(--amber-glow)); }
+.trace-text {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--ink);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* ─── Main Layout ─── */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--space) calc(var(--space) * 2);
+}
+.content-grid {
+  position: relative;
+}
+@media (min-width: 900px) {
+  .content-grid {
+    padding-left: 80px;
+  }
+}
+
+/* ─── Tech Sections ─── */
+.tech-section {
+  position: relative;
+  padding: calc(var(--space) * 1.5) 0;
+}
+.tech-section + .tech-section {
+  border-top: 1px solid var(--line);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.section-number {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: var(--step-1);
+  font-weight: 700;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-strong);
+  flex-shrink: 0;
+}
+.tech-section[data-accent="cyan"] .section-number {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px var(--cyan-dim), inset 0 0 16px var(--cyan-dim);
+}
+.tech-section[data-accent="green"] .section-number {
+  color: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 16px var(--green-dim), inset 0 0 16px var(--green-dim);
+}
+.tech-section[data-accent="amber"] .section-number {
+  color: var(--amber);
+  border-color: var(--amber);
+  box-shadow: 0 0 16px var(--amber-dim), inset 0 0 16px var(--amber-dim);
+}
+.section-header h2 {
+  font-size: var(--step-2);
+}
+.section-body {
+  display: grid;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (min-width: 760px) {
+  .section-body {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem;
+  }
+  .tech-section:nth-child(even) .section-body {
+    direction: rtl;
+  }
+  .tech-section:nth-child(even) .section-body > * {
+    direction: ltr;
+  }
+}
+
+/* ─── Prose ─── */
+.prose p {
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+}
+.prose p:last-child { margin-bottom: 0; }
+.prose h3 {
+  font-size: var(--step-1);
+  color: var(--ink);
+  margin: 1.75rem 0 0.75rem;
+}
+.prose ul {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+  color: var(--ink-muted);
+}
+.prose li {
+  margin-bottom: 0.5rem;
+}
+.prose li::marker {
+  color: var(--ink-dim);
+}
+
+/* ─── Feature List ─── */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.feature-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+}
+.feature-list li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  font-weight: 700;
+  color: var(--cyan);
+}
+.tech-section[data-accent="green"] .feature-list li::before { color: var(--green); }
+.tech-section[data-accent="amber"] .feature-list li::before { color: var(--amber); }
+
+/* ─── Visual Cards ─── */
+.visual {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.visual[data-accent="cyan"]::before {
+  background: radial-gradient(circle at 30% 30%, var(--cyan-dim), transparent 60%);
+}
+.visual[data-accent="green"]::before {
+  background: radial-gradient(circle at 70% 30%, var(--green-dim), transparent 60%);
+}
+.visual[data-accent="amber"]::before {
+  background: radial-gradient(circle at 50% 50%, var(--amber-dim), transparent 60%);
+}
+.visual svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.visual-label {
+  position: absolute;
+  bottom: 1rem;
+  left: 1.5rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  z-index: 2;
+}
+
+/* ─── Sub-sections (Optical / Dynamic) ─── */
+.subgrid {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 760px) {
+  .subgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.subcard {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.subcard h4 {
+  font-size: var(--step-1);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.subcard h4 .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot--amber { background: var(--amber); box-shadow: 0 0 8px var(--amber-glow); }
+.dot--cyan { background: var(--cyan); box-shadow: 0 0 8px var(--cyan-glow); }
+
+/* ─── Applications ─── */
+.applications {
+  margin-top: calc(var(--space) * 2);
+  padding-top: calc(var(--space) * 1.5);
+  border-top: 1px solid var(--line);
+}
+.applications h2 {
+  font-size: var(--step-2);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.app-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+@media (min-width: 760px) {
+  .app-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.app-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.app-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-strong);
+}
+.app-card h3 {
+  font-size: var(--step-1);
+  margin-bottom: 0.5rem;
+}
+.app-card p {
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+.app-card .meta {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+
+/* ─── Footer ─── */
+footer {
+  margin-top: calc(var(--space) * 2);
+  padding: 2rem var(--space);
+  border-top: 1px solid var(--line);
+  text-align: center;
+  color: var(--ink-dim);
+  font-size: var(--step--1);
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .app-card { transition: none; }
+}
+
+/* ─── Print ─── */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  body::before, .hero::after, .trace-wrap { display: none; }
+  .hero, .tech-section, .applications, footer {
+    page-break-inside: avoid;
+  }
+  .visual, .subcard, .app-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+@page {
+  size: A4;
+  margin: 16mm;
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-content">
+    <p class="eyebrow">EMF 2026 Summary</p>
+    <h1>Levitation: From Hovercrafts to Holograms</h1>
+    <p class="hero-lead">Three technologies, one principle—eliminating physical contact to transform transportation, medicine, and human-computer interaction.</p>
+  </div>
+</header>
+
+<main>
+  <!-- Sticky circuit trace for desktop -->
+  <div class="trace-wrap" aria-hidden="true">
+    <svg class="trace-svg" viewBox="0 0 80 340">
+      <line class="trace-line" x1="28" y1="20" x2="28" y2="320"/>
+      <!-- Node 01 -->
+      <circle class="trace-node" cx="28" cy="60" r="14"/>
+      <text class="trace-text" x="28" y="60">01</text>
+      <line x1="42" y1="60" x2="80" y2="60" stroke="var(--line-strong)" stroke-width="1"/>
+      <!-- Node 02 -->
+      <circle class="trace-node trace-node--green" cx="28" cy="170" r="14"/>
+      <text class="trace-text" x="28" y="170">02</text>
+      <line x1="42" y1="170" x2="80" y2="170" stroke="var(--line-strong)" stroke-width="1"/>
+      <!-- Node 03 -->
+      <circle class="trace-node trace-node--amber" cx="28" cy="280" r="14"/>
+      <text class="trace-text" x="28" y="280">03</text>
+      <line x1="42" y1="280" x2="80" y2="280" stroke="var(--line-strong)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="content-grid">
+
+    <!-- 1. MAGNETIC LEVITATION -->
+    <section class="tech-section" data-accent="cyan" id="magnetic">
+      <div class="section-header">
+        <div class="section-number" aria-hidden="true">01</div>
+        <h2>Magnetic Levitation</h2>
+      </div>
+      <div class="section-body">
+        <div class="prose">
+          <p>Magnetic levitation uses powerful superconducting magnets or electromagnets to lift and propel objects—typically vehicles—without physical contact, eliminating rolling friction entirely.</p>
+          <h3>How it works</h3>
+          <p>Systems rely on <strong>electromagnetic suspension (EMS)</strong>, where electromagnets are attracted to a ferromagnetic guideway, or <strong>electrodynamic suspension (EDS)</strong>, where superconducting magnets induce repulsive eddy currents in track coils. Because the train never touches the rail, wear and vibration are drastically reduced, enabling test speeds exceeding <strong>600 km/h</strong> (373 mph).</p>
+          <h3>Key characteristics</h3>
+          <ul class="feature-list">
+            <li>Uses strong magnetic fields for frictionless transport</li>
+            <li>Requires specialized guideway infrastructure with embedded coils</li>
+            <li>Ideal for intercity networks and high-speed corridors</li>
+            <li>Also applied in magnetic bearings for industrial turbines</li>
+          </ul>
+        </div>
+        <div class="visual" data-accent="cyan">
+          <svg viewBox="0 0 400 260" aria-label="Diagram of a maglev train suspended above a track with magnetic field arcs">
+            <!-- Track -->
+            <rect x="20" y="200" width="360" height="12" rx="3" fill="none" stroke="#4a6b82" stroke-width="2"/>
+            <rect x="20" y="216" width="360" height="6" rx="2" fill="#162236"/>
+            <!-- Coils under track -->
+            <ellipse cx="80" cy="228" rx="18" ry="6" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+            <ellipse cx="200" cy="228" rx="18" ry="6" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+            <ellipse cx="320" cy="228" rx="18" ry="6" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+            <!-- Magnetic field arcs -->
+            <path d="M 60 200 Q 60 140 100 140" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.5" stroke-dasharray="6 4"/>
+            <path d="M 340 200 Q 340 140 300 140" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.5" stroke-dasharray="6 4"/>
+            <path d="M 130 200 Q 130 120 200 120 Q 269 120 269 200" fill="none" stroke="var(--cyan)" stroke-width="2" opacity="0.35"/>
+            <!-- Train body -->
+            <path d="M 60 140 L 340 140 L 340 110 Q 340 95 320 95 L 80 95 Q 60 95 60 110 Z" fill="#0f1929" stroke="#7a9eb5" stroke-width="2"/>
+            <rect x="70" y="105" width="50" height="18" rx="3" fill="#070d17" stroke="#4a6b82" stroke-width="1"/>
+            <rect x="130" y="105" width="50" height="18" rx="3" fill="#070d17" stroke="#4a6b82" stroke-width="1"/>
+            <rect x="190" y="105" width="50" height="18" rx="3" fill="#070d17" stroke="#4a6b82" stroke-width="1"/>
+            <rect x="250" y="105" width="50" height="18" rx="3" fill="#070d17" stroke="#4a6b82" stroke-width="1"/>
+            <!-- Nose cone -->
+            <path d="M 60 110 L 40 125 L 60 125 Z" fill="#0f1929" stroke="#7a9eb5" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Mag indicators -->
+            <text x="200" y="80" text-anchor="middle" fill="var(--cyan)" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">MAGLEV TRAIN</text>
+            <!-- Magnet icon -->
+            <rect x="352" y="160" width="24" height="18" rx="2" fill="none" stroke="var(--cyan)" stroke-width="1.5"/>
+            <text x="364" y="173" text-anchor="middle" fill="var(--cyan)" font-size="10" font-weight="700">N</text>
+            <rect x="352" y="182" width="24" height="18" rx="2" fill="none" stroke="var(--cyan)" stroke-width="1.5"/>
+            <text x="364" y="195" text-anchor="middle" fill="var(--cyan)" font-size="10" font-weight="700">S</text>
+          </svg>
+          <span class="visual-label">Fig. 1 — Electrodynamic suspension schematic</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ACOUSTIC LEVITATION -->
+    <section class="tech-section" data-accent="green" id="acoustic">
+      <div class="section-header">
+        <div class="section-number" aria-hidden="true">02</div>
+        <h2>Acoustic Levitation</h2>
+      </div>
+      <div class="section-body">
+        <div class="prose">
+          <p>Acoustic levitation uses high-intensity sound waves to trap small objects or liquid droplets in mid-air. Unlike magnetic methods, it does not require the object to be magnetic or conductive—only that it be significantly less dense than the surrounding medium.</p>
+          <h3>How it works</h3>
+          <p>An array of ultrasonic transducers generates a <strong>standing sound wave</strong>, creating fixed regions of high and low acoustic pressure called <strong>nodes</strong> and <strong>antinodes</strong>. Particles are pushed toward the pressure nodes—the stable points where net acoustic force balances gravity. By dynamically adjusting phase and amplitude, researchers can move these nodes in real time, translating the object through 3D space.</p>
+          <h3>Key characteristics</h3>
+          <ul class="feature-list">
+            <li>Uses sound waves to create acoustic nodes</li>
+            <li>Traps small particles and liquid droplets without contact</li>
+            <li>Enables containerless processing for pure materials</li>
+            <li>Drives emerging volumetric 3D display technologies</li>
+          </ul>
+        </div>
+        <div class="visual" data-accent="green">
+          <svg viewBox="0 0 400 260" aria-label="Diagram of speakers arranged in a circle creating a standing wave field that traps liquid droplets">
+            <!-- Outer ring -->
+            <circle cx="200" cy="130" r="110" fill="none" stroke="var(--line-strong)" stroke-width="1" stroke-dasharray="4 4"/>
+            <!-- Speakers arranged circularly -->
+            <g transform="translate(200,130)">
+              <!-- Speaker 1 top -->
+              <g transform="rotate(0) translate(0,-95)">
+                <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#0f1929" stroke="var(--green)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="6" fill="none" stroke="var(--green)" stroke-width="1"/>
+                <path d="M -20 0 Q -35 -10 -35 0 Q -35 10 -20 0" fill="none" stroke="var(--green)" opacity="0.4" stroke-width="1"/>
+                <path d="M -24 0 Q -42 -14 -42 0 Q -42 14 -24 0" fill="none" stroke="var(--green)" opacity="0.25" stroke-width="1"/>
+              </g>
+              <!-- Speaker 2 top-right -->
+              <g transform="rotate(60) translate(0,-95)">
+                <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#0f1929" stroke="var(--green)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="6" fill="none" stroke="var(--green)" stroke-width="1"/>
+                <path d="M -20 0 Q -35 -10 -35 0 Q -35 10 -20 0" fill="none" stroke="var(--green)" opacity="0.4" stroke-width="1"/>
+              </g>
+              <!-- Speaker 3 bottom-right -->
+              <g transform="rotate(120) translate(0,-95)">
+                <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#0f1929" stroke="var(--green)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="6" fill="none" stroke="var(--green)" stroke-width="1"/>
+                <path d="M -20 0 Q -35 -10 -35 0 Q -35 10 -20 0" fill="none" stroke="var(--green)" opacity="0.4" stroke-width="1"/>
+              </g>
+              <!-- Speaker 4 bottom -->
+              <g transform="rotate(180) translate(0,-95)">
+                <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#0f1929" stroke="var(--green)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="6" fill="none" stroke="var(--green)" stroke-width="1"/>
+                <path d="M -20 0 Q -35 -10 -35 0 Q -35 10 -20 0" fill="none" stroke="var(--green)" opacity="0.4" stroke-width="1"/>
+                <path d="M -24 0 Q -42 -14 -42 0 Q -42 14 -24 0" fill="none" stroke="var(--green)" opacity="0.25" stroke-width="1"/>
+              </g>
+              <!-- Speaker 5 bottom-left -->
+              <g transform="rotate(240) translate(0,-95)">
+                <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#0f1929" stroke="var(--green)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="6" fill="none" stroke="var(--green)" stroke-width="1"/>
+                <path d="M -20 0 Q -35 -10 -35 0 Q -35 10 -20 0" fill="none" stroke="var(--green)" opacity="0.4" stroke-width="1"/>
+              </g>
+              <!-- Speaker 6 top-left -->
+              <g transform="rotate(300) translate(0,-95)">
+                <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#0f1929" stroke="var(--green)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="6" fill="none" stroke="var(--green)" stroke-width="1"/>
+                <path d="M -20 0 Q -35 -10 -35 0 Q -35 10 -20 0" fill="none" stroke="var(--green)" opacity="0.4" stroke-width="1"/>
+              </g>
+            </g>
+            <!-- Center droplets -->
+            <circle cx="200" cy="130" r="14" fill="var(--green)" opacity="0.15" stroke="var(--green)" stroke-width="1.5"/>
+            <circle cx="200" cy="130" r="6" fill="var(--green)" opacity="0.5"/>
+            <circle cx="170" cy="150" r="5" fill="var(--green)" opacity="0.3"/>
+            <circle cx="230" cy="115" r="4" fill="var(--green)" opacity="0.35"/>
+            <circle cx="215" cy="155" r="3.5" fill="var(--green)" opacity="0.3"/>
+            <!-- Node rings -->
+            <circle cx="200" cy="130" r="28" fill="none" stroke="var(--green)" stroke-width="1" opacity="0.2" stroke-dasharray="3 3"/>
+            <text x="200" y="245" text-anchor="middle" fill="var(--green)" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">ACOUSTIC TRAP</text>
+          </svg>
+          <span class="visual-label">Fig. 2 — Phased ultrasonic transducer array</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. OPTICAL & DYNAMIC LEVITATION -->
+    <section class="tech-section" data-accent="amber" id="optical-dynamic">
+      <div class="section-header">
+        <div class="section-number" aria-hidden="true">03</div>
+        <h2>Optical &amp; Dynamic Levitation</h2>
+      </div>
+      <div class="section-body">
+        <div class="prose">
+          <p>At the microscopic scale, light itself can hold matter in place. At the macroscopic scale, a cushion of air can do the same. These two approaches share a simple idea: use a sustained pressure differential to counteract gravity.</p>
+        </div>
+        <div class="subgrid">
+          <div class="subcard">
+            <h4><span class="dot dot--amber" aria-hidden="true"></span> Optical Levitation</h4>
+            <p style="color:var(--ink-muted); font-size:var(--step--1); margin-bottom:1rem;">Focused laser beams create intense optical gradients that draw dielectric particles toward the focal point. This is the principle behind <strong>optical tweezers</strong>, capable of manipulating individual cells with sub-nanometer precision.</p>
+            <svg viewBox="0 0 280 140" aria-label="Laser beams focused on a cell by optical tweezers">
+              <!-- Laser beams -->
+              <line x1="0" y1="0" x2="140" y2="70" stroke="var(--amber)" stroke-width="2" opacity="0.7"/>
+              <line x1="280" y1="0" x2="140" y2="70" stroke="var(--amber)" stroke-width="2" opacity="0.7"/>
+              <line x1="0" y1="140" x2="140" y2="70" stroke="var(--amber)" stroke-width="2" opacity="0.7"/>
+              <line x1="280" y1="140" x2="140" y2="70" stroke="var(--amber)" stroke-width="2" opacity="0.7"/>
+              <!-- Glow at focus -->
+              <circle cx="140" cy="70" r="22" fill="var(--amber)" opacity="0.15" filter="blur(6px)"/>
+              <!-- Cell -->
+              <circle cx="140" cy="70" r="10" fill="#0f1929" stroke="var(--amber)" stroke-width="1.5"/>
+              <circle cx="143" cy="67" r="3" fill="var(--amber)" opacity="0.6"/>
+              <!-- Tweezer arms -->
+              <path d="M 60 20 Q 100 40 130 62" fill="none" stroke="#4a6b82" stroke-width="1.5"/>
+              <path d="M 220 20 Q 180 40 150 62" fill="none" stroke="#4a6b82" stroke-width="1.5"/>
+              <text x="140" y="125" text-anchor="middle" fill="var(--ink-dim)" font-family="Space Grotesk, sans-serif" font-size="9" letter-spacing="0.08em">OPTICAL TWEEZERS</text>
+            </svg>
+          </div>
+          <div class="subcard">
+            <h4><span class="dot dot--cyan" aria-hidden="true"></span> Dynamic Levitation</h4>
+            <p style="color:var(--ink-muted); font-size:var(--step--1); margin-bottom:1rem;">Fans force high-pressure air beneath a skirted hull, creating an <strong>air cushion</strong> that lifts the vehicle above land or water. This enables amphibious transport and industrial air-bearing systems for fragile payloads.</p>
+            <svg viewBox="0 0 280 140" aria-label="Hovercraft riding on a cushion of air">
+              <!-- Water/ground line -->
+              <path d="M 0 115 Q 40 110 70 115 T 140 115 T 210 115 T 280 115" fill="none" stroke="#4a6b82" stroke-width="1.5"/>
+              <!-- Air cushion arrows -->
+              <line x1="60" y1="105" x2="60" y2="95" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+              <line x1="100" y1="108" x2="100" y2="98" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+              <line x1="140" y1="110" x2="140" y2="100" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+              <line x1="180" y1="108" x2="180" y2="98" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+              <line x1="220" y1="105" x2="220" y2="95" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"/>
+              <!-- Cushion label -->
+              <text x="140" y="92" text-anchor="middle" fill="var(--cyan)" font-family="Space Grotesk, sans-serif" font-size="9" letter-spacing="0.08em" opacity="0.9">AIR CUSHION</text>
+              <!-- Hovercraft body -->
+              <path d="M 50 85 L 230 85 L 240 70 L 230 55 L 50 55 Q 30 55 30 70 Q 30 85 50 85 Z" fill="#0f1929" stroke="#7a9eb5" stroke-width="1.5"/>
+              <!-- Cabin -->
+              <rect x="80" y="35" width="80" height="22" rx="4" fill="#070d17" stroke="#4a6b82" stroke-width="1"/>
+              <rect x="88" y="40" width="18" height="12" rx="2" fill="#162236" stroke="#4a6b82" stroke-width="1"/>
+              <rect x="112" y="40" width="18" height="12" rx="2" fill="#162236" stroke="#4a6b82" stroke-width="1"/>
+              <rect x="136" y="40" width="18" height="12" rx="2" fill="#162236" stroke="#4a6b82" stroke-width="1"/>
+              <!-- Fans -->
+              <circle cx="200" cy="45" r="14" fill="#0f1929" stroke="var(--cyan)" stroke-width="1.5"/>
+              <line x1="200" y1="31" x2="200" y2="59" stroke="var(--cyan)" stroke-width="1.5"/>
+              <line x1="186" y1="45" x2="214" y2="45" stroke="var(--cyan)" stroke-width="1.5"/>
+              <circle cx="60" cy="45" r="14" fill="#0f1929" stroke="var(--cyan)" stroke-width="1.5"/>
+              <line x1="60" y1="31" x2="60" y2="59" stroke="var(--cyan)" stroke-width="1.5"/>
+              <line x1="46" y1="45" x2="74" y2="45" stroke="var(--cyan)" stroke-width="1.5"/>
+              <text x="140" y="132" text-anchor="middle" fill="var(--ink-dim)" font-family="Space Grotesk, sans-serif" font-size="9" letter-spacing="0.08em">HOVERCRAFT SCHEMATIC</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REAL-WORLD APPLICATIONS -->
+    <section class="applications" id="applications">
+      <h2>Real-World Applications</h2>
+      <div class="app-grid">
+        <article class="app-card">
+          <span class="meta">Pharmaceuticals</span>
+          <h3>Improved Drugs</h3>
+          <p>Containerless levitation lets pharmaceutical researchers grow crystals without vessel walls introducing nucleation sites or impurities. The result: more stable, soluble, and bioavailable drug formulations—especially for amorphous compounds that are hard to manufacture cleanly.</p>
+        </article>
+        <article class="app-card">
+          <span class="meta">Displays</span>
+          <h3>Volumetric Displays</h3>
+          <p>Rapid acoustic particle holograms move a tiny bead so fast it traces out a true 3D image in mid-air. Viewable from any angle without glasses, these displays also produce tactile feedback through acoustic pressure on skin—merging sight and touch.</p>
+        </article>
+        <article class="app-card">
+          <span class="meta">Infrastructure</span>
+          <h3>Transportation Networks</h3>
+          <p>Maglev eliminates wheel-rail contact for frictionless intercity travel at speeds above 600 km/h. Meanwhile, air-cushion systems enable amphibious logistics and factory AGVs that move heavy, fragile loads without mechanical shock.</p>
+        </article>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <p>Expanded from <em>Levitation: From Hovercrafts to Holograms</em> · EMF 2026 Summary</p>
+</footer>
+
+</body>
+</html>

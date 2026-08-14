@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Technoprogressive Opportunity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1120;
+  --surface: #111d35;
+  --surface-2: #0f172a;
+  --ink: #e2e8f0;
+  --muted: #94a3b8;
+  --accent-cyan: #22d3ee;
+  --accent-gold: #fbbf24;
+  --accent-cyan-weak: rgba(34, 211, 238, 0.08);
+  --accent-gold-weak: rgba(251, 191, 36, 0.08);
+  --line: rgba(34, 211, 238, 0.12);
+  --line-gold: rgba(251, 191, 36, 0.15);
+  --step--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
+  --step-2: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);
+  --step-3: clamp(2.2rem, 1.6rem + 3vw, 4rem);
+  --space: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+  --radius: 16px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: var(--step-0);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background mesh gradient */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(34,211,238,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(251,191,36,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Network node overlay */
+.network-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(circle at 15% 25%, var(--accent-cyan) 1.5px, transparent 2px),
+    radial-gradient(circle at 35% 45%, var(--accent-cyan) 1px, transparent 1.5px),
+    radial-gradient(circle at 55% 20%, var(--accent-cyan) 1px, transparent 1.5px),
+    radial-gradient(circle at 75% 35%, var(--accent-cyan) 1.5px, transparent 2px),
+    radial-gradient(circle at 85% 65%, var(--accent-gold) 1.5px, transparent 2px),
+    radial-gradient(circle at 25% 75%, var(--accent-gold) 1px, transparent 1.5px),
+    radial-gradient(circle at 65% 85%, var(--accent-gold) 1px, transparent 1.5px);
+}
+
+.network-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 48%, var(--line) 49%, var(--line) 51%, transparent 52%) 15% 25% / 20% 20% no-repeat,
+    linear-gradient(35deg, transparent 48%, var(--line) 49%, var(--line) 51%, transparent 52%) 35% 45% / 20% 15% no-repeat,
+    linear-gradient(-30deg, transparent 48%, var(--line) 49%, var(--line) 51%, transparent 52%) 55% 30% / 22% 18% no-repeat,
+    linear-gradient(160deg, transparent 48%, var(--line-gold) 49%, var(--line-gold) 51%, transparent 52%) 75% 55% / 18% 22% no-repeat;
+}
+
+header, main, footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Header */
+header {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--space);
+  border-bottom: 1px solid var(--line);
+}
+
+header .eyebrow {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+header .eyebrow::before,
+header .eyebrow::after {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--accent-cyan);
+  opacity: 0.5;
+}
+
+header h1 {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step-3);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  max-width: 16ch;
+  background: linear-gradient(135deg, var(--ink) 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header .subtitle {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step-1);
+  font-weight: 300;
+  color: var(--muted);
+  margin-top: 1.25rem;
+  max-width: 36ch;
+}
+
+header .lead {
+  margin-top: 2rem;
+  color: var(--muted);
+  max-width: 56ch;
+  font-size: var(--step-0);
+}
+
+.scroll-hint {
+  margin-top: 3rem;
+  color: var(--muted);
+  font-size: var(--step--1);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* Layout */
+.container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+section {
+  padding: calc(var(--space) * 2) 0;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 52ch;
+  margin: 0 auto calc(var(--space) * 1.5);
+}
+
+.section-header h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+}
+
+.section-header p {
+  color: var(--muted);
+  font-size: var(--step-0);
+}
+
+/* Intro band */
+.intro-band {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.intro-band .container {
+  max-width: 64ch;
+}
+
+.intro-band p {
+  font-size: var(--step-1);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.intro-band p + p {
+  margin-top: 1rem;
+  font-size: var(--step-0);
+  color: var(--muted);
+}
+
+/* Pillars grid */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: calc(var(--space) * 0.75);
+}
+
+.pillar-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 0.9);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.pillar-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-cyan), transparent);
+  opacity: 0.6;
+}
+
+.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: rgba(34, 211, 238, 0.25);
+}
+
+.pillar-card.gold-accent::before {
+  background: linear-gradient(90deg, var(--accent-gold), transparent);
+}
+
+.pillar-card.gold-accent:hover {
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+.pillar-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.25rem;
+  color: var(--accent-cyan);
+}
+
+.pillar-card.gold-accent .pillar-icon {
+  color: var(--accent-gold);
+}
+
+.pillar-card h3 {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step-1);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.pillar-card p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+.pillar-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pillar-card li {
+  font-size: var(--step--1);
+  color: var(--ink);
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.pillar-card li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+.pillar-card.gold-accent li::before {
+  color: var(--accent-gold);
+}
+
+/* Foundation band */
+.foundation-band {
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.foundation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: calc(var(--space) * 0.75);
+}
+
+.foundation-card {
+  padding: calc(var(--space) * 0.75);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: rgba(17, 30, 53, 0.5);
+}
+
+.foundation-card h3 {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step-1);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.foundation-card h3 .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  display: inline-block;
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+.foundation-card:nth-child(2) h3 .dot {
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px var(--accent-gold);
+}
+
+.foundation-card p {
+  color: var(--muted);
+  font-size: var(--step--1);
+  margin-bottom: 1rem;
+}
+
+.foundation-card ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+}
+
+.foundation-card li {
+  font-size: var(--step--1);
+  color: var(--ink);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.foundation-card li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+/* Conclusion */
+.conclusion {
+  text-align: center;
+}
+
+.conclusion .container {
+  max-width: 60ch;
+}
+
+.conclusion h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.conclusion p {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.conclusion .highlight {
+  color: var(--accent-cyan);
+  font-weight: 500;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: calc(var(--space) * 1.5) var(--space);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-hint { animation: none; }
+  .pillar-card { transition: none; }
+}
+
+/* Print */
+@media print {
+  body {
+    background: #fff;
+    color: #1a1a1a;
+  }
+  body::before, .network-bg { display: none; }
+  .pillar-card, .foundation-card {
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  header h1 {
+    background: none;
+    -webkit-text-fill-color: #1a1a1a;
+    color: #1a1a1a;
+  }
+  .scroll-hint { display: none; }
+}
+
+@page {
+  size: A4;
+  margin: 16mm;
+}
+</style>
+</head>
+<body>
+<div class="network-bg" aria-hidden="true"></div>
+
+<header>
+  <div class="eyebrow">Harnessing Technology</div>
+  <h1>The Technoprogressive Opportunity</h1>
+  <p class="subtitle">Technology as a Force for Human Flourishing</p>
+  <p class="lead">A strategic framework for leveraging emerging technologies not merely for efficiency or profit, but as deliberate instruments to expand human capabilities, reduce suffering, repair environmental damage, and distribute prosperity more broadly.</p>
+  <div class="scroll-hint" aria-hidden="true">↓</div>
+</header>
+
+<section class="intro-band">
+  <div class="container">
+    <p>The technoprogressive opportunity is a practical roadmap, not a utopian fantasy. It calls for a shift from passive technological adoption to active, values-driven stewardship.</p>
+    <p>Technology is neither master nor savior—it is a tool. The opportunity lies in having the wisdom to wield it deliberately, the ethics to govern it justly, and the solidarity to deploy it for the many, not the few.</p>
+  </div>
+</section>
+
+<section class="pillars-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Four Pillars of Transformation</h2>
+      <p>These domains represent where directed technological innovation can most profoundly expand human potential and wellbeing.</p>
+    </div>
+    <div class="pillars-grid">
+
+      <article class="pillar-card">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3>Health & Wellbeing</h3>
+        <p>Treating longevity and vitality as universal goals rather than privileges, shifting from reactive treatment to predictive prevention.</p>
+        <ul>
+          <li>AI-powered diagnostics detecting disease earlier than ever before</li>
+          <li>Personalized medicine tailored to individual genetic profiles</li>
+          <li>Advanced computational research accelerating drug discovery</li>
+          <li>Accessible telemedicine democratizing specialist care</li>
+        </ul>
+      </article>
+
+      <article class="pillar-card gold-accent">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <h3>Education & Knowledge</h3>
+        <p>Building a world where learning is lifelong, adaptive, and universally accessible—expanding what humans can become.</p>
+        <ul>
+          <li>Personalized, adaptive learning powered by AI tutors</li>
+          <li>VR/AR immersive experiences making abstract concepts tangible</li>
+          <li>Lifelong learning platforms for continuous skill acquisition</li>
+          <li>Democratized access to information across languages and borders</li>
+        </ul>
+      </article>
+
+      <article class="pillar-card">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Sustainable Environment</h3>
+        <p>Recognizing that human flourishing depends on a stable, thriving biosphere—and deploying technology to protect it.</p>
+        <ul>
+          <li>Renewable energy solutions driving down the cost of clean power</li>
+          <li>Smart grids balancing supply and demand in real time</li>
+          <li>Circular economy technologies closing resource loops</li>
+          <li>Climate-smart agriculture increasing food security</li>
+        </ul>
+      </article>
+
+      <article class="pillar-card gold-accent">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <h3>Equitable Economy</h3>
+        <p>Ensuring that technological prosperity does not concentrate in the hands of the few, but lifts entire societies.</p>
+        <ul>
+          <li>Broad, fair digital access as essential modern infrastructure</li>
+          <li>Inclusive growth models returning value to workers and communities</li>
+          <li>New job opportunities in green energy, AI, and digital health</li>
+          <li>Wealth distribution mechanisms translating efficiency into welfare</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="foundation-band">
+  <div class="container">
+    <div class="section-header">
+      <h2>The Foundation</h2>
+      <p>These four pillars cannot stand without ethical governance to guide them and collective will to power them.</p>
+    </div>
+    <div class="foundation-grid">
+      <article class="foundation-card">
+        <h3><span class="dot" aria-hidden="true"></span> Responsible Stewardship</h3>
+        <p>Without ethical guardrails, technology can harm as easily as it can help. Governance must keep pace with innovation.</p>
+        <ul>
+          <li>Ethics & governance</li>
+          <li>Data privacy</li>
+          <li>Algorithmic fairness</li>
+          <li>Regulatory frameworks</li>
+        </ul>
+      </article>
+      <article class="foundation-card">
+        <h3><span class="dot" aria-hidden="true"></span> Collective Action</h3>
+        <p>Technology alone does not create change—people do. Social will is the engine that implements solutions at scale.</p>
+        <ul>
+          <li>Political will</li>
+          <li>Corporate responsibility</li>
+          <li>Public dialogue</li>
+          <li>Active citizenship</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="conclusion">
+  <div class="container">
+    <h2>An Integrated Path Forward</h2>
+    <p><span class="highlight">Health</span> and <span class="highlight">education</span> expand what humans can become. A <span class="highlight">sustainable environment</span> preserves the foundation of all life. An <span class="highlight">equitable economy</span> ensures progress is shared rather than hoarded.</p>
+    <p>In this framework, technology is a tool. The opportunity lies in having the wisdom to wield it deliberately, the ethics to govern it justly, and the solidarity to deploy it for the many, not the few.</p>
+  </div>
+</section>
+
+<footer>
+  <p>The Technoprogressive Opportunity &mdash; Harnessing Technology for Human Flourishing</p>
+</footer>
+
+</body>
+</html>

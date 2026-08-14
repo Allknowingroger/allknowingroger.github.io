@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proceedings of Machine Learning Research (PMLR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lightBg: '#f8fafc',      // Crisp slate-50
+                        lightCard: '#ffffff',    // Pure white card background
+                        lightElevated: '#f1f5f9',// Slate-100 hover / active panel
+                        accentCyan: '#0284c7',   // Rich sky blue primary
+                        accentCyanHover: '#0369a1',
+                        accentPurple: '#7c3aed', // Deep violet secondary
+                        accentPurpleHover: '#6d28d9',
+                        textMain: '#1e293b',     // Dark slate-800 main readable text
+                        textMuted: '#64748b'     // Slate-500 secondary subtext
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+        .glow-cyan:hover {
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
+        }
+        .glow-purple:hover {
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.15);
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="antialiased text-textMain bg-lightBg min-h-screen flex flex-col selection:bg-sky-100 selection:text-accentCyan">
+
+    <nav class="fixed w-full z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand -->
+                <div class="flex items-center space-x-3">
+                    <a href="#" class="flex items-center space-x-2 group">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-accentCyan to-accentPurple p-[1px] transition-transform group-hover:scale-105 shadow-sm">
+                            <div class="w-full h-full bg-white rounded-[7px] flex items-center justify-center">
+                                <span class="font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-accentCyan to-accentPurple text-sm">PMLR</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-slate-900 font-bold text-lg tracking-tight leading-none group-hover:text-accentCyan transition-colors">PMLR</span>
+                            <span class="text-[10px] text-textMuted font-mono leading-tight">Proceedings of Machine Learning Research</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#latest" class="nav-link text-slate-600 hover:text-accentCyan transition-colors py-1">Latest Volumes</a>
+                    <a href="#archive" class="nav-link text-slate-600 hover:text-accentCyan transition-colors py-1">Archive Explorer</a>
+                    <a href="#organizers" class="nav-link text-slate-600 hover:text-accentCyan transition-colors py-1">For Organizers</a>
+                    
+                    <!-- Saved Reading List Trigger -->
+                    <button id="openBookmarksBtn" onclick="toggleReadingList(true)" class="relative flex items-center space-x-2 bg-slate-100 hover:bg-slate-200/80 text-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors text-xs font-mono">
+                        <svg class="w-4 h-4 text-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                        </svg>
+                        <span>Bookmarks</span>
+                        <span id="bookmarkBadge" class="hidden bg-accentCyan text-white font-bold text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="flex md:hidden items-center space-x-2">
+                    <button id="openBookmarksMobile" onclick="toggleReadingList(true)" class="p-2 text-slate-600 hover:text-accentCyan">
+                        <svg class="w-6 h-6 text-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="md:hidden hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2 shadow-lg" id="mobile-menu">
+            <a href="#latest" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-slate-800 hover:text-accentCyan block px-3 py-2 rounded-md text-base font-medium">Latest Volumes</a>
+            <a href="#archive" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-slate-800 hover:text-accentCyan block px-3 py-2 rounded-md text-base font-medium">Archive Explorer</a>
+            <a href="#organizers" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-slate-800 hover:text-accentCyan block px-3 py-2 rounded-md text-base font-medium">For Organizers</a>
+        </div>
+    </nav>
+
+    <header class="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden border-b border-slate-200/80 bg-gradient-to-b from-slate-100/70 to-slate-50">
+        <!-- Interactive Hero Background Canvas -->
+        <canvas id="heroCanvas" class="absolute top-0 left-0 w-full h-full -z-10 opacity-60 pointer-events-auto"></canvas>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200 text-xs text-accentCyan mb-6 font-mono shadow-sm animate-float">
+                <span class="w-2 h-2 rounded-full bg-accentCyan animate-ping"></span>
+                <span>Open Access Machine Learning Publications</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto mb-6">
+                Proceedings of <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-accentCyan to-purple-600">Machine Learning Research</span>
+            </h1>
+
+            <p class="mt-4 max-w-2xl mx-auto text-base text-slate-600 sm:text-lg md:text-xl leading-relaxed">
+                PMLR is an official open-access venue publishing proceedings of high-impact workshops and peer-reviewed conferences in machine learning.
+            </p>
+
+            <div class="mt-8 flex flex-wrap justify-center items-center gap-6 text-xs text-slate-500 font-mono">
+                <div class="flex items-center space-x-2">
+                    <span class="text-slate-400">Series Editors:</span>
+                    <span class="text-slate-800 font-semibold">Neil D. Lawrence</span>
+                    <span class="text-slate-400">&</span>
+                    <span class="text-slate-800 font-semibold">Mark Reid</span>
+                </div>
+            </div>
+
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+                <a href="#latest" class="px-8 py-3.5 rounded-xl text-white bg-accentCyan hover:bg-accentCyanHover font-semibold transition-all duration-200 shadow-md shadow-sky-500/10 hover:scale-[1.02] text-center">
+                    Browse Latest Volumes
+                </a>
+                <a href="#archive" class="px-8 py-3.5 rounded-xl text-slate-800 bg-white hover:bg-slate-100 font-medium border border-slate-200 transition-all duration-200 text-center shadow-sm">
+                    Search Archive
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="bg-white border-b border-slate-200/80 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div>
+                    <div class="text-2xl font-extrabold text-slate-900 font-mono" id="statVolumes">330+</div>
+                    <div class="text-xs text-textMuted uppercase tracking-wider mt-1">Published Volumes</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-extrabold text-accentCyan font-mono" id="statPapers">15,000+</div>
+                    <div class="text-xs text-textMuted uppercase tracking-wider mt-1">Open-Access Papers</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-extrabold text-accentPurple font-mono">100%</div>
+                    <div class="text-xs text-textMuted uppercase tracking-wider mt-1">CC-BY License</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-extrabold text-slate-900 font-mono">25+</div>
+                    <div class="text-xs text-textMuted uppercase tracking-wider mt-1">Years of History</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-grow">
+        <section id="latest" class="py-20 bg-lightBg relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                    <div>
+                        <div class="text-accentCyan font-mono text-xs uppercase tracking-widest mb-2 font-semibold">Recent Releases</div>
+                        <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Latest Published Volumes</h2>
+                    </div>
+                    <a href="#archive" class="mt-4 md:mt-0 text-sm font-medium text-accentCyan hover:text-accentCyanHover transition-colors inline-flex items-center group">
+                        Browse all archive volumes 
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Featured Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="featuredGrid">
+                    <!-- Dynamic Featured Volume Cards will be rendered here by JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="archive" class="py-20 bg-slate-100/60 border-t border-slate-200/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center mb-10">
+                    <span class="text-accentPurple font-mono text-xs uppercase tracking-widest mb-2 block font-semibold">Repository Database</span>
+                    <h2 class="text-3xl font-bold text-slate-900 tracking-tight mb-3">Explore Research Archives</h2>
+                    <p class="text-textMuted text-sm sm:text-base">Filter through conference proceedings, workshops, and digitized historical reissues.</p>
+                </div>
+
+                <!-- Search and Filtering Toolbar -->
+                <div class="bg-white rounded-2xl border border-slate-200/90 p-5 mb-8 shadow-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <!-- Main Search Bar -->
+                        <div class="md:col-span-6 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                            <input type="text" id="searchInput" onkeyup="filterArchive()" class="block w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-accentCyan focus:ring-1 focus:ring-accentCyan text-sm font-mono transition-colors" placeholder="Search by paper title, volume, author, or keyword...">
+                        </div>
+
+                        <!-- Year Filter -->
+                        <div class="md:col-span-3">
+                            <select id="yearSelect" onchange="filterArchive()" class="block w-full px-3.5 py-2.5 text-sm border-slate-200 focus:outline-none focus:border-accentCyan rounded-xl bg-slate-50 text-slate-800 border transition-colors font-mono appearance-none cursor-pointer">
+                                <option value="ALL">All Years</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023 & Older</option>
+                            </select>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="md:col-span-3">
+                            <select id="categorySelect" onchange="filterArchive()" class="block w-full px-3.5 py-2.5 text-sm border-slate-200 focus:outline-none focus:border-accentCyan rounded-xl bg-slate-50 text-slate-800 border transition-colors font-mono appearance-none cursor-pointer">
+                                <option value="ALL">All Venues</option>
+                                <option value="COLT">COLT</option>
+                                <option value="CoRL">CoRL</option>
+                                <option value="AISTATS">AISTATS</option>
+                                <option value="CoLLAs">CoLLAs</option>
+                                <option value="Workshop">Workshops & Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tags & Results Counter Bar -->
+                    <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center space-x-2 text-textMuted font-mono">
+                            <span>Showing:</span>
+                            <span id="resultsCount" class="text-accentCyan font-bold">0</span>
+                            <span>items found</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="resetFilters()" class="text-xs text-slate-500 hover:text-slate-800 underline font-mono">Reset Filters</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm">
+                    <div id="archiveList" class="divide-y divide-slate-100">
+                        <!-- Dynamic Archive Items populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="organizers" class="py-20 bg-lightBg border-t border-slate-200/80 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="lg:grid lg:grid-cols-12 lg:gap-12 items-start">
+                    
+                    <!-- Left Column: Step-by-Step Info -->
+                    <div class="lg:col-span-6 mb-12 lg:mb-0">
+                        <span class="text-accentCyan font-mono text-xs uppercase tracking-widest mb-2 block font-semibold">Publishing Services</span>
+                        <h2 class="text-3xl font-bold text-slate-900 tracking-tight sm:text-4xl mb-6">For Conference & Workshop Organizers</h2>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed">
+                            PMLR welcomes proposals to publish peer-reviewed proceedings from academic workshops and conferences. All proceedings are freely accessible online under open licenses.
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-slate-100 text-accentCyan border border-slate-200 flex items-center justify-center font-mono font-bold text-sm">
+                                    01
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-base font-semibold text-slate-900">Prepare Proposal Details</h4>
+                                    <p class="mt-1 text-sm text-textMuted">Include conference scope, expected paper count, peer-review process, and brief bio sketch of volume editors.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-slate-100 text-accentCyan border border-slate-200 flex items-center justify-center font-mono font-bold text-sm">
+                                    02
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-base font-semibold text-slate-900">Submit to Series Editors</h4>
+                                    <p class="mt-1 text-sm text-textMuted">Proposals are evaluated on scholarly quality, rigor of review, and alignment with machine learning research.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-slate-100 text-accentCyan border border-slate-200 flex items-center justify-center font-mono font-bold text-sm">
+                                    03
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-base font-semibold text-slate-900">Adhere to Format Specs</h4>
+                                    <p class="mt-1 text-sm text-textMuted">Once approved, authors must use the official PMLR LaTeX style files and volume editors compile XML/JSON metadata.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resource Link Cards -->
+                        <div class="mt-10 pt-8 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                            <a href="#" onclick="copySampleLatex()" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-accentCyan transition-all flex items-center space-x-3 shadow-sm group">
+                                <svg class="w-5 h-5 text-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span>LaTeX Template (.zip)</span>
+                            </a>
+                            <a href="#" onclick="showToast('Specification document opens in new window')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-accentCyan transition-all flex items-center space-x-3 shadow-sm group">
+                                <svg class="w-5 h-5 text-accentPurple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span>Metadata Specs (XML)</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Proposal Draft Helper -->
+                    <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Interactive Proposal Drafter</h3>
+                        <p class="text-xs text-textMuted mb-6 font-mono">Fill in details to generate a formatted email draft for the PMLR series editors.</p>
+
+                        <form id="proposalForm" onsubmit="handleProposalSubmit(event)" class="space-y-4 text-sm">
+                            <div>
+                                <label class="block text-xs font-mono text-textMuted mb-1">Conference / Workshop Name</label>
+                                <input type="text" id="propName" required placeholder="e.g., Workshop on Algorithmic Foundations of AI" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-accentCyan text-sm font-mono">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-mono text-textMuted mb-1">Event Dates & Location</label>
+                                    <input type="text" id="propDate" required placeholder="e.g., July 12-14, 2026 (London)" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-accentCyan text-sm font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-mono text-textMuted mb-1">Estimated Papers</label>
+                                    <input type="number" id="propPapers" required placeholder="e.g., 35" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-accentCyan text-sm font-mono">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-mono text-textMuted mb-1">Lead Volume Editor(s) & Email</label>
+                                <input type="text" id="propEditors" required placeholder="e.g., Dr. Jane Doe (j.doe@univ.edu)" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-accentCyan text-sm font-mono">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-mono text-textMuted mb-1">Short Description & Peer Review Method</label>
+                                <textarea id="propScope" rows="3" required placeholder="Briefly describe the research topic and review policy (e.g., double-blind, 3 reviewers per submission)..." class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-accentCyan text-sm font-mono"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-3 rounded-xl bg-accentCyan hover:bg-accentCyanHover text-white font-bold transition-colors flex items-center justify-center space-x-2 shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 022 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                </svg>
+                                <span>Generate & Copy Draft</span>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Saved Papers Slide-over Drawer -->
+    <div id="readingListDrawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="toggleReadingList(false)"></div>
+        
+        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div class="pointer-events-auto w-screen max-w-md bg-white border-l border-slate-200 p-6 flex flex-col justify-between shadow-2xl">
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                            </svg>
+                            <h3 class="text-lg font-bold text-slate-900">Your Bookmarked Papers</h3>
+                        </div>
+                        <button onclick="toggleReadingList(false)" class="text-slate-400 hover:text-slate-700 p-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="readingListItems" class="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="pt-4 border-t border-slate-200 flex justify-between items-center text-xs text-textMuted font-mono">
+                    <span id="savedCountText">0 saved items</span>
+                    <button onclick="clearBookmarks()" class="text-red-600 hover:text-red-700 font-medium">Clear All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paper Details & BibTeX Modal -->
+    <div id="paperModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onclick="closePaperModal()"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white border border-slate-200 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full p-6 sm:p-8 relative">
+                <button onclick="closePaperModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+
+                <div class="flex items-center space-x-3 mb-3">
+                    <span id="modalVolumeBadge" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-sky-50 text-accentCyan border border-sky-200">Volume 336</span>
+                    <span id="modalDate" class="text-xs text-textMuted font-mono">2026</span>
+                </div>
+
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2 leading-snug" id="modalTitle">Paper Title Goes Here</h3>
+                <p class="text-sm text-accentCyan font-medium mb-6" id="modalAuthors">Authors List</p>
+
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-6">
+                    <h4 class="text-xs font-mono text-textMuted uppercase tracking-wider mb-2 font-semibold">Abstract</h4>
+                    <p class="text-sm text-slate-700 leading-relaxed" id="modalAbstract">Abstract paragraph...</p>
+                </div>
+
+                <!-- BibTeX Code Box -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-mono text-textMuted uppercase tracking-wider font-semibold">BibTeX Citation</span>
+                        <button onclick="copyBibtexFromModal()" class="text-xs font-mono text-accentCyan hover:text-accentCyanHover flex items-center space-x-1 font-semibold">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                            </svg>
+                            <span>Copy BibTeX</span>
+                        </button>
+                    </div>
+                    <pre class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-xs font-mono text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all" id="modalBibtex"></pre>
+                </div>
+
+                <!-- Modal Footer Actions -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200">
+                    <div class="flex space-x-3">
+                        <button id="modalPdfBtn" onclick="showToast('Downloading official PDF file...')" class="px-4 py-2 rounded-xl bg-accentCyan hover:bg-accentCyanHover text-white font-bold text-xs flex items-center space-x-2 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Download PDF</span>
+                        </button>
+                        <button id="modalToggleBookmarkBtn" onclick="toggleBookmarkModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs border border-slate-200 font-mono transition-colors">
+                            Bookmark
+                        </button>
+                    </div>
+                    <span class="text-xs text-textMuted font-mono">Open Access under CC-BY 4.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <footer class="bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-slate-900 font-bold text-xl tracking-tight">PMLR</span>
+                        <span class="text-xs font-mono text-accentCyan bg-sky-50 border border-sky-200 px-2 py-0.5 rounded font-semibold">v2026.1</span>
+                    </div>
+                    <p class="text-sm text-textMuted max-w-sm mb-6 leading-relaxed">
+                        Proceedings of Machine Learning Research (PMLR) is a non-profit scientific publishing venue operated by community volunteers.
+                    </p>
+                    <p class="text-xs text-slate-500 font-mono">
+                        &copy; 2026 Proceedings of Machine Learning Research.<br>
+                        Copyright of individual papers is retained by the respective authors.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xs font-mono font-bold text-slate-900 uppercase tracking-wider mb-4">Navigation</h3>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="#latest" class="text-textMuted hover:text-slate-900 transition-colors">Latest Proceedings</a></li>
+                        <li><a href="#archive" class="text-textMuted hover:text-slate-900 transition-colors">Archive Database</a></li>
+                        <li><a href="#organizers" class="text-textMuted hover:text-slate-900 transition-colors">For Organizers</a></li>
+                        <li><a href="javascript:void(0)" onclick="toggleReadingList(true)" class="text-textMuted hover:text-accentCyan transition-colors">Saved Bookmarks</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xs font-mono font-bold text-slate-900 uppercase tracking-wider mb-4">Feeds & Social</h3>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="javascript:void(0)" onclick="showToast('RSS Feed link copied to clipboard')" class="text-textMuted hover:text-accentCyan transition-colors flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
+                            <span>RSS Volume Feed</span>
+                        </a></li>
+                        <li><a href="https://twitter.com/MLResearchPress" target="_blank" class="text-textMuted hover:text-slate-900 transition-colors">Twitter (@MLResearchPress)</a></li>
+                        <li><a href="https://github.com/pmlr" target="_blank" class="text-textMuted hover:text-slate-900 transition-colors">GitHub Repository</a></li>
+                        <li><a href="mailto:editors@pmlr.info" class="text-textMuted hover:text-accentCyan transition-colors">Contact Series Editors</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const volumesData = [
+            {
+                id: "v336",
+                volume: 336,
+                year: 2026,
+                month: "June 2026",
+                title: "Thirty Ninth Conference on Learning Theory (COLT 2026)",
+                venue: "COLT",
+                location: "Paris, France",
+                description: "Featuring theoretical advancements in deep learning generalization bounds, reinforcement learning theory, and non-convex optimization dynamics.",
+                featuredPaper: {
+                    title: "Analyzing and Mitigating Model Collapse in Reflow Methods",
+                    authors: "Jane Doe, Alexander Smith, Michael Taylor",
+                    abstract: "Iterative reflow models exhibit structural degradation when trained on recursively generated synthetic distributions. We prove a tight convergence bound and present a regularized flow matching algorithm that eliminates variance collapse."
+                },
+                tags: ["Optimization", "Generative AI", "Theory"]
+            },
+            {
+                id: "v330",
+                volume: 330,
+                year: 2026,
+                month: "May 2026",
+                title: "The 4th Conference on Lifelong Learning Agents (CoLLAs 2026)",
+                venue: "CoLLAs",
+                location: "Montreal, Canada",
+                description: "Algorithms and autonomous systems that learn continually and adapt to dynamic real-world environments without catastrophic forgetting.",
+                featuredPaper: {
+                    title: "Continuous Adaptation via Metaplasticity in Neuromorphic Systems",
+                    authors: "Li Chen, Sofia Rodriguez, Kenji Sato",
+                    abstract: "We introduce a biological metaplasticity mechanism for neuromorphic hardware that adjusts synaptic plasticity rates dynamically based on history, allowing zero-shot continual task retention."
+                },
+                tags: ["Lifelong Learning", "Neuromorphic", "RL"]
+            },
+            {
+                id: "v328",
+                volume: 328,
+                year: 2026,
+                month: "April 2026",
+                title: "Conference on Parsimony and Learning (CPL 2026)",
+                venue: "CPL",
+                location: "Stanford, CA, USA",
+                description: "Exploring sparse representations, model compression, low-rank factorization, and efficient learning paradigms for edge devices.",
+                featuredPaper: {
+                    title: "Extreme Pruning Strategies for Large Language Models at Edge",
+                    authors: "Sanjay Patel, Kevin Wang, Elena Rostova",
+                    abstract: "By formulating weight pruning as a discrete optimal transport problem, we demonstrate 80% parameter reduction on 70B parameter models with under 0.5% degradation in benchmark reasoning tasks."
+                },
+                tags: ["Efficiency", "Sparsity", "LLMs"]
+            },
+            {
+                id: "v305",
+                volume: 305,
+                year: 2025,
+                month: "November 2025",
+                title: "Conference on Robot Learning (CoRL 2025)",
+                venue: "CoRL",
+                location: "Munich, Germany",
+                description: "Intersection of robotics and machine learning, featuring embodied AI, sensorimotor control, and vision-language-action policies.",
+                featuredPaper: {
+                    title: "Hierarchical Diffusion Policies for Bimanual Manipulation",
+                    authors: "Marcus Vance, Priya Sharma",
+                    abstract: "We propose a dual-rate action diffusion framework that handles high-frequency motor commands alongside long-horizon goal planning in unstructured kitchen environments."
+                },
+                tags: ["Robotics", "Diffusion", "Embodied AI"]
+            },
+            {
+                id: "v258",
+                volume: 258,
+                year: 2025,
+                month: "May 2025",
+                title: "Artificial Intelligence and Statistics (AISTATS 2025)",
+                venue: "AISTATS",
+                location: "Maiori, Italy",
+                description: "Research at the boundary of statistics, probability, and machine learning computation.",
+                featuredPaper: {
+                    title: "Optimal Transport Bounds for Variational Autoencoders",
+                    authors: "David Miller, Hannah Schmidt",
+                    abstract: "We establish novel Wasserstein distance bounds for VAE posterior approximations, bridging statistical mechanics and deep generative modeling."
+                },
+                tags: ["Statistics", "Generative AI", "Theory"]
+            },
+            {
+                id: "v325",
+                volume: 325,
+                year: 2025,
+                month: "February 2025",
+                title: "Geometry, Topology, and Machine Learning Workshop",
+                venue: "Workshop",
+                location: "Virtual",
+                description: "Geometric deep learning, manifold hypothesis verification, topological data analysis, and non-Euclidean representation spaces.",
+                featuredPaper: {
+                    title: "Curvature-Aware Hyperbolic Graph Neural Networks",
+                    authors: "Yuki Tanaka, Arthur Pendelton",
+                    abstract: "We present a manifold neural network layer that learns localized sectional curvature directly from hierarchical graph topologies."
+                },
+                tags: ["Geometry", "Graph ML", "Topology"]
+            },
+            {
+                id: "v210",
+                volume: 210,
+                year: 2024,
+                month: "December 2024",
+                title: "Workshop on Trustworthy and Interpretable AI in Healthcare",
+                venue: "Workshop",
+                location: "Vancouver, Canada",
+                description: "Methods for uncertainty estimation, algorithmic fairness, and mechanistic interpretability in clinical diagnostics.",
+                featuredPaper: {
+                    title: "Uncertainty Calibration in Medical Image Segmentation",
+                    authors: "Claire Zhang, Robert Vance",
+                    abstract: "A Bayesian calibration wrapper that provides rigorous conformal prediction guarantees for tumor boundary detection."
+                },
+                tags: ["Healthcare", "Interpretability", "Vision"]
+            }
+        ];
+
+        let savedBookmarks = JSON.parse(localStorage.getItem('pmlr_bookmarks') || '[]');
+        let activeModalPaper = null;
+
+        function initHeroCanvas() {
+            const canvas = document.getElementById('heroCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let particles = [];
+            let mouse = { x: null, y: null, radius: 150 };
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = canvas.parentElement.offsetHeight;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            window.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.8;
+                    this.vy = (Math.random() - 0.5) * 0.8;
+                    this.radius = Math.random() * 2 + 1;
+                    this.color = Math.random() > 0.5 ? '#0284c7' : '#7c3aed';
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                    if (mouse.x !== null && mouse.y !== null) {
+                        let dx = mouse.x - this.x;
+                        let dy = mouse.y - this.y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < mouse.radius) {
+                            let force = (mouse.radius - dist) / mouse.radius;
+                            this.x -= (dx / dist) * force * 2;
+                            this.y -= (dy / dist) * force * 2;
+                        }
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            const count = Math.min(Math.floor(window.innerWidth / 18), 75);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        let dx = particles[i].x - particles[j].x;
+                        let dy = particles[i].y - particles[j].y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(148, 163, 184, ${0.35 - dist / 120 * 0.35})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        function renderFeaturedGrid() {
+            const grid = document.getElementById('featuredGrid');
+            if (!grid) return;
+
+            const featured = volumesData.slice(0, 3);
+            grid.innerHTML = featured.map(v => `
+                <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden hover:border-slate-300 transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/5 group flex flex-col h-full glass-panel">
+                    <div class="p-6 flex-grow">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-50 text-accentCyan border border-sky-100 font-mono">
+                                Volume ${v.volume}
+                            </span>
+                            <span class="text-xs text-textMuted font-mono">${v.month}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-accentCyan transition-colors leading-snug">
+                            <a href="javascript:void(0)" onclick="openPaperModal('${v.id}')">${v.title}</a>
+                        </h3>
+                        <p class="text-xs text-slate-600 mb-5 leading-relaxed">${v.description}</p>
+                        
+                        <!-- Highlighted Featured Paper Box -->
+                        <div class="bg-slate-50/90 rounded-xl p-4 mb-4 border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[11px] font-mono font-bold text-accentCyan uppercase tracking-wider">Featured Paper</span>
+                                <span class="text-[10px] text-slate-400 font-mono">${v.venue}</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-900 mb-1 leading-snug italic hover:text-accentCyan cursor-pointer" onclick="openPaperModal('${v.id}')">"${v.featuredPaper.title}"</h4>
+                            <p class="text-xs text-textMuted font-mono truncate">${v.featuredPaper.authors}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center mt-auto font-mono text-xs">
+                        <button onclick="openPaperModal('${v.id}')" class="text-accentCyan hover:text-accentCyanHover font-bold flex items-center space-x-1">
+                            <span>View Details & BibTeX</span>
+                            <span>&rarr;</span>
+                        </button>
+                        <div class="flex space-x-2 text-textMuted">
+                            <button onclick="toggleBookmark('${v.id}')" title="Bookmark Paper" class="hover:text-slate-900 p-1">
+                                <svg class="w-4 h-4 ${isBookmarked(v.id) ? 'text-accentCyan fill-current' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterArchive() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const yearVal = document.getElementById('yearSelect').value;
+            const categoryVal = document.getElementById('categorySelect').value;
+            const listContainer = document.getElementById('archiveList');
+
+            let filtered = volumesData.filter(v => {
+                const matchSearch = searchVal === '' || 
+                    v.title.toLowerCase().includes(searchVal) ||
+                    v.volume.toString().includes(searchVal) ||
+                    v.featuredPaper.title.toLowerCase().includes(searchVal) ||
+                    v.featuredPaper.authors.toLowerCase().includes(searchVal) ||
+                    v.tags.some(t => t.toLowerCase().includes(searchVal));
+
+                let matchYear = true;
+                if (yearVal === '2026') matchYear = v.year === 2026;
+                else if (yearVal === '2025') matchYear = v.year === 2025;
+                else if (yearVal === '2024') matchYear = v.year === 2024;
+                else if (yearVal === '2023') matchYear = v.year <= 2023;
+
+                let matchCategory = true;
+                if (categoryVal !== 'ALL') {
+                    matchCategory = v.venue === categoryVal || (categoryVal === 'Workshop' && v.venue === 'Workshop');
+                }
+
+                return matchSearch && matchYear && matchCategory;
+            });
+
+            document.getElementById('resultsCount').innerText = filtered.length;
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="p-12 text-center text-textMuted font-mono">
+                        <p class="text-base mb-2">No volumes or papers matched your criteria.</p>
+                        <button onclick="resetFilters()" class="text-xs text-accentCyan hover:underline font-semibold">Clear all search parameters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(v => `
+                <div class="px-6 py-5 hover:bg-slate-50 transition-colors flex flex-col md:flex-row md:items-center md:justify-between group gap-4">
+                    <div class="flex-grow">
+                        <div class="flex flex-wrap items-center space-x-3 mb-1.5">
+                            <span class="text-accentCyan font-mono text-xs font-bold bg-sky-50 px-2 py-0.5 rounded border border-sky-100">Vol ${v.volume}</span>
+                            <span class="text-xs text-textMuted font-mono">${v.month} &bull; ${v.location}</span>
+                            <div class="flex space-x-1">
+                                ${v.tags.map(t => `<span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono border border-slate-200">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                        <h4 class="text-base font-bold text-slate-900 group-hover:text-accentCyan transition-colors leading-tight cursor-pointer" onclick="openPaperModal('${v.id}')">
+                            ${v.title}
+                        </h4>
+                        <p class="text-xs text-textMuted mt-1 line-clamp-1 italic">
+                            Paper: "${v.featuredPaper.title}" &mdash; <span class="not-italic text-slate-600">${v.featuredPaper.authors}</span>
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 self-start md:self-center flex-shrink-0">
+                        <button onclick="toggleBookmark('${v.id}')" title="Bookmark" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
+                            <svg class="w-4 h-4 ${isBookmarked(v.id) ? 'text-accentCyan fill-current' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                            </svg>
+                        </button>
+                        <button onclick="openPaperModal('${v.id}')" class="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-mono text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-sm">
+                            Details & BibTeX
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('yearSelect').value = 'ALL';
+            document.getElementById('categorySelect').value = 'ALL';
+            filterArchive();
+        }
+
+        function generateBibtex(v) {
+            const cleanKey = v.featuredPaper.authors.split(',')[0].split(' ').pop().toLowerCase() + v.year + v.venue.toLowerCase();
+            return `@InProceedings{${cleanKey},\n` +
+                   `  title =     {${v.featuredPaper.title}},\n` +
+                   `  author =    {${v.featuredPaper.authors.replace(/,/g, ' and')}},\n` +
+                   `  booktitle = {${v.title}},\n` +
+                   `  pages =     {1--15},\n` +
+                   `  year =      {${v.year}},\n` +
+                   `  editor =    {Lawrence, Neil D. and Reid, Mark},\n` +
+                   `  volume =    {${v.volume}},\n` +
+                   `  series =    {Proceedings of Machine Learning Research},\n` +
+                   `  publisher = {PMLR}\n` +
+                   `}`;
+        }
+
+        function openPaperModal(id) {
+            const v = volumesData.find(item => item.id === id);
+            if (!v) return;
+
+            activeModalPaper = v;
+            document.getElementById('modalVolumeBadge').innerText = `Volume ${v.volume} (${v.venue})`;
+            document.getElementById('modalDate').innerText = v.month;
+            document.getElementById('modalTitle').innerText = v.featuredPaper.title;
+            document.getElementById('modalAuthors').innerText = v.featuredPaper.authors;
+            document.getElementById('modalAbstract').innerText = v.featuredPaper.abstract;
+            document.getElementById('modalBibtex').innerText = generateBibtex(v);
+
+            updateModalBookmarkBtn();
+            document.getElementById('paperModal').classList.remove('hidden');
+        }
+
+        function closePaperModal() {
+            document.getElementById('paperModal').classList.add('hidden');
+            activeModalPaper = null;
+        }
+
+        function copyBibtexFromModal() {
+            if (!activeModalPaper) return;
+            const bibtex = generateBibtex(activeModalPaper);
+            copyToClipboard(bibtex);
+            showToast("BibTeX citation copied to clipboard!");
+        }
+
+        function isBookmarked(id) {
+            return savedBookmarks.includes(id);
+        }
+
+        function toggleBookmark(id) {
+            if (isBookmarked(id)) {
+                savedBookmarks = savedBookmarks.filter(bId => bId !== id);
+                showToast("Removed paper from bookmarks.");
+            } else {
+                savedBookmarks.push(id);
+                showToast("Added paper to your bookmarks!");
+            }
+            localStorage.setItem('pmlr_bookmarks', JSON.stringify(savedBookmarks));
+            updateBookmarkBadge();
+            renderFeaturedGrid();
+            filterArchive();
+            renderReadingList();
+            if (activeModalPaper) updateModalBookmarkBtn();
+        }
+
+        function toggleBookmarkModal() {
+            if (activeModalPaper) {
+                toggleBookmark(activeModalPaper.id);
+            }
+        }
+
+        function updateModalBookmarkBtn() {
+            const btn = document.getElementById('modalToggleBookmarkBtn');
+            if (!btn || !activeModalPaper) return;
+            if (isBookmarked(activeModalPaper.id)) {
+                btn.innerText = "★ Bookmarked";
+                btn.classList.add('text-accentCyan', 'border-accentCyan');
+            } else {
+                btn.innerText = "☆ Bookmark Paper";
+                btn.classList.remove('text-accentCyan', 'border-accentCyan');
+            }
+        }
+
+        function updateBookmarkBadge() {
+            const badge = document.getElementById('bookmarkBadge');
+            if (!badge) return;
+            badge.innerText = savedBookmarks.length;
+            if (savedBookmarks.length > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleReadingList(show) {
+            const drawer = document.getElementById('readingListDrawer');
+            if (show) {
+                renderReadingList();
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        function renderReadingList() {
+            const container = document.getElementById('readingListItems');
+            const countText = document.getElementById('savedCountText');
+            if (!container) return;
+
+            countText.innerText = `${savedBookmarks.length} saved item(s)`;
+
+            if (savedBookmarks.length === 0) {
+                container.innerHTML = `
+                    <div class="py-8 text-center text-textMuted font-mono text-xs">
+                        No saved papers. Click the bookmark icon on any paper to save it here.
+                    </div>
+                `;
+                return;
+            }
+
+            const items = volumesData.filter(v => savedBookmarks.includes(v.id));
+            container.innerHTML = items.map(v => `
+                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-start gap-3">
+                    <div>
+                        <span class="text-[10px] font-mono font-bold text-accentCyan">Vol ${v.volume}</span>
+                        <h5 class="text-xs font-bold text-slate-900 hover:underline cursor-pointer" onclick="openPaperModal('${v.id}')">${v.featuredPaper.title}</h5>
+                        <p class="text-[11px] text-textMuted font-mono mt-0.5 truncate">${v.featuredPaper.authors}</p>
+                    </div>
+                    <button onclick="toggleBookmark('${v.id}')" class="text-slate-400 hover:text-red-600 p-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function clearBookmarks() {
+            savedBookmarks = [];
+            localStorage.setItem('pmlr_bookmarks', JSON.stringify([]));
+            updateBookmarkBadge();
+            renderReadingList();
+            renderFeaturedGrid();
+            filterArchive();
+            showToast("All bookmarks cleared.");
+        }
+
+        function handleProposalSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('propName').value;
+            const date = document.getElementById('propDate').value;
+            const papers = document.getElementById('propPapers').value;
+            const editors = document.getElementById('propEditors').value;
+            const scope = document.getElementById('propScope').value;
+
+            const emailText = `SUBJECT: PMLR Publication Proposal - ${name}\n\n` +
+                `Dear Series Editors (Neil D. Lawrence & Mark Reid),\n\n` +
+                `We would like to submit a publication proposal for the proceedings of '${name}'.\n\n` +
+                `Event Details:\n` +
+                `- Date/Location: ${date}\n` +
+                `- Estimated Paper Volume: ${papers} papers\n` +
+                `- Volume Editors: ${editors}\n\n` +
+                `Scope & Review Policy:\n${scope}\n\n` +
+                `Thank you for your consideration.\n\n` +
+                `Best regards,\n${editors}`;
+
+            copyToClipboard(emailText);
+            showToast("Proposal draft copied to clipboard! Ready to email editors@pmlr.info");
+        }
+
+        function copySampleLatex() {
+            const latexSample = `% PMLR Official Sample LaTeX Header\n\\documentclass[twoside,11pt]{article}\n\\package{pmlr2e}\n\n\\pmlrheading{1}{2026}{1-15}{1/26}{06/26}{pmlr-v336-sample}{Author1 and Author2}\n\\ShortHeadings{Short Paper Title}{Author1 and Author2}\n\n\\begin{document}\n\\title{Your Research Paper Title}\n\\author{\\name Author One \\email a1@univ.edu}\n\\maketitle\n\\end{document}`;
+            copyToClipboard(latexSample);
+            showToast("LaTeX template sample code copied to clipboard!");
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 text-white border border-slate-800 px-4 py-3 rounded-xl shadow-2xl text-xs font-mono flex items-center space-x-2 transform translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto';
+            toast.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-accentCyan"></span>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        window.onload = function() {
+            initHeroCanvas();
+            renderFeaturedGrid();
+            filterArchive();
+            updateBookmarkBadge();
+
+            const sections = document.querySelectorAll('section, header');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-accentCyan', 'font-semibold');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('text-accentCyan', 'font-semibold');
+                    }
+                });
+            });
+        };
+    </script>
+</body>
+</html>

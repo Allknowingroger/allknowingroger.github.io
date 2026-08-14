@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subatomic Frontiers | Next-Gen Particle Physics Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        physics: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        neon: {
+                            cyan: '#00f0ff',
+                            violet: '#a855f7',
+                            pink: '#ec4899',
+                            amber: '#f59e0b',
+                            emerald: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        display: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- KaTeX for LaTeX Math Syntax -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <style>
+        body {
+            background-color: #07090e;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.3);
+        }
+        .glow-violet {
+            box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.3);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.25);
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar overflow-x-hidden selection:bg-neon-cyan selection:text-slate-950">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-fuchsia-500 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i data-lucide="atom" class="w-5 h-5 text-neon-cyan animate-spin" style="animation-duration: 12s;"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg tracking-wide text-white flex items-center gap-2">
+                        SUBATOMIC FRONTIERS
+                        <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-cyan-950/80 text-neon-cyan border border-cyan-500/30">CERN & IMCC DATA</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 font-mono">High Energy Physics & Next-Gen Collider Portal</p>
+                </div>
+            </div>
+
+            <!-- Global Status Bar -->
+            <div class="hidden lg:flex items-center space-x-6 text-xs font-mono">
+                <div class="flex items-center space-x-2 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-slate-400">FCC Feasibility Report:</span>
+                    <span class="text-emerald-400 font-semibold">RELEASED</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-neon-amber"></i>
+                    <span class="text-slate-400">Target Collision:</span>
+                    <span class="text-neon-amber font-semibold">100 TeV</span>
+                </div>
+            </div>
+
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-400 hover:text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Tabs Bar -->
+        <div class="border-t border-slate-800/60 bg-slate-950/40 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav id="nav-tabs" class="flex space-x-1 overflow-x-auto py-2 custom-scrollbar text-sm font-medium">
+                    <button data-tab="fcc" class="tab-btn active px-4 py-2 rounded-lg flex items-center space-x-2 transition-all bg-cyan-500/10 text-neon-cyan border border-cyan-500/30">
+                        <i data-lucide="orbit" class="w-4 h-4"></i>
+                        <span>Future Circular Collider (FCC)</span>
+                    </button>
+                    <button data-tab="muon" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all border border-transparent">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span>Muon Collider Facility</span>
+                    </button>
+                    <button data-tab="proton" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all border border-transparent">
+                        <i data-lucide="disc" class="w-4 h-4"></i>
+                        <span>Proton & Quark Visualizer</span>
+                    </button>
+                    <button data-tab="synth" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all border border-transparent">
+                        <i data-lucide="music" class="w-4 h-4"></i>
+                        <span>"Subatomic Symphony" Audio Synth</span>
+                    </button>
+                    <button data-tab="papers" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all border border-transparent">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>Feasibility Reports Library</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- TAB 1: FUTURE CIRCULAR COLLIDER (FCC) -->
+        <section id="tab-fcc" class="tab-content space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative rounded-2xl glass-panel overflow-hidden p-6 sm:p-10 border border-slate-800">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-950/40 via-purple-950/20 to-transparent pointer-events-none"></div>
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-neon-cyan text-xs font-mono">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                            <span>CERN Feasibility Report Snapshot • March 2025/2026</span>
+                        </div>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                            The Next Era of High-Energy Physics: <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-indigo-400 to-neon-violet">The FCC Roadmap</span>
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Investigating the successor to the Large Hadron Collider (LHC). A 91 km ring delivering unprecedented center-of-mass collision energies up to $100\text{ TeV}$ to unveil Higgs factory precision and probe dark matter domain frontiers.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-4 text-xs font-mono">
+                            <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 flex-1 min-w-[140px]">
+                                <span class="text-slate-400 block mb-1">Stage 1 Cost Estimate</span>
+                                <span class="text-xl font-bold text-neon-cyan">15 Billion CHF</span>
+                            </div>
+                            <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 flex-1 min-w-[140px]">
+                                <span class="text-slate-400 block mb-1">Tunnel Perimeter</span>
+                                <span class="text-xl font-bold text-neon-violet">91 km</span>
+                            </div>
+                            <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 flex-1 min-w-[140px]">
+                                <span class="text-slate-400 block mb-1">Expert Contributors</span>
+                                <span class="text-xl font-bold text-neon-emerald">&gt; 1,000 Scientists</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Interactive Tunnel Comparison Canvas -->
+                    <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                        <div class="w-full bg-slate-950/80 rounded-2xl border border-slate-800 p-4 relative">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-mono text-slate-400">Ring Scale Interactive Model</span>
+                                <span class="text-xs font-mono text-neon-cyan">LHC (27 km) vs FCC (91 km)</span>
+                            </div>
+                            <canvas id="ringScaleCanvas" class="w-full h-64 rounded-xl bg-slate-900/50 cursor-pointer"></canvas>
+                            <p class="text-[11px] text-center text-slate-500 font-mono mt-2">Click ring canvas to toggle particle beam pulsing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Stages Toggle & Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Stage 1 Card -->
+                <div class="glass-panel rounded-2xl p-6 border border-cyan-500/20 relative overflow-hidden group hover:border-cyan-500/40 transition-all">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="px-3 py-1 rounded-full bg-cyan-500/20 text-neon-cyan text-xs font-mono font-semibold">STAGE 1</div>
+                        <span class="text-xs font-mono text-slate-400">2030s – 2040s Target</span>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-2">FCC-ee: Electron–Positron Factory</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                        A precision lepton collider serving as a Higgs, electroweak, and top-quark factory. Operating at center-of-mass collision energies across $Z$, $W$, $Higgs$ ($240\text{ GeV}$), and $t\bar{t}$ threshold ($365\text{ GeV}$).
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-300 font-mono mb-6">
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-neon-cyan"></i>
+                            <span>Ultra-high luminosity per collision point</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-neon-cyan"></i>
+                            <span>Civil & technical infrastructure shared for Stage 2</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-neon-cyan"></i>
+                            <span>Total Construction Budget: ~15 Billion Swiss Francs</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Stage 2 Card -->
+                <div class="glass-panel rounded-2xl p-6 border border-purple-500/20 relative overflow-hidden group hover:border-purple-500/40 transition-all">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="px-3 py-1 rounded-full bg-purple-500/20 text-neon-violet text-xs font-mono font-semibold">STAGE 2</div>
+                        <span class="text-xs font-mono text-slate-400">Mid-Century Target</span>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-2">FCC-hh: Proton–Proton Hadron Collider</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                        A massive hadron collider operating in the same 91 km tunnel, utilizing advanced superconducting magnets (16–20 Tesla) to reach an unprecedented collision energy of roughly $100\text{ TeV}$.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-300 font-mono mb-6">
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-neon-violet"></i>
+                            <span>Direct discovery reach for heavy dark particles up to tens of TeV</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-neon-violet"></i>
+                            <span>High luminosity proton-proton and heavy ion operational modes</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-neon-violet"></i>
+                            <span>Synergy with heavy-ion physics (Lead & Oxygen/Neon ion runs)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Cost & Budget Interactive Breakdown Chart -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-800">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div>
+                        <h3 class="font-display text-lg font-bold text-white">FCC Stage 1 Capital Allocation Breakdown</h3>
+                        <p class="text-xs text-slate-400">Distribution of the 15 Billion CHF construction investment across infrastructure components</p>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 text-xs font-mono text-slate-300">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-neon-cyan"></i>
+                        <span>Feasibility Vol. 3 Dataset</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-6 h-64">
+                        <canvas id="fccBudgetChart"></canvas>
+                    </div>
+                    <div class="lg:col-span-6 space-y-4 text-xs">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex justify-between font-bold text-white">
+                                <span>Civil Engineering & Tunnelling (~50%)</span>
+                                <span class="text-neon-cyan">7.5 Billion CHF</span>
+                            </div>
+                            <p class="text-slate-400">91 km subterranean tunnel under Lake Geneva, 8 shaft sites, caverns, and environmental surface platforms.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex justify-between font-bold text-white">
+                                <span>Technical Infrastructure & RF Cavities (~35%)</span>
+                                <span class="text-neon-violet">5.25 Billion CHF</span>
+                            </div>
+                            <p class="text-slate-400">Cryogenics, high-efficiency RF acceleration cavities, power distribution, vacuum systems, and safety setups.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex justify-between font-bold text-white">
+                                <span>Detectors & Experimental Areas (~15%)</span>
+                                <span class="text-neon-emerald">2.25 Billion CHF</span>
+                            </div>
+                            <p class="text-slate-400">4 interaction points equipped with ultra-precise tracking, calorimetry, and high-rate readout electronics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MUON COLLIDER FACILITY -->
+        <section id="tab-muon" class="tab-content hidden space-y-8">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
+                <div class="max-w-3xl space-y-3">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-neon-violet text-xs font-mono">
+                        <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                        <span>International Muon Collider Collaboration (IMCC)</span>
+                    </div>
+                    <h2 class="font-display text-3xl font-bold text-white">Towards a High-Energy Muon Collider</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Muons ($\mu^\pm$) are 207 times heavier than electrons, suppressing synchrotron radiation losses while retaining the advantages of fundamental point-like lepton collisions. This allows a $10\text{ TeV}$ Muon Collider to offer physics reach comparable to a $100\text{ TeV}$ proton collider at a fraction of the physical footprint.
+                    </p>
+                </div>
+
+                <!-- Beamline Flowchart Animation -->
+                <div class="mt-8 pt-6 border-t border-slate-800">
+                    <h3 class="font-display text-base font-bold text-white mb-4 flex items-center gap-2">
+                        <span>Interactive Accelerator Chain Simulator</span>
+                        <span class="text-xs font-mono font-normal text-slate-400">(Click stages to inspect physics)</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" id="muon-beamline-steps">
+                        <!-- Step 1 -->
+                        <div data-step="1" class="beam-step cursor-pointer bg-slate-900/80 border border-cyan-500/40 rounded-xl p-4 transition-all hover:scale-[1.02] relative group">
+                            <div class="text-[10px] font-mono text-neon-cyan font-bold mb-1">STAGE 01</div>
+                            <h4 class="font-bold text-sm text-white mb-1">Proton Driver</h4>
+                            <p class="text-xs text-slate-400">High-power MW proton beam strikes target.</p>
+                            <div class="mt-3 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+                                <span>Pulse: ~MW</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-cyan-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div data-step="2" class="beam-step cursor-pointer bg-slate-900/80 border border-slate-800 rounded-xl p-4 transition-all hover:scale-[1.02] hover:border-slate-700 relative group">
+                            <div class="text-[10px] font-mono text-slate-500 font-bold mb-1">STAGE 02</div>
+                            <h4 class="font-bold text-sm text-white mb-1">Target & Pion Decay</h4>
+                            <p class="text-xs text-slate-400">Pions generated and decay: $\pi^\pm \rightarrow \mu^\pm + \nu_\mu$.</p>
+                            <div class="mt-3 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+                                <span>Lifetime: $2.2\,\mu\text{s}$</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div data-step="3" class="beam-step cursor-pointer bg-slate-900/80 border border-slate-800 rounded-xl p-4 transition-all hover:scale-[1.02] hover:border-slate-700 relative group">
+                            <div class="text-[10px] font-mono text-slate-500 font-bold mb-1">STAGE 03</div>
+                            <h4 class="font-bold text-sm text-white mb-1">Ionization Cooling</h4>
+                            <p class="text-xs text-slate-400">Transverse emittance reduced drastically in absorber media.</p>
+                            <div class="mt-3 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+                                <span>Cooling: $10^6\times$</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div data-step="4" class="beam-step cursor-pointer bg-slate-900/80 border border-slate-800 rounded-xl p-4 transition-all hover:scale-[1.02] hover:border-slate-700 relative group">
+                            <div class="text-[10px] font-mono text-slate-500 font-bold mb-1">STAGE 04</div>
+                            <h4 class="font-bold text-sm text-white mb-1">Rapid Acceleration</h4>
+                            <p class="text-xs text-slate-400">High-gradient RF cavities & pulsed magnets reach Multi-TeV.</p>
+                            <div class="mt-3 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+                                <span>Energy: $10\text{ TeV}$</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div data-step="5" class="beam-step cursor-pointer bg-slate-900/80 border border-slate-800 rounded-xl p-4 transition-all hover:scale-[1.02] hover:border-slate-700 relative group">
+                            <div class="text-[10px] font-mono text-slate-500 font-bold mb-1">STAGE 05</div>
+                            <h4 class="font-bold text-sm text-white mb-1">Collider Ring</h4>
+                            <p class="text-xs text-slate-400">High luminosity $\mu^+\mu^-$ collisions inside detector.</p>
+                            <div class="mt-3 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+                                <span>Luminosity: $10^{35}\text{ cm}^{-2}\text{s}^{-1}$</span>
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-neon-pink"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step Physics Detail Modal/Panel -->
+                    <div id="muon-stage-detail" class="mt-6 bg-slate-950/90 border border-cyan-500/30 rounded-xl p-5 text-xs text-slate-300">
+                        <h4 id="stage-title" class="text-sm font-bold text-neon-cyan font-display mb-2">Stage 01: High Intensity Proton Driver</h4>
+                        <p id="stage-desc" class="leading-relaxed text-slate-300">
+                            The muon collider complex begins with a powerful proton driver producing short, high-intensity proton pulses (~2-4 MW). These protons are accelerated and directed onto a high-Z liquid or solid target (such as liquid gallium or graphite) to produce a copious flux of charged pions ($\pi^\pm$).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Muon Collider vs Proton Collider Physics Comparison -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-neon-cyan text-xs font-mono font-bold">SYNCHROTRON RADIATIVE ADVANTAGE</div>
+                    <div class="text-2xl font-bold font-display text-white">$\sim 10^9 \times$ Suppression</div>
+                    <p class="text-xs text-slate-400">Because mass $m_\mu \approx 207\,m_e$, synchrotron energy loss per turn $(\propto E^4/m^4)$ is reduced by over a factor of $10^9$ compared to electron-positron storage rings.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-neon-violet text-xs font-mono font-bold">EFFECTIVE COLLISION ENERGY</div>
+                    <div class="text-2xl font-bold font-display text-white">$10\text{ TeV } \mu\mu \equiv 100\text{ TeV } pp$</div>
+                    <p class="text-xs text-slate-400">In proton colliders, total energy is shared among constituent valence quarks and gluons. In muon colliders, the full center-of-mass energy is available in the hard scattering interaction.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-neon-amber text-xs font-mono font-bold">PHYSICAL FOOTPRINT</div>
+                    <div class="text-2xl font-bold font-display text-white">&lt; 10 km Ring</div>
+                    <p class="text-xs text-slate-400">A $10\text{ TeV}$ Muon Collider ring could fit directly on existing CERN or Fermilab sites, dramatically lowering civil engineering costs.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: PROTON & QUARK VISUALIZER -->
+        <section id="tab-proton" class="tab-content hidden space-y-8">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-neon-emerald text-xs font-mono">
+                        <i data-lucide="atom" class="w-3.5 h-3.5"></i>
+                        <span>Quantum Chromodynamics (QCD) Simulator</span>
+                    </div>
+                    <h2 class="font-display text-3xl font-bold text-white">Anatomy of the Proton</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Protons are composite subatomic particles (baryons) containing three valence quarks: <strong>two Up quarks</strong> (electric charge $+2/3 e$) and <strong>one Down quark</strong> (electric charge $-1/3 e$), bound tightly by gluons carrying color charge.
+                    </p>
+                    
+                    <div class="space-y-3 text-xs font-mono pt-2">
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400">Total Charge:</span>
+                            <span class="text-neon-cyan font-bold">+1.0 e ($+2/3 + 2/3 - 1/3$)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400">Proton Charge Radius (Recent confirmation):</span>
+                            <span class="text-neon-emerald font-bold">$\approx 0.841\text{ fm}$ (Smaller Radius Confirmed)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400">Mass Contribution:</span>
+                            <span class="text-neon-violet font-bold">~99% from Gluon Field Energy ($\Delta E = mc^2$)</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex gap-3">
+                        <button id="agitate-quarks-btn" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs font-mono transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/20">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span>Agitate Quark Energy State</span>
+                        </button>
+                        <button id="reset-quarks-btn" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono transition-all">
+                            <span>Reset System</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div class="lg:col-span-5 flex flex-col items-center">
+                    <div class="w-full bg-slate-950 rounded-2xl border border-slate-800 p-4 relative text-center">
+                        <canvas id="protonCanvas" width="360" height="360" class="mx-auto rounded-xl bg-slate-900/50 cursor-grab active:cursor-grabbing"></canvas>
+                        <p class="text-[11px] text-slate-400 font-mono mt-3">Interactive 2D Quark & Gluon Exchange Canvas • Drag to rotate system</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Physics Breakthroughs Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-neon-cyan text-xs font-mono font-bold">ALICE EXPERIMENT AT LHC</div>
+                    <h4 class="text-base font-bold text-white font-display">Lead-to-Gold Nuclear Transmutation</h4>
+                    <p class="text-xs text-slate-400">Observation of ultra-peripheral collisions stripping protons/neutrons from high-energy lead nuclei ($^{208}\text{Pb}$) to create short-lived gold isotopes in beam pipes.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-neon-violet text-xs font-mono font-bold">QUANTUM INFORMATION</div>
+                    <h4 class="text-base font-bold text-white font-display">First Antimatter Qubit Demonstration</h4>
+                    <p class="text-xs text-slate-400">CERN antiproton decelerator experiments successfully trapped antiprotons into quantum coherent superposition states for ultra-precise CPT symmetry testing.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-neon-emerald text-xs font-mono font-bold">HEAVY ION RUNS 2025/2026</div>
+                    <h4 class="text-base font-bold text-white font-display">Oxygen & Neon Ion Collisions</h4>
+                    <p class="text-xs text-slate-400">First-ever light-ion collision runs probing the geometry, cluster formation, and early-universe Quark-Gluon Plasma (QGP) onset dynamics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: "SUBATOMIC SYMPHONY" AUDIO SYNTHESIZER -->
+        <section id="tab-synth" class="tab-content hidden space-y-8">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30 text-neon-pink text-xs font-mono mb-2">
+                            <i data-lucide="music" class="w-3.5 h-3.5"></i>
+                            <span>Web Audio Synthwave Engine • Inspired by High-Energy Collisions</span>
+                        </div>
+                        <h2 class="font-display text-3xl font-bold text-white">"Subatomic Symphony" Live Sequencer</h2>
+                        <p class="text-xs text-slate-400 font-mono">130 BPM Synthwave • Driving Bassline • Particle Collision Pulsing</p>
+                    </div>
+
+                    <!-- Audio Master Controls -->
+                    <div class="flex items-center space-x-3">
+                        <button id="audio-play-btn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-neon-cyan via-indigo-500 to-neon-violet hover:opacity-90 text-slate-950 font-bold text-sm font-mono shadow-lg shadow-cyan-500/20 transition-all flex items-center space-x-2">
+                            <i data-lucide="play" id="play-icon" class="w-5 h-5 fill-current"></i>
+                            <span id="play-text">START AUDIO SYNTH</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Sequencer Controls -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-950/80 p-6 rounded-2xl border border-slate-800">
+                    <div class="lg:col-span-7 space-y-6">
+                        <!-- Beat Visualizer Matrix -->
+                        <div>
+                            <span class="text-xs font-mono text-slate-400 block mb-3">16-Step Particle Collision Arpeggiator</span>
+                            <div class="grid grid-cols-8 sm:grid-cols-16 gap-1.5" id="step-sequencer-grid">
+                                <!-- Steps injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Knobs / Sliders -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs font-mono">
+                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <label class="text-slate-400 flex justify-between">
+                                    <span>Tempo (BPM)</span>
+                                    <span id="bpm-val" class="text-neon-cyan">130</span>
+                                </label>
+                                <input type="range" id="bpm-slider" min="100" max="160" value="130" class="w-full accent-cyan-400 cursor-pointer">
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <label class="text-slate-400 flex justify-between">
+                                    <span>Cutoff Frequency</span>
+                                    <span id="cutoff-val" class="text-neon-violet">1200 Hz</span>
+                                </label>
+                                <input type="range" id="cutoff-slider" min="200" max="4000" value="1200" class="w-full accent-purple-400 cursor-pointer">
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <label class="text-slate-400 flex justify-between">
+                                    <span>Particle Sound FX</span>
+                                    <span id="fx-val" class="text-neon-pink">ON</span>
+                                </label>
+                                <button id="toggle-fx-btn" class="w-full py-1 text-[11px] rounded bg-pink-500/20 text-neon-pink border border-pink-500/30 font-bold">
+                                    TRIGGER COLLISION WAVE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Oscilloscope Canvas -->
+                    <div class="lg:col-span-5 flex flex-col items-center">
+                        <div class="w-full bg-slate-900 rounded-xl p-3 border border-slate-800 text-center">
+                            <span class="text-[11px] font-mono text-slate-400 block mb-2">Live Waveform Spectrum</span>
+                            <canvas id="audioVisualizerCanvas" width="300" height="150" class="w-full rounded bg-slate-950"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Track Lyrics & Structural Concept -->
+                <div class="mt-8 pt-6 border-t border-slate-800">
+                    <h3 class="font-display text-lg font-bold text-white mb-4">Track Composition & Narrative Concept</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed text-slate-300 font-mono">
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                            <h4 class="text-neon-cyan font-bold mb-2">Verse I: The Accelerator Vacuum</h4>
+                            <p class="text-slate-400">
+                                "Ninety-one kilometers underground...<br>
+                                Superconducting coils hum with magnetic force.<br>
+                                Protons circulating at 0.99999999c...<br>
+                                Ready for the smash of a hundred trillion electronvolts."
+                            </p>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                            <h4 class="text-neon-pink font-bold mb-2">Chorus: Subatomic Symphony</h4>
+                            <p class="text-slate-400">
+                                "Smash the beam! Hear the gluons break!<br>
+                                Higgs boson factory in our wake.<br>
+                                From electron leptons to muon rings,<br>
+                                Listen to the song the subatomic sings!"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: FEASIBILITY REPORTS LIBRARY -->
+        <section id="tab-papers" class="tab-content hidden space-y-8">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="font-display text-3xl font-bold text-white">Feasibility Study Reports Archive</h2>
+                        <p class="text-xs text-slate-400">Complete multi-volume research index released for the European Strategy for Particle Physics</p>
+                    </div>
+                    <!-- Search Input -->
+                    <div class="relative w-full sm:w-64">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                        <input type="text" id="paper-search-input" placeholder="Search volumes or topics..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                </div>
+
+                <!-- Papers List Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="papers-grid">
+                    <!-- Volume 1 -->
+                    <div class="paper-card bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 p-6 rounded-2xl transition-all space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-neon-cyan border border-cyan-500/20 text-[10px] font-mono font-bold">FCC VOLUME 1</span>
+                            <span class="text-xs font-mono text-slate-500">CDS: 2928193</span>
+                        </div>
+                        <h3 class="font-display font-bold text-base text-white">Physics and Experiments</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Comprehensive physics case outlining precision Higgs factory goals, electroweak electroweak precision measurements at $Z/W$ thresholds, top quark physics, dark matter searches, and high-luminosity $100\text{ TeV}$ proton-proton discovery physics.
+                        </p>
+                        <div class="pt-2 flex justify-between items-center text-xs font-mono">
+                            <span class="text-slate-400">Authors: CERN & International Partners</span>
+                            <a href="https://cds.cern.ch/record/2928193" target="_blank" class="text-neon-cyan hover:underline flex items-center gap-1">
+                                <span>CDS Record</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Volume 2 -->
+                    <div class="paper-card bg-slate-900/80 border border-slate-800 hover:border-purple-500/40 p-6 rounded-2xl transition-all space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="px-2.5 py-1 rounded bg-purple-500/10 text-neon-violet border border-purple-500/20 text-[10px] font-mono font-bold">FCC VOLUME 2</span>
+                            <span class="text-xs font-mono text-slate-500">CDS: 2928793</span>
+                        </div>
+                        <h3 class="font-display font-bold text-base text-white">Accelerators, Technical Infrastructure & Safety</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Technical design specs for RF cavities, superconducting high-field magnets ($16\text{ T}$ Nb3Sn), beam dump facilities, vacuum systems, cryogenic cooling plants, and radiation protection systems.
+                        </p>
+                        <div class="pt-2 flex justify-between items-center text-xs font-mono">
+                            <span class="text-slate-400">Authors: FCC Accelerator Group</span>
+                            <a href="https://cds.cern.ch/record/2928793" target="_blank" class="text-neon-violet hover:underline flex items-center gap-1">
+                                <span>CDS Record</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Volume 3 -->
+                    <div class="paper-card bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 p-6 rounded-2xl transition-all space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="px-2.5 py-1 rounded bg-emerald-500/10 text-neon-emerald border border-emerald-500/20 text-[10px] font-mono font-bold">FCC VOLUME 3</span>
+                            <span class="text-xs font-mono text-slate-500">CDS: 2928194</span>
+                        </div>
+                        <h3 class="font-display font-bold text-base text-white">Civil Engineering, Implementation & Sustainability</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Geological analysis of the Lake Geneva basin, tunnel route optimization (91 km), environmental impact assessments, reuse of excavated molasse rock, energy efficiency strategies, and socioeconomic ROI models.
+                        </p>
+                        <div class="pt-2 flex justify-between items-center text-xs font-mono">
+                            <span class="text-slate-400">Authors: Civil Engineering Team</span>
+                            <a href="https://cds.cern.ch/record/2928194" target="_blank" class="text-neon-emerald hover:underline flex items-center gap-1">
+                                <span>CDS Record</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- EPJC Muon Paper -->
+                    <div class="paper-card bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 p-6 rounded-2xl transition-all space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="px-2.5 py-1 rounded bg-amber-500/10 text-neon-amber border border-amber-500/20 text-[10px] font-mono font-bold">EPJC REVIEW PAPER</span>
+                            <span class="text-xs font-mono text-slate-500">DOI: 10.1140/epjc</span>
+                        </div>
+                        <h3 class="font-display font-bold text-base text-white">Towards a Muon Collider</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Comprehensive roadmap published in European Physical Journal C outlining MAP/IMCC facility parameters, ionization cooling technology demonstrators, fast-ramping magnet chains, and detector background mitigation.
+                        </p>
+                        <div class="pt-2 flex justify-between items-center text-xs font-mono">
+                            <span class="text-slate-400">Authors: IMCC Collaboration</span>
+                            <a href="https://doi.org/10.1140/epjc/s10052-023-11889-x" target="_blank" class="text-neon-amber hover:underline flex items-center gap-1">
+                                <span>EPJC Journal</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800/80 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-mono">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="atom" class="w-4 h-4 text-neon-cyan"></i>
+                <span>Subatomic Frontiers • High Energy Physics Knowledge Portal</span>
+            </div>
+            <div>
+                <span>Data compiled from CERN, European Physical Society & IMCC Publications</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // ----------------------------------------------------
+        // Tab Navigation Switcher
+        // ----------------------------------------------------
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+
+                // Toggle Active Tab Button
+                tabBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-cyan-500/10', 'text-neon-cyan', 'border-cyan-500/30');
+                    b.classList.add('text-slate-400', 'border-transparent');
+                });
+                btn.classList.add('active', 'bg-cyan-500/10', 'text-neon-cyan', 'border-cyan-500/30');
+                btn.classList.remove('text-slate-400', 'border-transparent');
+
+                // Toggle Content Section
+                tabContents.forEach(content => {
+                    if (content.id === `tab-${tabId}`) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+
+                // Resize canvases when tab becomes visible
+                if (tabId === 'fcc') initRingScaleCanvas();
+                if (tabId === 'proton') initProtonCanvas();
+            });
+        });
+
+        // Search Filter for Feasibility Papers
+        const searchInput = document.getElementById('paper-search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.paper-card');
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // ----------------------------------------------------
+        // Chart.js Budget Chart (FCC Tab)
+        // ----------------------------------------------------
+        const budgetCtx = document.getElementById('fccBudgetChart');
+        if (budgetCtx) {
+            new Chart(budgetCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Civil Eng. & Tunnels', 'Technical Infrastructure & RF', 'Detectors & Experimental'],
+                    datasets: [{
+                        data: [7.5, 5.25, 2.25],
+                        backgroundColor: [
+                            'rgba(0, 240, 255, 0.8)',
+                            'rgba(168, 85, 247, 0.8)',
+                            'rgba(16, 185, 129, 0.8)'
+                        ],
+                        borderColor: '#0f172a',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'JetBrains Mono', size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} Billion CHF`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // ----------------------------------------------------
+        // Canvas Animation 1: LHC vs FCC Scale Ring
+        // ----------------------------------------------------
+        let ringCanvas, ringCtx, ringAnimId;
+        let ringPulsePhase = 0;
+
+        function initRingScaleCanvas() {
+            ringCanvas = document.getElementById('ringScaleCanvas');
+            if (!ringCanvas) return;
+            ringCtx = ringCanvas.getContext('2d');
+            
+            // Set scale for high DPI
+            const dpr = window.devicePixelRatio || 1;
+            const rect = ringCanvas.getBoundingClientRect();
+            ringCanvas.width = rect.width * dpr;
+            ringCanvas.height = rect.height * dpr;
+            ringCtx.scale(dpr, dpr);
+
+            if (ringAnimId) cancelAnimationFrame(ringAnimId);
+            animateRings(rect.width, rect.height);
+        }
+
+        function animateRings(w, h) {
+            ringCtx.clearRect(0, 0, w, h);
+
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const fccRadius = Math.min(w, h) * 0.38;
+            const lhcRadius = fccRadius * (27 / 91); // Proportional scale 27km vs 91km
+
+            // Draw FCC Ring
+            ringCtx.beginPath();
+            ringCtx.arc(centerX, centerY, fccRadius, 0, Math.PI * 2);
+            ringCtx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+            ringCtx.lineWidth = 3;
+            ringCtx.setLineDash([6, 4]);
+            ringCtx.stroke();
+            ringCtx.setLineDash([]);
+
+            // FCC Label
+            ringCtx.fillStyle = '#00f0ff';
+            ringCtx.font = '10px JetBrains Mono';
+            ringCtx.fillText('FCC Ring (91 km)', centerX - 45, centerY - fccRadius - 8);
+
+            // Draw LHC Ring inside
+            ringCtx.beginPath();
+            ringCtx.arc(centerX - fccRadius * 0.3, centerY + fccRadius * 0.2, lhcRadius, 0, Math.PI * 2);
+            ringCtx.strokeStyle = 'rgba(168, 85, 247, 0.6)';
+            ringCtx.lineWidth = 2.5;
+            ringCtx.stroke();
+
+            // LHC Label
+            ringCtx.fillStyle = '#a855f7';
+            ringCtx.fillText('LHC (27 km)', centerX - fccRadius * 0.3 - 30, centerY + fccRadius * 0.2 + 4);
+
+            // Circulating Particle Pulse on FCC Ring
+            ringPulsePhase += 0.03;
+            const pulseAngle1 = ringPulsePhase;
+            const pulseAngle2 = ringPulsePhase + Math.PI;
+
+            const px1 = centerX + Math.cos(pulseAngle1) * fccRadius;
+            const py1 = centerY + Math.sin(pulseAngle1) * fccRadius;
+            const px2 = centerX + Math.cos(pulseAngle2) * fccRadius;
+            const py2 = centerY + Math.sin(pulseAngle2) * fccRadius;
+
+            // Draw Beam particles
+            ringCtx.beginPath();
+            ringCtx.arc(px1, py1, 5, 0, Math.PI * 2);
+            ringCtx.fillStyle = '#00f0ff';
+            ringCtx.shadowColor = '#00f0ff';
+            ringCtx.shadowBlur = 10;
+            ringCtx.fill();
+
+            ringCtx.beginPath();
+            ringCtx.arc(px2, py2, 5, 0, Math.PI * 2);
+            ringCtx.fillStyle = '#ec4899';
+            ringCtx.shadowColor = '#ec4899';
+            ringCtx.shadowBlur = 10;
+            ringCtx.fill();
+            ringCtx.shadowBlur = 0;
+
+            ringAnimId = requestAnimationFrame(() => animateRings(w, h));
+        }
+
+        // ----------------------------------------------------
+        // Muon Beamline Interactive Step Details
+        // ----------------------------------------------------
+        const muonStepsData = {
+            1: {
+                title: 'Stage 01: High Intensity Proton Driver',
+                desc: 'A high-power MW proton driver delivers short proton pulses striking a heavy liquid metal/graphite target, initiating copious pion ($\pi^\pm$) production.',
+                color: 'text-neon-cyan'
+            },
+            2: {
+                title: 'Stage 02: Target & Pion Decay Channel',
+                desc: 'Pions are focused by high-field magnetic solenoids and rapidly decay into muons ($\pi^\pm \rightarrow \mu^\pm + \nu_\mu$) with a rest lifetime of $2.2\,\mu\text{s}$.',
+                color: 'text-neon-violet'
+            },
+            3: {
+                title: 'Stage 03: Ionization Cooling Cell',
+                desc: 'The crucial step: muons pass through light material absorbers (liquid $H_2$) to reduce phase-space emittance by over $10^6\times$ before decaying.',
+                color: 'text-neon-emerald'
+            },
+            4: {
+                title: 'Stage 04: Rapid Acceleration Chain',
+                desc: 'Superconducting high-gradient RF cavities and fast-ramping synchrotrons rapidly accelerate cooled muons to multi-TeV scale in milliseconds.',
+                color: 'text-neon-amber'
+            },
+            5: {
+                title: 'Stage 05: High-Luminosity Collider Ring',
+                desc: 'Counter-rotating $\mu^+$ and $\mu^-$ bunches collide at high energy inside advanced detectors equipped with tungsten neutrino radiation shields.',
+                color: 'text-neon-pink'
+            }
+        };
+
+        const beamSteps = document.querySelectorAll('.beam-step');
+        const stageTitle = document.getElementById('stage-title');
+        const stageDesc = document.getElementById('stage-desc');
+
+        beamSteps.forEach(step => {
+            step.addEventListener('click', () => {
+                const stepNum = step.getAttribute('data-step');
+                beamSteps.forEach(s => {
+                    s.classList.remove('border-cyan-500/40');
+                    s.classList.add('border-slate-800');
+                });
+                step.classList.add('border-cyan-500/40');
+                step.classList.remove('border-slate-800');
+
+                const data = muonStepsData[stepNum];
+                if (data && stageTitle && stageDesc) {
+                    stageTitle.textContent = data.title;
+                    stageTitle.className = `text-sm font-bold font-display mb-2 ${data.color}`;
+                    stageDesc.innerHTML = data.desc;
+                    if (window.renderMathInElement) renderMathInElement(stageDesc);
+                }
+            });
+        });
+
+        // ----------------------------------------------------
+        // Canvas Animation 2: Proton Quark Simulator
+        // ----------------------------------------------------
+        let protonCanvas, protonCtx, protonAnimId;
+        let quarkEnergy = 1.0;
+        let protonAngle = 0;
+
+        const quarks = [
+            { type: 'Up', charge: '+2/3', color: '#00f0ff', angle: 0, r: 45 },
+            { type: 'Up', charge: '+2/3', color: '#38bdf8', angle: (2 * Math.PI) / 3, r: 45 },
+            { type: 'Down', charge: '-1/3', color: '#a855f7', angle: (4 * Math.PI) / 3, r: 45 }
+        ];
+
+        function initProtonCanvas() {
+            protonCanvas = document.getElementById('protonCanvas');
+            if (!protonCanvas) return;
+            protonCtx = protonCanvas.getContext('2d');
+
+            if (protonAnimId) cancelAnimationFrame(protonAnimId);
+            animateProton();
+        }
+
+        function animateProton() {
+            const w = protonCanvas.width;
+            const h = protonCanvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+
+            protonCtx.clearRect(0, 0, w, h);
+
+            // Draw Outer Proton Boundary (Charge Radius)
+            protonCtx.beginPath();
+            protonCtx.arc(cx, cy, 110, 0, Math.PI * 2);
+            protonCtx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+            protonCtx.fill();
+            protonCtx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+            protonCtx.lineWidth = 2;
+            protonCtx.setLineDash([4, 4]);
+            protonCtx.stroke();
+            protonCtx.setLineDash([]);
+
+            protonAngle += 0.01 * quarkEnergy;
+
+            // Calculate Quark Positions
+            const qPos = quarks.map((q, idx) => {
+                const currentAngle = q.angle + protonAngle;
+                const jitter = (Math.sin(Date.now() * 0.005 + idx) * 5) * quarkEnergy;
+                const radius = q.r + jitter;
+                return {
+                    x: cx + Math.cos(currentAngle) * radius,
+                    y: cy + Math.sin(currentAngle) * radius,
+                    ...q
+                };
+            });
+
+            // Draw Gluon Force Lines between Quarks
+            for (let i = 0; i < qPos.length; i++) {
+                for (let j = i + 1; j < qPos.length; j++) {
+                    drawGluonSpring(qPos[i].x, qPos[i].y, qPos[j].x, qPos[j].y);
+                }
+            }
+
+            // Draw Quarks
+            qPos.forEach(q => {
+                protonCtx.beginPath();
+                protonCtx.arc(q.x, q.y, 22, 0, Math.PI * 2);
+                protonCtx.fillStyle = q.color;
+                protonCtx.shadowColor = q.color;
+                protonCtx.shadowBlur = 15;
+                protonCtx.fill();
+                protonCtx.shadowBlur = 0;
+
+                // Label
+                protonCtx.fillStyle = '#0f172a';
+                protonCtx.font = 'bold 11px JetBrains Mono';
+                protonCtx.textAlign = 'center';
+                protonCtx.textBaseline = 'middle';
+                protonCtx.fillText(`${q.type}`, q.x, q.y - 4);
+                protonCtx.font = '9px JetBrains Mono';
+                protonCtx.fillText(`${q.charge}`, q.x, q.y + 6);
+            });
+
+            // Slowly decay quark energy back to 1.0
+            if (quarkEnergy > 1.0) quarkEnergy *= 0.985;
+
+            protonAnimId = requestAnimationFrame(animateProton);
+        }
+
+        function drawGluonSpring(x1, y1, x2, y2) {
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const dist = Math.hypot(dx, dy);
+            const steps = 12;
+
+            protonCtx.beginPath();
+            protonCtx.moveTo(x1, y1);
+
+            for (let i = 1; i < steps; i++) {
+                const t = i / steps;
+                const px = x1 + dx * t;
+                const py = y1 + dy * t;
+                const perpX = -dy / dist;
+                const perpY = dx / dist;
+                const amp = Math.sin(t * Math.PI * 6 + Date.now() * 0.01) * 6;
+
+                protonCtx.lineTo(px + perpX * amp, py + perpY * amp);
+            }
+
+            protonCtx.lineTo(x2, y2);
+            protonCtx.strokeStyle = 'rgba(245, 158, 11, 0.6)';
+            protonCtx.lineWidth = 2;
+            protonCtx.stroke();
+        }
+
+        // Quark Interactive Buttons
+        const agitateBtn = document.getElementById('agitate-quarks-btn');
+        const resetQuarksBtn = document.getElementById('reset-quarks-btn');
+
+        if (agitateBtn) {
+            agitateBtn.addEventListener('click', () => {
+                quarkEnergy = 3.5;
+            });
+        }
+        if (resetQuarksBtn) {
+            resetQuarksBtn.addEventListener('click', () => {
+                quarkEnergy = 1.0;
+            });
+        }
+
+        // ----------------------------------------------------
+        // Web Audio API Synthesizer: "Subatomic Symphony"
+        // ----------------------------------------------------
+        let audioCtx, isPlaying = false, audioTimer;
+        let currentStep = 0;
+        let bpm = 130;
+        let cutoffFreq = 1200;
+        let analyser;
+
+        const playBtn = document.getElementById('audio-play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const playText = document.getElementById('play-text');
+        const bpmSlider = document.getElementById('bpm-slider');
+        const bpmVal = document.getElementById('bpm-val');
+        const cutoffSlider = document.getElementById('cutoff-slider');
+        const cutoffVal = document.getElementById('cutoff-val');
+        const seqGrid = document.getElementById('step-sequencer-grid');
+
+        // Create 16 Step UI elements
+        if (seqGrid) {
+            for (let i = 0; i < 16; i++) {
+                const stepEl = document.createElement('div');
+                stepEl.className = `h-10 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] font-mono text-slate-500 step-box-${i}`;
+                stepEl.textContent = i + 1;
+                seqGrid.appendChild(stepEl);
+            }
+        }
+
+        // Scale notes for Synthwave arp (Minor Pentatonic A2, C3, E3, G3, A3, C4)
+        const scaleFreqs = [110.0, 130.81, 164.81, 196.0, 220.0, 261.63, 329.63, 392.0];
+
+        function initAudio() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+        }
+
+        function playStep() {
+            if (!isPlaying) return;
+
+            // Highlight Step UI
+            document.querySelectorAll('#step-sequencer-grid div').forEach((el, idx) => {
+                if (idx === currentStep) {
+                    el.classList.add('bg-cyan-500/30', 'border-cyan-400', 'text-neon-cyan', 'scale-105');
+                    el.classList.remove('bg-slate-900', 'border-slate-800', 'text-slate-500');
+                } else {
+                    el.classList.remove('bg-cyan-500/30', 'border-cyan-400', 'text-neon-cyan', 'scale-105');
+                    el.classList.add('bg-slate-900', 'border-slate-800', 'text-slate-500');
+                }
+            });
+
+            const now = audioCtx.currentTime;
+
+            // 1. Kick Drum on beats 0, 4, 8, 12
+            if (currentStep % 4 === 0) {
+                const kickOsc = audioCtx.createOscillator();
+                const kickGain = audioCtx.createGain();
+                kickOsc.frequency.setValueAtTime(120, now);
+                kickOsc.frequency.exponentialRampToValueAtTime(0.01, now + 0.15);
+                kickGain.gain.setValueAtTime(0.8, now);
+                kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+                kickOsc.connect(kickGain);
+                kickGain.connect(analyser);
+                kickGain.connect(audioCtx.destination);
+                kickOsc.start(now);
+                kickOsc.stop(now + 0.15);
+            }
+
+            // 2. Arpeggiated Synth Bass Note
+            const noteFreq = scaleFreqs[currentStep % scaleFreqs.length];
+            const synthOsc = audioCtx.createOscillator();
+            const synthGain = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+
+            synthOsc.type = 'sawtooth';
+            synthOsc.frequency.setValueAtTime(noteFreq, now);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(cutoffFreq, now);
+
+            synthGain.gain.setValueAtTime(0.15, now);
+            synthGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+            synthOsc.connect(filter);
+            filter.connect(synthGain);
+            synthGain.connect(analyser);
+            synthGain.connect(audioCtx.destination);
+
+            synthOsc.start(now);
+            synthOsc.stop(now + 0.2);
+
+            currentStep = (currentStep + 1) % 16;
+            const interval = (60 / bpm) / 4 * 1000;
+            audioTimer = setTimeout(playStep, interval);
+        }
+
+        if (playBtn) {
+            playBtn.addEventListener('click', () => {
+                if (!audioCtx) initAudio();
+
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    playText.textContent = 'PAUSE AUDIO SYNTH';
+                    playIcon.setAttribute('data-lucide', 'pause');
+                    lucide.createIcons();
+                    playStep();
+                    animateAudioVisualizer();
+                } else {
+                    playText.textContent = 'START AUDIO SYNTH';
+                    playIcon.setAttribute('data-lucide', 'play');
+                    lucide.createIcons();
+                    clearTimeout(audioTimer);
+                }
+            });
+        }
+
+        if (bpmSlider && bpmVal) {
+            bpmSlider.addEventListener('input', (e) => {
+                bpm = parseInt(e.target.value);
+                bpmVal.textContent = bpm;
+            });
+        }
+
+        if (cutoffSlider && cutoffVal) {
+            cutoffSlider.addEventListener('input', (e) => {
+                cutoffFreq = parseInt(e.target.value);
+                cutoffVal.textContent = `${cutoffFreq} Hz`;
+            });
+        }
+
+        // Audio Visualizer Waveform Canvas
+        const vizCanvas = document.getElementById('audioVisualizerCanvas');
+        let vizCtx;
+        if (vizCanvas) vizCtx = vizCanvas.getContext('2d');
+
+        function animateAudioVisualizer() {
+            if (!isPlaying || !analyser || !vizCtx) return;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
+
+            const barWidth = (vizCanvas.width / bufferLength) * 1.5;
+            let barX = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArray[i] / 255) * vizCanvas.height;
+                vizCtx.fillStyle = `rgba(0, 240, 255, ${dataArray[i] / 255 + 0.2})`;
+                vizCtx.fillRect(barX, vizCanvas.height - barHeight, barWidth - 1, barHeight);
+                barX += barWidth;
+            }
+
+            requestAnimationFrame(animateAudioVisualizer);
+        }
+
+        // Initialize canvases on page load
+        window.addEventListener('load', () => {
+            initRingScaleCanvas();
+            initProtonCanvas();
+        });
+
+        window.addEventListener('resize', () => {
+            initRingScaleCanvas();
+            initProtonCanvas();
+        });
+    </script>
+</body>
+</html>

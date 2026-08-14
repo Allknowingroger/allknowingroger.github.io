@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroGut | Personalized Psychobiotics & Mental Health</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            950: '#042f2e',
+                        },
+                        neuro: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles for scrollbar and utilities */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #042f2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #14b8a6;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #2dd4bf, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #134e4a 0%, #042f2e 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-x-hidden selection:bg-brand-500 selection:text-white">
+
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center gap-2 group">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-500 to-neuro-500 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <span class="font-bold text-2xl tracking-tight text-white transition-colors" id="nav-logo-text">NeuroGut</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#gba" class="text-white hover:text-brand-300 font-medium transition-colors text-sm uppercase tracking-wider">Gut-Brain Axis</a>
+                    <a href="#psychobiotics" class="text-white hover:text-brand-300 font-medium transition-colors text-sm uppercase tracking-wider">Psychobiotics</a>
+                    <a href="#fermented" class="text-white hover:text-brand-300 font-medium transition-colors text-sm uppercase tracking-wider">Dietary Therapy</a>
+                    <a href="#future" class="text-white hover:text-brand-300 font-medium transition-colors text-sm uppercase tracking-wider">Precision Medicine</a>
+                    <a href="#explore" class="bg-brand-500 hover:bg-brand-400 text-white px-6 py-2.5 rounded-full font-semibold transition-all shadow-[0_0_15px_rgba(20,184,166,0.5)] hover:shadow-[0_0_25px_rgba(20,184,166,0.8)]">
+                        Explore Microbiome
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white hover:text-brand-300 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-950/95 backdrop-blur-lg border-t border-white/10 absolute w-full shadow-2xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#gba" class="block px-3 py-3 text-white hover:bg-brand-800 rounded-lg font-medium">Gut-Brain Axis</a>
+                <a href="#psychobiotics" class="block px-3 py-3 text-white hover:bg-brand-800 rounded-lg font-medium">Psychobiotics</a>
+                <a href="#fermented" class="block px-3 py-3 text-white hover:bg-brand-800 rounded-lg font-medium">Dietary Therapy</a>
+                <a href="#future" class="block px-3 py-3 text-white hover:bg-brand-800 rounded-lg font-medium">Precision Medicine</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div id="canvas-container"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-10 lg:mt-0">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-brand-200 text-sm font-semibold mb-6 animate-slide-up" style="animation-delay: 0.1s;">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+                </span>
+                The Future of Mental Health
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6 animate-slide-up" style="animation-delay: 0.2s;">
+                Rewire Your Mind <br class="hidden md:block" />
+                <span class="text-gradient">From Within.</span>
+            </h1>
+            
+            <p class="mt-4 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up" style="animation-delay: 0.3s;">
+                Discover personalized psychobiotics and targeted dietary therapies designed to modulate your gut-brain axis, reducing anxiety, depression, and stress.
+            </p>
+            
+            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style="animation-delay: 0.4s;">
+                <a href="#explore" class="bg-brand-500 hover:bg-brand-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:shadow-[0_0_30px_rgba(20,184,166,0.7)] flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-microscope"></i> Start Exploration
+                </a>
+                <a href="#gba" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2">
+                    Learn the Science <i class="fa-solid fa-arrow-down"></i>
+                </a>
+            </div>
+            
+            <!-- Floating Data Cards -->
+            <div class="hidden lg:grid grid-cols-3 gap-6 mt-20 animate-slide-up" style="animation-delay: 0.6s;">
+                <div class="glass-panel rounded-2xl p-6 text-left transform hover:-translate-y-2 transition-transform duration-300 cursor-default">
+                    <i class="fa-solid fa-network-wired text-brand-400 text-2xl mb-3"></i>
+                    <h3 class="text-white font-bold text-lg">Bidirectional Signaling</h3>
+                    <p class="text-brand-100/70 text-sm mt-2">Neural, endocrine, and metabolic pathways connecting the CNS and enteric nervous system.</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 text-left transform hover:-translate-y-2 transition-transform duration-300 cursor-default">
+                    <i class="fa-solid fa-dna text-neuro-400 text-2xl mb-3"></i>
+                    <h3 class="text-white font-bold text-lg">Neurotransmitters</h3>
+                    <p class="text-brand-100/70 text-sm mt-2">Gut flora independently synthesizes serotonin (5-HT), GABA, and dopamine (DA).</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 text-left transform hover:-translate-y-2 transition-transform duration-300 cursor-default">
+                    <i class="fa-solid fa-shield-virus text-brand-400 text-2xl mb-3"></i>
+                    <h3 class="text-white font-bold text-lg">Immune Modulation</h3>
+                    <p class="text-brand-100/70 text-sm mt-2">70% of immune cells reside in the gut, regulating neuroinflammation via cytokines.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Background decorative fade -->
+        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-50 to-transparent z-10"></div>
+    </section>
+
+    <section id="gba" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-brand-600 font-bold tracking-wide uppercase text-sm mb-2">The Biological Network</h2>
+                <h3 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">The Gut-Brain Axis (GBA)</h3>
+                <p class="mt-4 text-lg text-gray-600">
+                    A dynamic communication system that regulates digestion, cognition, mood, and immune responses. Dysbiosis here is linked to depression, anxiety, and neurodevelopmental disorders.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Pathway 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl transition-shadow border border-gray-100 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-brand-50 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-brand-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-bolt text-brand-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Neural Pathways</h4>
+                        <p class="text-gray-600 leading-relaxed">
+                            The Vagus nerve provides a direct electrical highway. Changes in enteric neuron activity are perceived by the brain, modulating stress responses and emotional regulation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pathway 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl transition-shadow border border-gray-100 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-neuro-50 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-neuro-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-flask text-neuro-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Metabolic Signaling</h4>
+                        <p class="text-gray-600 leading-relaxed">
+                            Gut microbiota ferments dietary fibers into Short-Chain Fatty Acids (SCFAs) like <span class="font-semibold text-brand-700">butyrate</span>, acetate, and propionate, which regulate microglial maturation, epigenetics (HDAC inhibition), and neuroinflammation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pathway 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl transition-shadow border border-gray-100 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-blue-50 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-shield-halved text-blue-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Immune Interactions</h4>
+                        <p class="text-gray-600 leading-relaxed">
+                            Chronic systemic inflammation from gut permeability (leaky gut) increases pro-inflammatory cytokines (IL-6, TNF-α), impacting the blood-brain barrier and shaping a cerebral inflammatory milieu that affects neuronal function.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pathway 4 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl transition-shadow border border-gray-100 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-rose-50 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-droplet text-rose-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Endocrine & Hormones</h4>
+                        <p class="text-gray-600 leading-relaxed">
+                            Gut microbes influence the HPA axis and cortisol production. Dysbiosis leads to heightened stress hormone release, while healthy flora helps regulate systemic hormone levels impacting mood.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="psychobiotics" class="py-24 bg-brand-950 text-white relative overflow-hidden">
+        <!-- Abstract background shapes -->
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-brand-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-neuro-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-brand-300 font-bold tracking-wide uppercase text-sm mb-2">Targeted Therapy</h2>
+                    <h3 class="text-4xl font-extrabold mb-6">Enter Psychobiotics</h3>
+                    <p class="text-xl text-gray-300 mb-6 font-light leading-relaxed">
+                        Psychobiotics are live microorganisms that interact with the GBA to improve mental health. When consumed in sufficient amounts, they modulate neurotransmitters, strengthen the gut barrier, and reduce pro-inflammatory responses.
+                    </p>
+                    
+                    <ul class="space-y-6 mt-8">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-800 flex items-center justify-center text-brand-300 mr-4">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold">GABA & Anxiety</h4>
+                                <p class="text-gray-400 text-sm mt-1">Strains like <em class="text-gray-200">Lactobacillus</em> and <em class="text-gray-200">Bifidobacterium</em> produce GABA, an inhibitory neurotransmitter that helps counteract stress-induced excitability and improves sleep.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-neuro-900 flex items-center justify-center text-neuro-300 mr-4">
+                                <i class="fa-solid fa-sun"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold">Serotonin Synthesis</h4>
+                                <p class="text-gray-400 text-sm mt-1">Beneficial microbes modulate tryptophan metabolism, regulating the production of serotonin (5-HT), which is crucial for mood stabilization in depression and bipolar disorder.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-900 flex items-center justify-center text-blue-300 mr-4">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold">Neuroprotection</h4>
+                                <p class="text-gray-400 text-sm mt-1">SCFAs like Butyrate interfere with toxic assemblies (e.g., Amyloid-β peptides) and enhance Brain-Derived Neurotrophic Factor (BDNF) expression, aiding neurogenesis.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-brand-800 to-neuro-900 rounded-3xl p-1 shadow-2xl relative z-10 overflow-hidden transform hover:-translate-y-2 transition-all duration-500">
+                        <div class="bg-brand-950 rounded-[23px] p-8 h-full border border-white/5 relative">
+                            <!-- Background Pattern -->
+                            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-400 via-transparent to-transparent"></div>
+                            
+                            <h3 class="text-2xl font-bold mb-6 text-center">Clinical Efficacy Spotlight</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-brand-300">L. rhamnosus & B. longum</span>
+                                        <span class="text-xs bg-brand-800 text-brand-200 px-2 py-1 rounded-full">Depression/Anxiety</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400">Shown to regulate neurotransmitter levels and reduce symptoms of depression and anxiety by dampening neuroinflammation.</p>
+                                </div>
+                                
+                                <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-neuro-300">F. prausnitzii</span>
+                                        <span class="text-xs bg-neuro-900 text-neuro-200 px-2 py-1 rounded-full">Inflammation</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400">Increases IL-10 secretion while inhibiting NF-kB, suppressing the production of inflammatory cytokines like IL-6 and TNF-α.</p>
+                                </div>
+                                
+                                <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-blue-300">L. plantarum PS128</span>
+                                        <span class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded-full">Mood/Autism</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400">Genetically developed strains increase glutamate decarboxylase activity, enhancing GABA production significantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative elements -->
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500 rounded-full blur-2xl opacity-40 animate-pulse"></div>
+                    <div class="absolute -left-6 -top-6 w-32 h-32 bg-neuro-500 rounded-full blur-2xl opacity-40 animate-pulse" style="animation-delay: 1s;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="explore" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-brand-600 font-bold tracking-wide uppercase text-sm mb-2">Real-World Application</h2>
+                <h3 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">Dietary Interventions</h3>
+                <p class="mt-4 text-lg text-gray-600">
+                    Explore recent clinical findings on how specific fermented foods uniquely modulate gut microbiota, SCFA production, and cognitive/emotional health.
+                </p>
+            </div>
+
+            <!-- Interactive Explorer Container -->
+            <div class="flex flex-col lg:flex-row bg-gray-50 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 min-h-[500px]">
+                
+                <!-- Left: Selection Panel -->
+                <div class="w-full lg:w-1/3 bg-white border-r border-gray-200 flex flex-col">
+                    <div class="p-6 border-b border-gray-100 bg-gray-50/50">
+                        <h4 class="font-bold text-gray-900">Select an Intervention</h4>
+                        <p class="text-sm text-gray-500 mt-1">Click to view clinical impacts.</p>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-4 space-y-3" id="explorer-list">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                </div>
+                
+                <!-- Right: Details Display -->
+                <div class="w-full lg:w-2/3 p-8 lg:p-12 flex flex-col justify-center relative bg-gradient-to-br from-gray-50 to-white" id="explorer-display">
+                    
+                    <div id="explorer-placeholder" class="text-center transition-opacity duration-300">
+                        <div class="w-24 h-24 bg-brand-50 text-brand-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-microscope text-4xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-400">Select an item on the left</h3>
+                        <p class="text-gray-400 mt-2">Discover the mechanism of action on the Gut-Brain Axis.</p>
+                    </div>
+
+                    <div id="explorer-content" class="hidden opacity-0 transition-opacity duration-500 h-full flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-4 mb-6">
+                                <div id="exp-icon-container" class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
+                                    <i id="exp-icon" class="fa-solid fa-flask"></i>
+                                </div>
+                                <div>
+                                    <h3 id="exp-title" class="text-3xl font-bold text-gray-900">Title</h3>
+                                    <p id="exp-strains" class="text-brand-600 font-medium text-sm uppercase tracking-wide mt-1">Strains</p>
+                                </div>
+                            </div>
+                            
+                            <div class="prose prose-brand max-w-none text-gray-600 mb-8">
+                                <p id="exp-desc" class="text-lg leading-relaxed">Description goes here.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto border-t border-gray-200 pt-8">
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                                <div class="text-brand-500 mb-2"><i class="fa-solid fa-brain text-xl"></i></div>
+                                <h5 class="font-bold text-gray-900 mb-1">Cognitive/Emotional Impact</h5>
+                                <p id="exp-cog" class="text-sm text-gray-600">Impact text.</p>
+                            </div>
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                                <div class="text-neuro-500 mb-2"><i class="fa-solid fa-bacteria text-xl"></i></div>
+                                <h5 class="font-bold text-gray-900 mb-1">Microbiome/Metabolic Mechanism</h5>
+                                <p id="exp-mech" class="text-sm text-gray-600">Mechanism text.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="future" class="py-24 bg-brand-900 text-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <div class="order-2 lg:order-1 relative">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 transform translate-y-8">
+                            <i class="fa-solid fa-dna text-3xl text-brand-300 mb-4"></i>
+                            <h4 class="font-bold text-lg mb-2">CRISPR-Cas9 Editing</h4>
+                            <p class="text-sm text-gray-300">Synthetic biology designs custom psychobiotics, modulating microbes to drastically improve mental health outcomes.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
+                            <i class="fa-solid fa-robot text-3xl text-neuro-300 mb-4"></i>
+                            <h4 class="font-bold text-lg mb-2">AI-Driven Analysis</h4>
+                            <p class="text-sm text-gray-300">Machine learning models predict how an individual's unique microbiome signature will respond to specific strains.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 transform translate-y-8">
+                            <i class="fa-solid fa-user-doctor text-3xl text-blue-300 mb-4"></i>
+                            <h4 class="font-bold text-lg mb-2">Precision Medicine</h4>
+                            <p class="text-sm text-gray-300">Moving from one-size-fits-all probiotics to highly targeted interventions based on comprehensive multi-omics data.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
+                            <i class="fa-solid fa-chart-line text-3xl text-rose-300 mb-4"></i>
+                            <h4 class="font-bold text-lg mb-2">Novel Biomarkers</h4>
+                            <p class="text-sm text-gray-300">Tracking inflammatory signals and microbial metabolites (SCFAs) to monitor treatment efficacy in real-time.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2">
+                    <h2 class="text-brand-300 font-bold tracking-wide uppercase text-sm mb-2">The Future Paradigm</h2>
+                    <h3 class="text-4xl font-extrabold mb-6">Personalized Psychobiotics</h3>
+                    <p class="text-xl text-gray-300 mb-6 font-light leading-relaxed">
+                        A major challenge in microbiome therapy is high intersubject variability. What works for one person's depression may not work for another.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed mb-8">
+                        The genomic revolution, combined with advanced bioinformatics, enables the mapping of individual microbiome signatures. Engineered strains (synthetic biology) can now be tailored to increase production of neuroactive substances like GABA and Serotonin precisely where a patient's natural flora falls short.
+                    </p>
+                    
+                    <a href="#gba" class="inline-flex items-center gap-2 text-brand-300 hover:text-white font-bold transition-colors">
+                        Review the Mechanisms <i class="fa-solid fa-arrow-up border-b border-transparent"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-brand-950 text-gray-400 py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa

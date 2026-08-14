@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Quantum Nexus: Scientific Anomalies & Theoretical Frontiers</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for scientific visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- KaTeX for mathematical rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nexus: {
+                            bg: '#070a14',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            cyan: '#00f3ff',
+                            purple: '#a855f7',
+                            emerald: '#10b981',
+                            rose: '#f43f5e',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        
+        body {
+            background-color: #050811;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.25);
+        }
+        .glow-purple {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+        }
+
+        /* Glassmorphism background */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070a14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+
+        /* Canvas styling */
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#050811] text-slate-200">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 p-0.5">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-atom text-cyan-400 text-xl animate-spin" style="animation-duration: 12s;"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                        THE QUANTUM NEXUS
+                    </h1>
+                    <p class="text-xs text-slate-400 font-mono">Scientific Anomalies & Theoretical Frontiers</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium">
+                <button onclick="switchTab('sandbox')" id="nav-sandbox" class="nav-btn active px-3.5 py-2 rounded-lg text-cyan-400 bg-cyan-950/40 border border-cyan-800/50 transition">
+                    <i class="fa-solid fa-flask-vial mr-2"></i>Interactive Labs
+                </button>
+                <button onclick="switchTab('anomalies')" id="nav-anomalies" class="nav-btn px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-shapes mr-2"></i>Anomalies DB
+                </button>
+                <button onclick="switchTab('pioneers')" id="nav-pioneers" class="nav-btn px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-user-astronaut mr-2"></i>Pioneers & Labs
+                </button>
+                <button onclick="switchTab('timeline')" id="nav-timeline" class="nav-btn px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-timeline mr-2"></i>2012–2026 Horizon
+                </button>
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-brain mr-2"></i>Quantum Quiz
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/50">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-ping"></span>
+                    VERIFIED EXPERIMENTS
+                </span>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Bar -->
+        <div class="md:hidden flex overflow-x-auto space-x-2 mt-3 pt-2 border-t border-slate-800/60">
+            <button onclick="switchTab('sandbox')" class="nav-btn-mobile text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-lg bg-cyan-950/50 text-cyan-400 border border-cyan-800/50">Interactive Labs</button>
+            <button onclick="switchTab('anomalies')" class="nav-btn-mobile text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300">Anomalies DB</button>
+            <button onclick="switchTab('pioneers')" class="nav-btn-mobile text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300">Pioneers</button>
+            <button onclick="switchTab('timeline')" class="nav-btn-mobile text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300">Timeline</button>
+            <button onclick="switchTab('quiz')" class="nav-btn-mobile text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300">Quiz</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-8 space-y-8">
+
+        <!-- SECTION 1: INTERACTIVE QUANTUM LABS / SANDBOX -->
+        <section id="tab-sandbox" class="tab-content space-y-6">
+            <!-- Header Banner -->
+            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden border border-cyan-500/20">
+                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 text-cyan-400 font-mono text-xs mb-2">
+                            <i class="fa-solid fa-microscope"></i>
+                            <span>REAL-TIME PHYSICS SIMULATION ENGINE</span>
+                        </div>
+                        <h2 class="text-2xl lg:text-3xl font-bold text-white">Quantum Anomalies Interactive Laboratory</h2>
+                        <p class="text-slate-400 text-sm mt-1 max-w-2xl">
+                            Test counterintuitive quantum mechanics firsthand: interaction-free measurements, thermal acceleration via quantum superpositions, strange metal resistivity, and protein-assisted quantum coherence.
+                        </p>
+                    </div>
+                    <!-- Module Selectors -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="loadSimModule('bomb')" id="sim-btn-bomb" class="sim-selector-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 font-mono transition">
+                            <i class="fa-solid fa-bomb mr-1.5"></i>Bomb Tester
+                        </button>
+                        <button onclick="loadSimModule('mpemba')" id="sim-btn-mpemba" class="sim-selector-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 font-mono transition">
+                            <i class="fa-solid fa-snowflake mr-1.5"></i>Quantum Mpemba
+                        </button>
+                        <button onclick="loadSimModule('strangemetal')" id="sim-btn-strangemetal" class="sim-selector-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 font-mono transition">
+                            <i class="fa-solid fa-bolt mr-1.5"></i>Strange Metals
+                        </button>
+                        <button onclick="loadSimModule('bio')" id="sim-btn-bio" class="sim-selector-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 font-mono transition">
+                            <i class="fa-solid fa-dna mr-1.5"></i>Quantum Bio
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulation Canvas Container -->
+            <div id="sim-container" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Visual Canvas Screen (2 Cols) -->
+                <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span id="sim-title" class="font-bold text-lg text-white">Elitzur-Vaidman Interaction-Free Measurement</span>
+                            <span id="sim-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-400 border border-cyan-800">Quantum Optics</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="resetCurrentSim()" class="p-2 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Reset Simulation">
+                                <i class="fa-solid fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Area -->
+                    <div class="relative w-full h-80 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+                        <canvas id="physics-canvas" class="w-full h-full"></canvas>
+                        
+                        <!-- Overlay Status / Math HUD -->
+                        <div id="canvas-hud" class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-cyan-300 pointer-events-none">
+                            Wavefunction: |ψ⟩ = 1/√2 (|Live Bomb⟩ + |No Bomb⟩)
+                        </div>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div id="sim-controls-panel" class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                        <!-- Dynamic Controls loaded by JS -->
+                    </div>
+                </div>
+
+                <!-- Live Stats & Theoretical Physics Panel (1 Col) -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-5">
+                    <h3 class="font-bold text-white text-base border-b border-slate-800 pb-2.5 flex items-center justify-between">
+                        <span><i class="fa-solid fa-chart-line text-cyan-400 mr-2"></i>Live Metrics</span>
+                        <span class="text-xs font-mono font-normal text-slate-400" id="stat-update-rate">60 FPS Engine</span>
+                    </h3>
+
+                    <div id="sim-metrics-box" class="space-y-3">
+                        <!-- Metrics generated dynamically -->
+                    </div>
+
+                    <!-- Formula & Theoretical Insight -->
+                    <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800/80 space-y-2">
+                        <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider font-mono">Theoretical Basis</span>
+                        <div id="sim-formula-box" class="text-sm font-mono text-slate-200 overflow-x-auto py-1">
+                            $$\mathcal{P}_{\text{detect}} = \frac{1}{4} = 25\%$$
+                        </div>
+                        <p id="sim-explanation" class="text-xs text-slate-400 leading-relaxed">
+                            Proposed by Avshalom Elitzur & Lev Vaidman (1993) and verified by Paul Kwiat at LANL. A single photon can detect a light-sensitive bomb without triggering it by utilizing quantum wave function counterfactuals.
+                        </p>
+                    </div>
+
+                    <!-- Lab Notes / Reference -->
+                    <div class="p-3.5 bg-cyan-950/20 border border-cyan-800/40 rounded-xl flex items-start space-x-3">
+                        <i class="fa-solid fa-lightbulb text-cyan-400 text-sm mt-0.5"></i>
+                        <p id="sim-key-takeaway" class="text-xs text-cyan-200/90 leading-normal">
+                            Key insight: Measurement without interaction proves that standard classical ontology fails. Information is gathered from paths the photon <em>did not physically travel</em>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ANOMALIES DATABASE (10 SCIENTIFIC ANOMALIES) -->
+        <section id="tab-anomalies" class="tab-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Empirical Quantum Anomalies Index</h2>
+                    <p class="text-slate-400 text-sm mt-1">Deep analysis of the ten key quantum paradoxes, recent experimental proofs (2020–2026), and theoretical implications.</p>
+                </div>
+                <!-- Filter category tags -->
+                <div class="flex flex-wrap gap-1.5" id="anomaly-filter-bar">
+                    <button onclick="filterAnomalies('all')" class="filter-btn active text-xs px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-semibold transition">All (10)</button>
+                    <button onclick="filterAnomalies('foundations')" class="filter-btn text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Foundations</button>
+                    <button onclick="filterAnomalies('thermo')" class="filter-btn text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Thermodynamics</button>
+                    <button onclick="filterAnomalies('condensed')" class="filter-btn text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Condensed Matter</button>
+                    <button onclick="filterAnomalies('biology')" class="filter-btn text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Biophysics</button>
+                    <button onclick="filterAnomalies('particles')" class="filter-btn text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Particle Physics</button>
+                </div>
+            </div>
+
+            <!-- Grid of Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="anomalies-grid">
+                <!-- Cards injected dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: PIONEERS & INSTITUTIONS -->
+        <section id="tab-pioneers" class="tab-content hidden space-y-6">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                <h2 class="text-2xl font-bold text-white">Leading Researchers & Experimental Centers</h2>
+                <p class="text-slate-400 text-sm mt-1">The physicists and institutions that moved quantum anomalies from speculative paradoxes to lab-verified facts.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="pioneers-grid">
+                <!-- Pioneer cards loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- SECTION 4: 2012–2026 HORIZON TIMELINE -->
+        <section id="tab-timeline" class="tab-content hidden space-y-6">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Timeline of Breakthroughs & Resolutions</h2>
+                    <p class="text-slate-400 text-sm mt-1">Tracing key developments from the 2012 PBR Theorem to 2026 empirical closures (Sterile Neutrinos, W Boson Mass, Strange Metals).</p>
+                </div>
+                <div class="text-xs font-mono bg-purple-950/60 text-purple-300 border border-purple-800/60 px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-clock-rotate-left mr-1.5"></i>2012 – 2026 Chronology
+                </div>
+            </div>
+
+            <div class="relative border-l-2 border-slate-800 ml-4 md:ml-8 space-y-8 py-4" id="timeline-container">
+                <!-- Timeline events rendered by JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 5: QUANTUM QUIZ -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Interactive Quantum Frontiers Quiz</h2>
+                    <p class="text-slate-400 text-sm mt-1">Test your mastery of researchers, specific temporal windows, and physical principles.</p>
+                </div>
+                <div class="hidden sm:block text-right">
+                    <span id="quiz-score-badge" class="font-mono text-lg font-bold text-cyan-400">Score: 0 / 6</span>
+                </div>
+            </div>
+
+            <div class="max-w-3xl mx-auto glass-panel p-6 md:p-8 rounded-2xl border border-slate-800 space-y-6" id="quiz-box">
+                <!-- Active Quiz Question rendered here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 glass-panel mt-12 py-8 px-4 lg:px-8 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="space-y-1">
+                <p class="font-bold text-slate-200">The Quantum Nexus Project &copy; 2026</p>
+                <p class="text-slate-500">Based on research from UC Berkeley, Oxford, MIT, Padua, Los Alamos, CERN CMS/ATLAS, MicroBooNE, KATRIN, & JUNO.</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/Allknowingroger/Quantum-Nexus" target="_blank" class="hover:text-cyan-400 transition flex items-center space-x-1.5">
+                    <i class="fa-brands fa-github text-base"></i>
+                    <span class="font-mono">Allknowingroger/Quantum-Nexus</span>
+                </a>
+                <span class="text-slate-700">|</span>
+                <span class="text-slate-500 font-mono">TypeScript / AI Studio Framework</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global Application State
+        const state = {
+            currentTab: 'sandbox',
+            currentSim: 'bomb',
+            anomalyFilter: 'all',
+            simAnimationId: null,
+            
+            // Sim A: Bomb Tester State
+            bomb: {
+                hasBomb: true,
+                isLive: true,
+                photonsFired: 0,
+                bombsExploded: 0,
+                detectedWithoutExplode: 0,
+                standardInterference: 0,
+                phaseShift: 0,
+                photonState: null // { x, y, path, progress }
+            },
+
+            // Sim B: Quantum Mpemba State
+            mpemba: {
+                initialTemp: 100, // %
+                superpositionStrength: 0.8,
+                classicalTime: 0,
+                quantumTime: 0,
+                isRunning: false,
+                chart: null
+            },
+
+            // Sim C: Strange Metals State
+            strangeMetal: {
+                temperature: 150, // K
+                planckianAlpha: 1.0,
+                chart: null
+            },
+
+            // Sim D: Quantum Bio State
+            bio: {
+                vibrationalCoherence: true,
+                scaffoldingFreq: 50,
+                efficiency: 98,
+                particles: []
+            },
+
+            // Quiz State
+            quiz: {
+                currentIndex: 0,
+                score: 0,
+                userAnswers: []
+            }
+        };
+
+        const ANOMALIES_DATA = [
+            {
+                id: 'mpemba',
+                title: 'The Quantum Mpemba Effect',
+                category: 'thermo',
+                badge: 'Verified 2024',
+                summary: 'Hotter quantum states cool faster than colder states due to far-from-equilibrium superposition pathways.',
+                details: 'Predicted theoretically by Adulo Delcampo in 2020 and experimentally confirmed in 2024 by researchers at the University of Padua using trapped ions. In quantum systems, initial superposition states allow short-cut relaxation trajectories through higher-energy eigenstates.',
+                formula: '\\tau_{\\text{relax}} \\propto \\frac{1}{\\Delta E} \\ln\\left(\\frac{|\\psi_0\\rangle}{\\rho_{\\text{thermal}}}\\right)',
+                researchers: 'Adulo Delcampo, Univ. of Padua Team',
+                icon: 'fa-snowflake',
+                color: 'cyan'
+            },
+            {
+                id: 'interaction_free',
+                title: 'Interaction-Free Measurement',
+                category: 'foundations',
+                badge: 'Experimentally Proven',
+                summary: 'Detecting the presence of an object without a single photon or particle physically absorbing or touching it.',
+                details: 'Proposed conceptually by Avshalom Elitzur and Lev Vaidman in 1993, and tested physically by Paul Kwiat at Los Alamos National Laboratory. By placing an absorber in one arm of a Mach-Zehnder interferometer, quantum wave function collapse alters interference, revealing the object counterfactually.',
+                formula: '|\\psi\\rangle = \\frac{1}{\\sqrt{2}}|\\text{Reflected}\\rangle + \\frac{1}{\\sqrt{2}}|\\text{Transmitted}\\rangle',
+                researchers: 'A. Elitzur, L. Vaidman, P. Kwiat',
+                icon: 'fa-bomb',
+                color: 'rose'
+            },
+            {
+                id: 'pbr_theorem',
+                title: 'The PBR Theorem',
+                category: 'foundations',
+                badge: 'Foundations Benchmark',
+                summary: 'Proves that the quantum wave function is a real physical state (ψ-ontic), not merely subjective knowledge (ψ-epistemic).',
+                details: 'Authored by Matthew Pusey, Jonathan Barrett, and Terry Rudolph (2012). It demonstrated that if quantum predictions hold, independent quantum state preparations cannot share the same underlying physical reality without producing statistical contradictions.',
+                formula: 'P(\\text{fail}) = 0 \\implies \\rho_1 \\neq \\rho_2 \\text{ physically}',
+                researchers: 'M. Pusey, J. Barrett, T. Rudolph',
+                icon: 'fa-shield-halved',
+                color: 'purple'
+            },
+            {
+                id: 'thermo_life',
+                title: 'Thermodynamic Life Origin',
+                category: 'biology',
+                badge: 'Theoretical Frontier',
+                summary: 'Living matter emerges as an optimal entropy-generating engine under driven non-equilibrium fields.',
+                details: 'Proposed by MIT physicist Jeremy England. His mathematical formulations show that self-replicating molecular clusters disperse heat and generate entropy far more efficiently than static arrangements, making life a statistical inevitability under persistent energy sources.',
+                formula: '\\frac{P(i \\to f)}{P(f \\to i)} = e^{(\\Delta Q_{\\text{bath}} + W_{\\text{diss}})/k_B T}',
+                researchers: 'Jeremy England (MIT)',
+                icon: 'fa-dna',
+                color: 'emerald'
+            },
+            {
+                id: 'quantum_bio',
+                title: 'Vibrational Coherence in Cells',
+                category: 'biology',
+                badge: 'Empirical Biophysics',
+                summary: 'Protein scaffolding shields and channels quantum coherence in warm, wet biological environments.',
+                details: 'Pioneered by Graham Fleming (UC Berkeley) and Thorsten Ritz (Oxford). Shows how cryptochrome proteins in avian eyes use radical-pair quantum entanglement for magnetoreception, and how photosynthetic complexes utilize molecular vibrations to achieve ~99% energy transfer efficiency.',
+                formula: 'H_{\\text{el-phon}} = \\sum_k \\hbar \\omega_k q_k |k\\rangle\\langle k|',
+                researchers: 'G. Fleming, T. Ritz',
+                icon: 'fa-leaf',
+                color: 'emerald'
+            },
+            {
+                id: 'strange_metals',
+                title: 'Strange Metals & Planckian Transport',
+                category: 'condensed',
+                badge: '2025–2026 Breakthrough',
+                summary: 'Resistivity scales strictly linearly with T down to absolute zero, violating Landau Fermi-Liquid theory.',
+                details: 'Observed in cuprates and magic-angle twisted bilayer graphene. The scattering rate reaches the theoretical maximum possible speed allowed by quantum mechanics: Planckian dissipation time $1/\\tau = k_B T / \\hbar$. Unraveled in 2025–2026 via quantum acoustics.',
+                formula: '\\rho(T) = \\rho_0 + A T, \\quad \\frac{1}{\\tau} = \\alpha \\frac{k_B T}{\\hbar}',
+                researchers: 'Niels Bohr Inst., MIT, Santa Barbara',
+                icon: 'fa-bolt',
+                color: 'amber'
+            },
+            {
+                id: 'anti_zeno',
+                title: 'The Anti-Zeno Effect Window',
+                category: 'foundations',
+                badge: 'Hypershort Window',
+                summary: 'Ultra-frequent quantum measurements accelerate decay rather than freezing the state.',
+                details: 'While the Quantum Zeno effect freezes decay via rapid observations, the Anti-Zeno effect drastically accelerates transition rates. Crucially, measurement pulses must fall within a hypershort time window measured in millionths of a second (microseconds/femtoseconds).',
+                formula: '\\Gamma_{\\text{decay}} = 2\\pi \\int G(\\omega) F(\\omega) d\\omega',
+                researchers: 'Quantum Foundations Groups',
+                icon: 'fa-hourglass-start',
+                color: 'cyan'
+            },
+            {
+                id: 'retrocausality',
+                title: 'Delayed-Choice Quantum Eraser',
+                category: 'foundations',
+                badge: 'Temporal Paradox',
+                summary: 'Measuring photon path after detector impact appears to retroactively alter past double-slit interference.',
+                details: 'In delayed-choice experiments, entangled idler photons are measured long after signal photons strike a screen. The retrocausality hypothesis suggests information travels backward in time, though standard decoherence and sub-ensemble sorting prevent FTL signaling.',
+                formula: '|\\Psi\\rangle = \\frac{1}{\\sqrt{2}} (|A\\rangle|d_A\\rangle + |B\\rangle|d_B\\rangle)',
+                researchers: 'Yoon-Ho Kim, R. Marlan Scully',
+                icon: 'fa-clock-rotate-left',
+                color: 'purple'
+            },
+            {
+                id: 'w_boson_res',
+                title: 'W Boson Mass Resolution',
+                category: 'particles',
+                badge: '2026 Standard Model Win',
+                summary: 'New CMS & ATLAS measurements resolve the CDF II anomaly, reaffirming the Standard Model.',
+                details: 'The 2022 CDF II experiment at Fermilab reported an anomalous high mass for the W boson. By 2026, high-precision re-evaluations from CERN\'s CMS detector published in Nature matched Standard Model predictions, resolving the systematic discrepancy.',
+                formula: 'M_W^{\\text{Standard Model}} = 80.357 \\pm 0.006 \\text{ GeV/c}^2',
+                researchers: 'CERN CMS & ATLAS Collaborations',
+                icon: 'fa-weight-hanging',
+                color: 'emerald'
+            },
+            {
+                id: 'sterile_neutrino',
+                title: 'Sterile Neutrino Death Knell',
+                category: 'particles',
+                badge: '2025–2026 Refinement',
+                summary: 'High-precision KATRIN and MicroBooNE data constrain the simple 3+1 sterile neutrino model.',
+                details: 'Decades of anomalous baseline neutrino counts hinted at a fourth "sterile" neutrino. Experiments between 2025 and 2026 (KATRIN, MicroBooNE, JUNO) ruled out the simple 3+1 light sterile neutrino model, redirecting searches toward dark-sector multi-state decays.',
+                formula: 'P_{\\nu_e \\to \\nu_e} = 1 - \\sin^2(2\\theta_{14}) \\sin^2\\left(\\frac{\\Delta m^2_{41} L}{4E}\\right)',
+                researchers: 'nuSCOPE, MicroBooNE, JUNO, KATRIN',
+                icon: 'fa-ghost',
+                color: 'rose'
+            }
+        ];
+
+        const PIONEERS_DATA = [
+            {
+                name: 'Prof. Graham Fleming',
+                institution: 'UC Berkeley',
+                achievement: 'Pioneered 2D electronic spectroscopy showing quantum coherence in photosynthetic light-harvesting complexes.',
+                topic: 'Quantum Biology & Photosynthesis',
+                icon: 'fa-university'
+            },
+            {
+                name: 'Thorsten Ritz',
+                institution: 'University of Oxford',
+                achievement: 'Discovered cryptochrome radical-pair quantum magnetoreception explaining bird navigation.',
+                topic: 'Avian Magnetoreception',
+                icon: 'fa-crow'
+            },
+            {
+                name: 'Adulo Delcampo',
+                institution: 'University of Padua',
+                achievement: 'Formulated the theoretical framework for the Quantum Mpemba Effect (2020), verified in 2024 using trapped ions.',
+                topic: 'Quantum Mpemba Effect',
+                icon: 'fa-atom'
+            },
+            {
+                name: 'Jeremy England',
+                institution: 'MIT',
+                achievement: 'Formulated Dissipative Adaptation theory suggesting life is an optimal entropy-generating strategy.',
+                topic: 'Thermodynamic Life',
+                icon: 'fa-fire-flame-curved'
+            },
+            {
+                name: 'Avshalom Elitzur & Lev Vaidman',
+                institution: 'Tel Aviv University',
+                achievement: 'Proposed the 1993 thought experiment for interaction-free measurement using Mach-Zehnder interferometry.',
+                topic: 'Interaction-Free Measurement',
+                icon: 'fa-eye-slash'
+            },
+            {
+                name: 'Paul Kwiat',
+                institution: 'Los Alamos National Lab',
+                achievement: 'Experimentally verified interaction-free measurement using single photons and high-efficiency optical cavities.',
+                topic: 'Quantum Counterfactuals',
+                icon: 'fa-vial'
+            }
+        ];
+
+        const QUIZ_QUESTIONS = [
+            {
+                question: 'Which research team experimentally confirmed the Quantum Mpemba Effect in 2024 using trapped ions?',
+                options: [
+                    'Graham Fleming’s team at UC Berkeley',
+                    'A research team at the University of Padua in Italy',
+                    'Jeremy England’s laboratory at MIT',
+                    'Paul Kwiat’s group at Los Alamos National Lab'
+                ],
+                correct: 1,
+                explanation: 'Predicted by Adulo Delcampo in 2020, the Quantum Mpemba Effect was experimentally confirmed in 2024 by a team at the University of Padua using trapped ions.'
+            },
+            {
+                question: 'To trigger the Anti-Zeno Effect, measurement pulses must fall within what specific time window?',
+                options: [
+                    'Hours or minutes',
+                    'Milliseconds to seconds',
+                    'Hypershort window in millionths of a second (microseconds)',
+                    'Nanoseconds to attoseconds only'
+                ],
+                correct: 2,
+                explanation: 'The Anti-Zeno effect accelerates decay rates, but requires observation pulses within a hypershort time window measured in millionths of a second.'
+            },
+            {
+                question: 'What fundamental conclusion did the 2012 PBR Theorem (Pusey, Barrett, Rudolph) establish about the quantum wave function?',
+                options: [
+                    'The wave function represents subjective observer ignorance (ψ-epistemic)',
+                    'The wave function is a real physical state of nature (ψ-ontic)',
+                    'Quantum entanglement cannot exist at room temperature',
+                    'Particles travel faster than light during collapse'
+                ],
+                correct: 1,
+                explanation: 'The PBR theorem proved that if quantum statistical predictions are correct, the wave function must be a real physical state (ψ-ontic) rather than just a state of knowledge.'
+            },
+            {
+                question: 'In strange metals, electrical resistivity increases linearly with temperature (ρ ∝ T), obeying what fundamental quantum bound?',
+                options: [
+                    'Fermi Liquid T² law',
+                    'Planckian Dissipation rate (1/τ = α k_B T / ℏ)',
+                    'Bose-Einstein Condensate limit',
+                    'Superconducting energy gap parameter'
+                ],
+                correct: 1,
+                explanation: 'Strange metals exhibit Planckian transport, where electron scattering reaches the fastest speed allowed by quantum mechanics: 1/τ = α k_B T / ℏ.'
+            },
+            {
+                question: 'How do biological cells in photosynthesis maintain quantum coherence in warm, wet environments?',
+                options: [
+                    'By cooling down to near absolute zero',
+                    'Protein scaffolding shields and channels environmental vibrations to assist transport',
+                    'Using magnetic shielding built from iron atoms',
+                    'Through continuous classical laser optical pumping'
+                ],
+                correct: 1,
+                explanation: 'Protein scaffolding shields key chromophores and utilizes vibrational assistance to channel energy efficiently despite environmental thermal noise.'
+            },
+            {
+                question: 'What recent 2025–2026 particle physics findings impacted the hypothetical "3+1 sterile neutrino"?',
+                options: [
+                    'Sterile neutrinos were directly detected at Fermilab',
+                    'MicroBooNE, KATRIN, and JUNO constrained the 3+1 model, ruling out simple sterile neutrinos',
+                    'Sterile neutrinos were proven to cause dark energy',
+                    'The mass of sterile neutrinos was measured at 125 GeV'
+                ],
+                correct: 1,
+                explanation: 'Data from MicroBooNE, KATRIN, and JUNO ruled out the simple 3+1 light sterile neutrino model, redirecting physics toward dark-sector decay models.'
+            }
+        ];
+
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected tab
+            const selectedTab = document.getElementById(`tab-${tabId}`);
+            if (selectedTab) selectedTab.classList.remove('hidden');
+
+            // Update nav styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-cyan-400', 'bg-cyan-950/40', 'border', 'border-cyan-800/50');
+                btn.classList.add('text-slate-400');
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-400');
+                activeNav.classList.add('text-cyan-400', 'bg-cyan-950/40', 'border', 'border-cyan-800/50');
+            }
+
+            // Trigger re-render of formulas if needed
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+
+            // Handle tab specific init
+            if (tabId === 'sandbox') {
+                loadSimModule(state.currentSim);
+            }
+        }
+
+        function loadSimModule(moduleKey) {
+            state.currentSim = moduleKey;
+
+            // Update selector UI buttons
+            document.querySelectorAll('.sim-selector-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-slate-950', 'shadow-lg', 'shadow-cyan-500/20');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            const activeBtn = document.getElementById(`sim-btn-${moduleKey}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                activeBtn.classList.add('bg-cyan-500', 'text-slate-950', 'shadow-lg', 'shadow-cyan-500/20');
+            }
+
+            // Stop existing animation loops
+            if (state.simAnimationId) {
+                cancelAnimationFrame(state.simAnimationId);
+            }
+
+            // Route to appropriate simulation engine
+            if (moduleKey === 'bomb') initBombSim();
+            else if (moduleKey === 'mpemba') initMpembaSim();
+            else if (moduleKey === 'strangemetal') initStrangeMetalSim();
+            else if (moduleKey === 'bio') initBioSim();
+        }
+
+        function initBombSim() {
+            document.getElementById('sim-title').innerText = "Elitzur-Vaidman Bomb Tester";
+            document.getElementById('sim-badge').innerText = "Interaction-Free Measurement";
+            document.getElementById('sim-formula-box').innerHTML = "$$\\mathcal{P}_{\\text{detect w/o explode}} = 25\\%, \\quad \\mathcal{P}_{\\text{explosion}} = 50\\%$$";
+            document.getElementById('sim-explanation').innerText = "A single photon enters a Mach-Zehnder interferometer. If a live bomb absorbs light on Path B, it acts as a quantum measurement device. Without exploding, it destroys interference, allowing detection on Detector D2!";
+            document.getElementById('sim-key-takeaway').innerHTML = "<strong>Counterfactual Quantum Result:</strong> Information is acquired without any physical particle interacting with or hitting the bomb!";
+
+            // Render Controls
+            const controls = document.getElementById('sim-controls-panel');
+            controls.innerHTML = `
+                <button onclick="toggleBombState()" class="px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold hover:bg-slate-700 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-power-off text-rose-400"></i>
+                    <span id="bomb-toggle-label">Object: Live Light-Sensitive Bomb</span>
+                </button>
+                <button onclick="firePhoton()" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 transition flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Fire Single Photon</span>
+                </button>
+                <button onclick="firePhotonBatch(20)" class="px-4 py-2.5 rounded-xl bg-purple-600 text-white font-bold text-xs hover:bg-purple-500 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-forward-fast"></i>
+                    <span>Fire 20 Photons</span>
+                </button>
+            `;
+
+            updateBombMetricsUI();
+            drawBombCanvas();
+        }
+
+        function toggleBombState() {
+            state.bomb.isLive = !state.bomb.isLive;
+            document.getElementById('bomb-toggle-label').innerText = state.bomb.isLive ? "Object: Live Light-Sensitive Bomb" : "Object: Fake / No Bomb (Transparent)";
+            drawBombCanvas();
+        }
+
+        function firePhoton() {
+            state.bomb.photonsFired++;
+            
+            if (!state.bomb.isLive) {
+                // Standard interference -> 100% arrives at Detector D1 (Constructive)
+                state.bomb.standardInterference++;
+                animatePhotonResult('D1');
+            } else {
+                // Live Bomb present on Path B
+                // 50% probability photon takes Path B and explodes bomb
+                // 25% probability takes Path A and ends at D1
+                // 25% probability takes Path A and ends at D2 (INTERACTION-FREE DETECTION!)
+                const rand = Math.random();
+                if (rand < 0.50) {
+                    state.bomb.bombsExploded++;
+                    animatePhotonResult('EXPLODE');
+                } else if (rand < 0.75) {
+                    state.bomb.standardInterference++;
+                    animatePhotonResult('D1');
+                } else {
+                    state.bomb.detectedWithoutExplode++;
+                    animatePhotonResult('D2');
+                }
+            }
+            updateBombMetricsUI();
+        }
+
+        function firePhotonBatch(count) {
+            for (let i = 0; i < count; i++) {
+                firePhoton();
+            }
+        }
+
+        function updateBombMetricsUI() {
+            const total = state.bomb.photonsFired || 1;
+            const metricsBox = document.getElementById('sim-metrics-box');
+            metricsBox.innerHTML = `
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                        <span class="text-slate-400 block">Total Photons</span>
+                        <span class="text-lg font-bold text-white">${state.bomb.photonsFired}</span>
+                    </div>
+                    <div class="bg-rose-950/40 p-2.5 rounded-lg border border-rose-800/50">
+                        <span class="text-rose-300 block">Bombs Detonated</span>
+                        <span class="text-lg font-bold text-rose-400">${state.bomb.bombsExploded} (${((state.bomb.bombsExploded/total)*100).toFixed(1)}%)</span>
+                    </div>
+                    <div class="bg-emerald-950/40 p-2.5 rounded-lg border border-emerald-800/50 col-span-2">
+                        <span class="text-emerald-300 block">Interaction-Free Detections (D2)</span>
+                        <span class="text-lg font-bold text-emerald-400">${state.bomb.detectedWithoutExplode} (${((state.bomb.detectedWithoutExplode/total)*100).toFixed(1)}%)</span>
+                        <span class="text-[10px] text-emerald-300/70 block mt-0.5">Bomb detected with ZERO photon contact!</span>
+                    </div>
+                </div>
+            `;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('sim-formula-box'));
+        }
+
+        function drawBombCanvas(particleProgress = null) {
+            const canvas = document.getElementById('physics-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Interferometer Setup
+            // BS1 at (w*0.25, h*0.5), Mirror1 at (w*0.25, h*0.2), Mirror2 at (w*0.75, h*0.5), BS2 at (w*0.75, h*0.2)
+            const bs1 = { x: w * 0.2, y: h * 0.65 };
+            const m1  = { x: w * 0.2, y: h * 0.25 };
+            const bombPos = { x: w * 0.5, y: h * 0.65 };
+            const bs2 = { x: w * 0.7, y: h * 0.25 };
+            const d1  = { x: w * 0.88, y: h * 0.25 }; // Detector 1
+            const d2  = { x: w * 0.7, y: h * 0.08 };  // Detector 2
+
+            // Draw Paths
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+
+            // Laser Source -> BS1
+            ctx.beginPath(); ctx.moveTo(w * 0.05, bs1.y); ctx.lineTo(bs1.x, bs1.y); ctx.stroke();
+            // Path A: BS1 -> M1 -> BS2
+            ctx.beginPath(); ctx.moveTo(bs1.x, bs1.y); ctx.lineTo(m1.x, m1.y); ctx.lineTo(bs2.x, bs2.y); ctx.stroke();
+            // Path B: BS1 -> Bomb -> BS2
+            ctx.beginPath(); ctx.moveTo(bs1.x, bs1.y); ctx.lineTo(bs2.x, bs1.y); ctx.stroke();
+            // BS2 -> D1 & D2
+            ctx.beginPath(); ctx.moveTo(bs2.x, bs2.y); ctx.lineTo(d1.x, d1.y); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(bs2.x, bs2.y); ctx.lineTo(d2.x, d2.y); ctx.stroke();
+
+            ctx.setLineDash([]);
+
+            // Draw Beam Splitters
+            ctx.fillStyle = '#00f3ff';
+            ctx.fillRect(bs1.x - 3, bs1.y - 12, 6, 24);
+            ctx.fillRect(bs2.x - 3, bs2.y - 12, 6, 24);
+
+            // Labels
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText('BS1', bs1.x - 10, bs1.y + 25);
+            ctx.fillText('BS2', bs2.x - 10, bs2.y + 25);
+            ctx.fillText('Path A', bs1.x - 40, (bs1.y + m1.y)/2);
+            ctx.fillText('Path B', bombPos.x - 15, bs1.y + 20);
+
+            // Detectors
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(d1.x - 5, d1.y - 12, 10, 24);
+            ctx.fillText('D1 (Constructive)', d1.x - 30, d1.y + 25);
+
+            ctx.fillStyle = '#a855f7';
+            ctx.fillRect(d2.x - 12, d2.y - 5, 24, 10);
+            ctx.fillText('D2 (Dark)', d2.x - 20, d2.y - 10);
+
+            // Draw Bomb / Target Object
+            if (state.bomb.isLive) {
+                ctx.fillStyle = '#f43f5e';
+                ctx.beginPath();
+                ctx.arc(bombPos.x, bombPos.y, 14, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '11px FontAwesome';
+                ctx.fillText('\uf1e2', bombPos.x - 5, bombPos.y + 4); // Bomb icon
+            } else {
+                ctx.strokeStyle = '#64748b';
+                ctx.beginPath();
+                ctx.arc(bombPos.x, bombPos.y, 14, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px JetBrains Mono';
+                ctx.fillText('CLEAR', bombPos.x - 14, bombPos.y + 3);
+            }
+
+            // Animate Photon pulse if active
+            if (particleProgress !== null) {
+                ctx.fillStyle = '#00f3ff';
+                ctx.shadowColor = '#00f3ff';
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.arc(particleProgress.x, particleProgress.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function animatePhotonResult(result) {
+            let frame = 0;
+            const maxFrames = 30;
+
+            function step() {
+                frame++;
+                const progress = frame / maxFrames;
+                let currentPos = { x: 0, y: 0 };
+
+                const w = document.getElementById('physics-canvas').width;
+                const h = document.getElementById('physics-canvas').height;
+
+                if (result === 'EXPLODE') {
+                    currentPos.x = (w * 0.2) + (w * 0.3) * progress;
+                    currentPos.y = h * 0.65;
+                } else if (result === 'D1') {
+                    currentPos.x = (w * 0.2) + (w * 0.68) * progress;
+                    currentPos.y = (h * 0.65) - (h * 0.40) * progress;
+                } else { // D2
+                    currentPos.x = (w * 0.2) + (w * 0.5) * progress;
+                    currentPos.y = (h * 0.65) - (h * 0.57) * progress;
+                }
+
+                drawBombCanvas(currentPos);
+
+                if (frame < maxFrames) {
+                    requestAnimationFrame(step);
+                } else {
+                    drawBombCanvas(null);
+                }
+            }
+            step();
+        }
+
+        function initMpembaSim() {
+            document.getElementById('sim-title').innerText = "The Quantum Mpemba Effect";
+            document.getElementById('sim-badge').innerText = "Padua 2024 Experiment";
+            document.getElementById('sim-formula-box').innerHTML = "$$\\tau_{\\text{cool}} = \\int_0^T \\text{Tr}(\\rho(t) H) dt \\quad \\text{vs} \\quad |\\psi_{\\text{superposition}}\\rangle$$";
+            document.getElementById('sim-explanation').innerText = "In trapped ion systems (University of Padua, 2024), preparing an ion in a far-from-equilibrium quantum superposition allows it to reach thermal ground state faster than a classically cooler state.";
+            document.getElementById('sim-key-takeaway').innerHTML = "<strong>Counterintuitive Thermal Transport:</strong> Quantum coherent shortcuts across excited eigenstates bypass standard relaxation bottlenecks.";
+
+            const controls = document.getElementById('sim-controls-panel');
+            controls.innerHTML = `
+                <div class="col-span-2 space-y-1">
+                    <label class="text-xs text-slate-300 font-mono flex justify-between">
+                        <span>Initial Superposition Strength (|ψ⟩)</span>
+                        <span id="super-val">0.85</span>
+                    </label>
+                    <input type="range" min="0" max="1" step="0.05" value="0.85" id="super-slider" oninput="state.mpemba.superpositionStrength = parseFloat(this.value); document.getElementById('super-val').innerText = this.value" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                </div>
+                <button onclick="runMpembaSimulation()" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 transition flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Run Relaxation Test</span>
+                </button>
+            `;
+
+            updateMpembaMetricsUI();
+            drawMpembaCanvas();
+        }
+
+        function runMpembaSimulation() {
+            let t = 0;
+            let tempHotQuantum = 100;
+            let tempColdClassical = 60;
+
+            const interval = setInterval(() => {
+                t += 1;
+                // Quantum shortcut cooling rate
+                const qCoolRate = 2.5 * (1 + state.mpemba.superpositionStrength * 1.8);
+                const cCoolRate = 1.1;
+
+                tempHotQuantum = Math.max(0, tempHotQuantum - qCoolRate);
+                tempColdClassical = Math.max(0, tempColdClassical - cCoolRate);
+
+                drawMpembaCanvas(tempHotQuantum, tempColdClassical, t);
+
+                if (tempHotQuantum <= 0 && tempColdClassical <= 0) {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }
+
+        function updateMpembaMetricsUI() {
+            const metricsBox = document.getElementById('sim-metrics-box');
+            metricsBox.innerHTML = `
+                <div class="space-y-2 text-xs font-mono">
+                    <div class="flex justify-between items-center p-2 rounded bg-cyan-950/40 border border-cyan-800/40">
+                        <span class="text-cyan-300">Hotter Quantum State (100 K)</span>
+                        <span class="font-bold text-cyan-400">Cooling Shortcut Active</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 rounded bg-slate-900 border border-slate-800">
+                        <span class="text-slate-400">Colder Classical State (60 K)</span>
+                        <span class="font-bold text-slate-300">Standard Relaxation</span>
+                    </div>
+                </div>
+            `;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('sim-formula-box'));
+        }
+
+        function drawMpembaCanvas(qTemp = 100, cTemp = 60, timeStep = 0) {
+            const canvas = document.getElementById('physics-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Bar 1: Hot Quantum System
+            const b1Height = (qTemp / 100) * (h * 0.6);
+            ctx.fillStyle = '#00f3ff';
+            ctx.shadowColor = '#00f3ff';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(w * 0.25 - 35, h * 0.8 - b1Height, 70, b1Height);
+            ctx.shadowBlur = 0;
+
+            // Bar 2: Cold Classical System
+            const b2Height = (cTemp / 100) * (h * 0.6);
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(w * 0.75 - 35, h * 0.8 - b2Height, 70, b2Height);
+
+            // Baseline
+            ctx.strokeStyle = '#334155';
+            ctx.beginPath(); ctx.moveTo(w*0.1, h*0.8); ctx.lineTo(w*0.9, h*0.8); ctx.stroke();
+
+            // Text
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = '12px JetBrains Mono';
+            ctx.fillText(`Hot Quantum: ${qTemp.toFixed(1)} K`, w * 0.25 - 50, h * 0.85);
+            ctx.fillText(`Cold Classical: ${cTemp.toFixed(1)} K`, w * 0.75 - 55, h * 0.85);
+        }
+
+        function initStrangeMetalSim() {
+            document.getElementById('sim-title').innerText = "Strange Metals & Planckian Transport";
+            document.getElementById('sim-badge').innerText = "Condensed Matter Anomaly";
+            document.getElementById('sim-formula-box').innerHTML = "$$\\rho(T) = \\rho_0 + A T \\quad \\text{vs} \\quad \\rho_{\\text{Fermi}}(T) \\propto T^2$$";
+            document.getElementById('sim-explanation').innerText = "Unlike normal metals where electron-electron collisions produce T² resistivity, strange metals display linear T resistivity down to 0 Kelvin, controlled by universal Planckian scattering time ℏ / (k_B T).";
+            document.getElementById('sim-key-takeaway').innerHTML = "<strong>Universal Quantum Speed Limit:</strong> Electrons scatter at the fundamental maximum rate permitted by quantum mechanics!";
+
+            const controls = document.getElementById('sim-controls-panel');
+            controls.innerHTML = `
+                <div class="col-span-2 space-y-1">
+                    <label class="text-xs text-slate-300 font-mono flex justify-between">
+                        <span>Temperature Range: <span id="temp-val">300 K</span></span>
+                    </label>
+                    <input type="range" min="10" max="500" value="300" id="temp-slider" oninput="state.strangeMetal.temperature = parseInt(this.value); document.getElementById('temp-val').innerText = this.value + ' K'; drawStrangeMetalCanvas();" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                </div>
+                <button onclick="drawStrangeMetalCanvas()" class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-chart-area"></i>
+                    <span>Plot Resistivity</span>
+                </button>
+            `;
+
+            updateStrangeMetalMetricsUI();
+            drawStrangeMetalCanvas();
+        }
+
+        function updateStrangeMetalMetricsUI() {
+            const metricsBox = document.getElementById('sim-metrics-box');
+            metricsBox.innerHTML = `
+                <div class="space-y-2 text-xs font-mono">
+                    <div class="bg-amber-950/40 p-2.5 rounded-lg border border-amber-800/50 text-amber-300">
+                        <span class="block text-slate-400">Planckian Dissipation Rate (1/τ)</span>
+                        <span class="text-base font-bold">1.05 × 10¹³ s⁻¹</span>
+                        <span class="block text-[10px] text-amber-300/70 mt-0.5">Saturates theoretical quantum upper bound!</span>
+                    </div>
+                </div>
+            `;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('sim-formula-box'));
+        }
+
+        function drawStrangeMetalCanvas() {
+            const canvas = document.getElementById('physics-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Axes
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(50, 20); ctx.lineTo(50, h - 30); ctx.lineTo(w - 20, h - 30); ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText('Resistivity (ρ)', 10, 15);
+            ctx.fillText('Temperature (T)', w - 90, h - 10);
+
+            // Curve 1: Strange Metal (Strictly Linear)
+            ctx.strokeStyle = '#f59e0b'; // Amber
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(50, h - 35);
+            ctx.lineTo(50 + (state.strangeMetal.temperature / 500) * (w - 100), (h - 35) - (state.strangeMetal.temperature / 500) * (h - 70));
+            ctx.stroke();
+
+            // Curve 2: Classical Fermi Liquid (T^2)
+            ctx.strokeStyle = '#38bdf8'; // Sky blue
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            const maxT = state.strangeMetal.temperature;
+            for (let t = 0; t <= maxT; t += 5) {
+                const x = 50 + (t / 500) * (w - 100);
+                const normT = t / 500;
+                const y = (h - 35) - (normT * normT) * (h - 70);
+                if (t === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Legend
+            ctx.fillStyle = '#f59e0b'; ctx.fillRect(w - 180, 20, 12, 12);
+            ctx.fillStyle = '#e2e8f0'; ctx.fillText('Strange Metal (Linear ρ ∝ T)', w - 162, 30);
+            ctx.fillStyle = '#38bdf8'; ctx.fillRect(w - 180, 40, 12, 12);
+            ctx.fillStyle = '#e2e8f0'; ctx.fillText('Fermi Liquid (ρ ∝ T²)', w - 162, 50);
+        }
+
+        function initBioSim() {
+            document.getElementById('sim-title').innerText = "Quantum Biology Vibrational Coherence";
+            document.getElementById('sim-badge').innerText = "UC Berkeley / Oxford Research";
+            document.getElementById('sim-formula-box').innerHTML = "$$\\eta_{\\text{transfer}} = 98.2\\% \\quad \\text{via protein scaffold resonance}$$";
+            document.getElementById('sim-explanation').innerText = "Protein scaffolding shields quantum chromophores from decoherence while channeling environmental vibrations to assist energy transfer across FMO complexes.";
+            document.getElementById('sim-key-takeaway').innerHTML = "<strong>Vibrational Assistance:</strong> Warm, wet cells exploit tuned vibrations to prevent decoherence!";
+
+            const controls = document.getElementById('sim-controls-panel');
+            controls.innerHTML = `
+                <button onclick="toggleBioVibration()" class="col-span-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-dna"></i>
+                    <span id="bio-toggle-btn">Protein Vibrational Shielding: ENABLED</span>
+                </button>
+                <button onclick="pulseExciton()" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-sun"></i>
+                    <span>Pulse Exciton</span>
+                </button>
+            `;
+
+            updateBioMetricsUI();
+            drawBioCanvas();
+        }
+
+        function toggleBioVibration() {
+            state.bio.vibrationalCoherence = !state.bio.vibrationalCoherence;
+            state.bio.efficiency = state.bio.vibrationalCoherence ? 98 : 45;
+            document.getElementById('bio-toggle-btn').innerText = state.bio.vibrationalCoherence ? "Protein Vibrational Shielding: ENABLED" : "Protein Vibrational Shielding: DISABLED";
+            updateBioMetricsUI();
+            drawBioCanvas();
+        }
+
+        function pulseExciton() {
+            let step = 0;
+            const interval = setInterval(() => {
+                step++;
+                drawBioCanvas(step);
+                if (step > 25) clearInterval(interval);
+            }, 40);
+        }
+
+        function updateBioMetricsUI() {
+            const metricsBox = document.getElementById('sim-metrics-box');
+            metricsBox.innerHTML = `
+                <div class="space-y-2 text-xs font-mono">
+                    <div class="bg-emerald-950/40 p-2.5 rounded-lg border border-emerald-800/50 text-emerald-300">
+                        <span class="block text-slate-400">Energy Transfer Efficiency</span>
+                        <span class="text-xl font-bold">${state.bio.efficiency}%</span>
+                        <span class="block text-[10px] text-emerald-300/70 mt-0.5">${state.bio.vibrationalCoherence ? 'Protected by protein scaffolding' : 'Decoherence losses dominating'}</span>
+                    </div>
+                </div>
+            `;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('sim-formula-box'));
+        }
+
+        function drawBioCanvas(animStep = 0) {
+            const canvas = document.getElementById('physics-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Protein Matrix Nodes (FMO Complex)
+            const nodes = [
+                { x: w * 0.2, y: h * 0.5 },
+                { x: w * 0.4, y: h * 0.3 },
+                { x: w * 0.4, y: h * 0.7 },
+                { x: w * 0.6, y: h * 0.3 },
+                { x: w * 0.6, y: h * 0.7 },
+                { x: w * 0.8, y: h * 0.5 }
+            ];
+
+            // Connectors
+            ctx.strokeStyle = state.bio.vibrationalCoherence ? '#10b981' : '#334155';
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw Chromophores
+            nodes.forEach((n, idx) => {
+                ctx.fillStyle = (animStep > 0 && idx === Math.floor(animStep / 5) % nodes.length) ? '#00f3ff' : '#059669';
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function resetCurrentSim() {
+            loadSimModule(state.currentSim);
+        }
+
+        function renderAnomaliesGrid() {
+            const container = document.getElementById('anomalies-grid');
+            if (!container) return;
+
+            const filtered = ANOMALIES_DATA.filter(a => {
+                if (state.anomalyFilter === 'all') return true;
+                return a.category === state.anomalyFilter;
+            });
+
+            container.innerHTML = filtered.map(a => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4 group">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-slate-800 text-cyan-400 border border-slate-700">
+                                <i class="fa-solid ${a.icon} mr-1.5"></i>${a.badge}
+                            </span>
+                            <span class="text-xs font-mono text-slate-500">${a.category.toUpperCase()}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition">${a.title}</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">${a.summary}</p>
+                        <p class="text-xs text-slate-400 leading-relaxed border-t border-slate-800/80 pt-2.5">${a.details}</p>
+                    </div>
+
+                    <div class="space-y-2 pt-2 border-t border-slate-800/80">
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-xs font-mono text-cyan-300 overflow-x-auto text-center">
+                            $$${a.formula}$$
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                            <span>Pioneers:</span>
+                            <span class="text-slate-200">${a.researchers}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (window.renderMathInElement) renderMathInElement(container);
+        }
+
+        function filterAnomalies(category) {
+            state.anomalyFilter = category;
+            document.querySelectorAll('#anomaly-filter-bar .filter-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-slate-950', 'font-semibold');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            event.target.classList.remove('bg-slate-800', 'text-slate-300');
+            event.target.classList.add('bg-cyan-500', 'text-slate-950', 'font-semibold');
+
+            renderAnomaliesGrid();
+        }
+
+        function renderPioneersGrid() {
+            const container = document.getElementById('pioneers-grid');
+            if (!container) return;
+
+            container.innerHTML = PIONEERS_DATA.map(p => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-800 flex items-center justify-center text-cyan-400 text-lg">
+                            <i class="fa-solid ${p.icon}"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">${p.name}</h3>
+                            <span class="text-xs font-mono text-cyan-400">${p.institution}</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">${p.achievement}</p>
+                    <div class="pt-2 border-t border-slate-800 text-[10px] font-mono text-slate-400">
+                        Focus: <span class="text-slate-200">${p.topic}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            if (!container) return;
+
+            const events = [
+                {
+                    year: '2012',
+                    title: 'PBR Theorem Publication',
+                    desc: 'Matthew Pusey, Jonathan Barrett, and Terry Rudolph publish the PBR theorem, ruling out ψ-epistemic interpretations of quantum states.',
+                    tag: 'Foundations'
+                },
+                {
+                    year: '2020',
+                    title: 'Prediction of Quantum Mpemba Effect',
+                    desc: 'Adulo Delcampo theoretically demonstrates that far-from-equilibrium superpositions can accelerate thermal relaxation.',
+                    tag: 'Thermodynamics'
+                },
+                {
+                    year: '2022',
+                    title: 'CDF II W Boson Mass Discrepancy',
+                    desc: 'Fermilab CDF II team measures W boson mass showing a 7-sigma tension with Standard Model predictions, sparking intense debate.',
+                    tag: 'Particle Physics'
+                },
+                {
+                    year: '2024',
+                    title: 'Experimental Proof of Quantum Mpemba Effect',
+                    desc: 'University of Padua team uses trapped ion setups to confirm accelerated cooling via quantum superposition states.',
+                    tag: 'Experimental Quantum'
+                },
+                {
+                    year: '2025',
+                    title: 'nuSCOPE Collaboration & JUNO Launch',
+                    desc: 'nuSCOPE collaboration brings 100 physicists to CERN. JUNO begins high-precision three-flavor neutrino measurements.',
+                    tag: 'Neutrinos'
+                },
+                {
+                    year: '2026',
+                    title: 'CMS W Boson & Sterile Neutrino Empirical Closures',
+                    desc: 'CERN CMS publishes high-precision W boson mass in Nature agreeing with Standard Model. MicroBooNE/KATRIN rule out simple 3+1 sterile neutrinos.',
+                    tag: 'Empirical Resolutions'
+                }
+            ];
+
+            container.innerHTML = events.map(e => `
+                <div class="relative pl-6 md:pl-8 group">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-2 border-cyan-400 group-hover:scale-125 group-hover:bg-cyan-400 transition"></div>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono font-bold text-cyan-400 text-sm">${e.year}</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${e.tag}</span>
+                        </div>
+                        <h4 class="font-bold text-white text-base">${e.title}</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">${e.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quiz-box');
+            if (!container) return;
+
+            const q = QUIZ_QUESTIONS[state.quiz.currentIndex];
+
+            if (state.quiz.currentIndex >= QUIZ_QUESTIONS.length) {
+                // Quiz Completed Summary
+                container.innerHTML = `
+                    <div class="text-center space-y-4 py-6">
+                        <div class="w-16 h-16 rounded-full bg-cyan-950 border border-cyan-500 mx-auto flex items-center justify-center text-cyan-400 text-2xl">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Quiz Completed!</h3>
+                        <p class="text-slate-300 text-sm">Your Score: <span class="text-cyan-400 font-bold font-mono text-lg">${state.quiz.score} / ${QUIZ_QUESTIONS.length}</span></p>
+                        <button onclick="resetQuiz()" class="px-6 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 transition">
+                            Re-Take Quiz
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-3">
+                        <span>Question ${state.quiz.currentIndex + 1} of ${QUIZ_QUESTIONS.length}</span>
+                        <span>Topic: Empirical Quantum Mechanics</span>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-white leading-snug">${q.question}</h3>
+
+                    <div class="space-y-2.5 pt-2">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="submitQuizAnswer(${idx})" class="w-full text-left p-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-xs text-slate-200 transition flex items-center justify-between group">
+                                <span>${opt}</span>
+                                <i class="fa-solid fa-arrow-right text-slate-600 group-hover:text-cyan-400 transition"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="quiz-feedback" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-2"></div>
+                </div>
+            `;
+        }
+
+        function submitQuizAnswer(selectedIdx) {
+            const q = QUIZ_QUESTIONS[state.quiz.currentIndex];
+            const isCorrect = selectedIdx === q.correct;
+
+            if (isCorrect) state.quiz.score++;
+
+            document.getElementById('quiz-score-badge').innerText = `Score: ${state.quiz.score} / ${QUIZ_QUESTIONS.length}`;
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-800', 'text-emerald-200', 'bg-rose-950/40', 'border-rose-800', 'text-rose-200');
+
+            if (isCorrect) {
+                feedback.classList.add('bg-emerald-950/40', 'border-emerald-800', 'text-emerald-200');
+                feedback.innerHTML = `<strong><i class="fa-solid fa-circle-check mr-1.5"></i>Correct!</strong> ${q.explanation}`;
+            } else {
+                feedback.classList.add('bg-rose-950/40', 'border-rose-800', 'text-rose-200');
+                feedback.innerHTML = `<strong><i class="fa-solid fa-circle-xmark mr-1.5"></i>Incorrect.</strong> ${q.explanation}`;
+            }
+
+            setTimeout(() => {
+                state.quiz.currentIndex++;
+                renderQuizQuestion();
+            }, 3000);
+        }
+
+        function resetQuiz() {
+            state.quiz.currentIndex = 0;
+            state.quiz.score = 0;
+            document.getElementById('quiz-score-badge').innerText = `Score: 0 / ${QUIZ_QUESTIONS.length}`;
+            renderQuizQuestion();
+        }
+
+        window.onload = function() {
+            // Render Initial Data Views
+            renderAnomaliesGrid();
+            renderPioneersGrid();
+            renderTimeline();
+            renderQuizQuestion();
+
+            // Load Sandbox default simulation
+            loadSimModule('bomb');
+
+            // KaTeX auto-render
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        };
+    </script>
+</body>
+</html>
