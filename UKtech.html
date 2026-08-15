@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Tech – Latest Insights | August 2026</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      color: white;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.15rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1.25rem;
+      color: var(--primary);
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 0.4rem;
+      display: inline-block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+    }
+
+    .card p, .card ul {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .card ul {
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    .card li {
+      margin-bottom: 0.35rem;
+    }
+
+    .highlight {
+      background: #eff6ff;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .stat {
+      background: var(--card);
+      padding: 1.25rem 1.75rem;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1;
+      min-width: 160px;
+      border: 1px solid var(--border);
+    }
+
+    .stat .number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat .label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    footer {
+      background: var(--primary);
+      color: #94a3b8;
+      text-align: center;
+      padding: 1.75rem;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    footer a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.9rem;
+      }
+      .stats {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>UK Tech Landscape</h1>
+    <p>Latest insights on artificial intelligence, startups, funding and policy — August 2026</p>
+  </header>
+
+  <div class="container">
+    <!-- Overview -->
+    <section>
+      <h2>Overview</h2>
+      <p>
+        The United Kingdom continues to strengthen its position as Europe’s leading technology hub, 
+        particularly in artificial intelligence. Strong venture capital activity, government-backed 
+        sovereign AI initiatives, and growing real-economy impact from AI adoption are defining 
+        the current landscape.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="number">$17bn</div>
+          <div class="label">VC raised by UK startups in H1 2026</div>
+        </div>
+        <div class="stat">
+          <div class="number">~48%</div>
+          <div class="label">of European VC captured by UK</div>
+        </div>
+        <div class="stat">
+          <div class="number">AI-led</div>
+          <div class="label">Majority of mega-rounds</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest Highlights -->
+    <section>
+      <h2>Latest Highlights</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Mindgard raises £22m</h3>
+          <p>
+            Lancaster University spinout Mindgard secured Series A funding to scale its 
+            AI security platform, which helps protect enterprise AI systems from emerging threats.
+          </p>
+        </div>
+        <div class="card">
+          <h3>AI Bootcamps Launch</h3>
+          <p>
+            The UK government has launched AI training bootcamps for unemployed young people 
+            and a dedicated programme in the North West, aiming to tackle youth unemployment 
+            and build AI skills.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Economic Impact Visible</h3>
+          <p>
+            Official data shows the information and communications sector (including AI activity) 
+            driving a significant share of recent UK GDP growth, alongside rising investment 
+            in computing hardware.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Meta Glasses Ban</h3>
+          <p>
+            Courts in England and Wales have banned Meta smart glasses, reflecting growing 
+            attention to privacy and courtroom technology rules.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Funding & Startups -->
+    <section>
+      <h2>Funding & Startup Activity</h2>
+      <div class="highlight">
+        AI companies dominated UK venture funding in the first half of 2026, accounting for 
+        the majority of mega-rounds and a large share of total capital raised.
+      </div>
+      <ul style="margin-left: 1.5rem; color: var(--muted);">
+        <li>Strong performance in enterprise software, health AI and infrastructure</li>
+        <li>Notable recent raises include Mindgard (AI security) and Cytix (AI code risk)</li>
+        <li>Continued activity in legal AI, deep tech and semiconductor-related startups</li>
+        <li>UK remains the top destination for venture capital in Europe</li>
+      </ul>
+    </section>
+
+    <!-- Government & Policy -->
+    <section>
+      <h2>Government & Policy</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Sovereign AI Fund</h3>
+          <p>
+            The UK’s Sovereign AI initiative continues to back domestic companies, supporting 
+            national capability in infrastructure, life sciences and AI assurance.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Skills & Adoption</h3>
+          <p>
+            Expanded AI training targets and bootcamps form part of a broader push to equip 
+            the workforce for the AI economy.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Hardware & Quantum</h3>
+          <p>
+            Significant public investment continues in AI hardware, compute capacity and 
+            quantum technologies to strengthen UK sovereignty in critical tech.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Themes -->
+    <section>
+      <h2>Key Themes in 2026</h2>
+      <div class="card">
+        <ul>
+          <li><strong>AI security & safety</strong> — Growing investment in tools that protect AI systems and code</li>
+          <li><strong>Skills gap</strong> — Government and industry focus on rapid AI upskilling</li>
+          <li><strong>Sovereign capability</strong> — Emphasis on domestic AI infrastructure and compute</li>
+          <li><strong>Real-economy impact</strong> — AI beginning to show measurable contribution to GDP growth</li>
+          <li><strong>Regulation & trust</strong> — Attention to privacy, courtroom tech and responsible AI use</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>
+      Summary based on publicly reported developments as of mid-August 2026.<br>
+      For the latest updates, follow sources such as UKTN, The Guardian Technology, Computer Weekly and GOV.UK.
+    </p>
+  </footer>
+</body>
+</html>
