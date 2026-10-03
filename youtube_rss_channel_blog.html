@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeBlog - YouTube Channel Feed</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            900: '#881337',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.7);
+        }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-full flex flex-col antialiased">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-30 glass-header bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-rose-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-play text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                        <span id="navChannelTitle">TubeBlog</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-300 font-medium">RSS Feed</span>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Refresh Feed Button -->
+                <button id="refreshBtn" title="Refresh RSS Feed" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-arrows-rotate text-base" id="refreshIcon"></i>
+                </button>
+
+                <!-- Saved Favorites Toggle -->
+                <button id="bookmarksBtn" class="relative p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-bookmark text-base"></i>
+                    <span id="bookmarkBadge" class="hidden absolute -top-1 -right-1 bg-brand-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-moon text-base dark:hidden"></i>
+                    <i class="fa-solid fa-sun text-base hidden dark:block text-amber-400"></i>
+                </button>
+
+                <!-- Settings / Change Feed Button -->
+                <button id="settingsBtn" title="Feed Settings" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-gear text-base"></i>
+                </button>
+
+                <!-- Direct YouTube Link -->
+                <a id="youtubeChannelLink" href="https://www.youtube.com/channel/UCi18SVymSduxOYknf1ordCQ" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm shadow-md shadow-brand-600/20 transition">
+                    <i class="fa-brands fa-youtube text-lg"></i>
+                    <span>Visit Channel</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Alert / Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Channel Hero Banner -->
+        <section class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-rose-950 text-white p-6 sm:p-10 shadow-2xl">
+            <!-- Background Decorative Glow -->
+            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-brand-600/30 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -top-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-5">
+                    <div class="relative">
+                        <div id="channelAvatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-700 border-2 border-white/20 flex items-center justify-center text-3xl font-extrabold text-white shadow-xl overflow-hidden">
+                            <i class="fa-brands fa-youtube text-4xl text-brand-500"></i>
+                        </div>
+                        <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center text-[10px]" title="RSS Feed Active">
+                            <i class="fa-solid fa-rss text-white"></i>
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <h2 id="channelName" class="text-2xl sm:text-3xl font-bold tracking-tight">Loading Channel...</h2>
+                            <span id="postCountBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-md text-slate-200 border border-white/10">0 Posts</span>
+                        </div>
+                        <p id="channelDescription" class="text-slate-300 text-sm mt-1 max-w-xl line-clamp-2">
+                            Latest video logs, insights, and content updates powered by YouTube RSS.
+                        </p>
+                        <div class="flex items-center gap-4 mt-3 text-xs text-slate-400">
+                            <span id="feedStatusText" class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-amber-400"></i> Connecting...</span>
+                            <a id="rssRawLink" href="https://www.youtube.com/feeds/videos.xml?channel_id=UCi18SVymSduxOYknf1ordCQ" target="_blank" class="hover:text-amber-300 transition flex items-center gap-1">
+                                <i class="fa-solid fa-rss"></i> RSS XML Source
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Channel Quick Stats / Actions -->
+                <div class="flex sm:flex-col items-center sm:items-end justify-between w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 border-white/10 gap-3">
+                    <button id="copyFeedUrlBtn" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium backdrop-blur-md border border-white/10 transition flex items-center gap-2">
+                        <i class="fa-regular fa-copy"></i> Copy RSS URL
+                    </button>
+                    <span id="lastUpdatedTime" class="text-[11px] text-slate-400">Updated: Just now</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search, View Switcher & Category Filters -->
+        <section class="space-y-4">
+            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search blog articles or video titles..." class="w-full pl-11 pr-10 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm shadow-sm">
+                    <button id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Sort & Layout Controls -->
+                <div class="flex items-center gap-3">
+                    <!-- Sort Dropdown -->
+                    <div class="relative">
+                        <select id="sortSelect" class="appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 pr-10 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm cursor-pointer">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="title">Title (A-Z)</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none"></i>
+                    </div>
+
+                    <!-- View Switcher -->
+                    <div class="flex items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-1 shadow-sm">
+                        <button id="viewGrid" title="Grid Layout" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition active-view bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white">
+                            <i class="fa-solid fa-border-all text-sm"></i>
+                        </button>
+                        <button id="viewList" title="List Layout" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition">
+                            <i class="fa-solid fa-list text-sm"></i>
+                        </button>
+                        <button id="viewMagazine" title="Magazine Layout" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition">
+                            <i class="fa-solid fa-newspaper text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Filter Tags -->
+            <div id="filterTags" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                <button data-tag="all" class="tag-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white shadow-sm transition whitespace-nowrap">All Posts</button>
+                <button data-tag="bookmarked" class="tag-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition whitespace-nowrap">Saved Bookmarks</button>
+            </div>
+        </section>
+
+        <!-- Featured Top Article Banner -->
+        <section id="featuredSection" class="hidden">
+            <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-star text-amber-400"></i> Featured Latest Article
+            </h3>
+            <div id="featuredCardContainer"></div>
+        </section>
+
+        <!-- Main Blog Posts List / Grid -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group"></i> Feed Articles
+                </h3>
+                <span id="resultsCount" class="text-xs text-slate-400">Showing 0 articles</span>
+            </div>
+
+            <!-- Loading Spinner State -->
+            <div id="loadingState" class="py-16 text-center space-y-4">
+                <div class="inline-block w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Fetching YouTube Channel RSS feed...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden py-16 text-center space-y-4 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-8">
+                <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h4 class="text-lg font-bold text-slate-800 dark:text-slate-200">No blog posts found</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">Try adjusting your search query, selecting another category, or checking the feed configuration.</p>
+                <button id="resetSearchBtn" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700 transition">Reset Search Filter</button>
+            </div>
+
+            <!-- Articles Container -->
+            <div id="postsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-8 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+                Generated from YouTube RSS Feed. Powered by client-side XML/JSON proxy parsing.
+            </p>
+            <div class="flex justify-center items-center gap-4 text-xs text-slate-400">
+                <a href="https://www.youtube.com/feeds/videos.xml?channel_id=UCi18SVymSduxOYknf1ordCQ" target="_blank" class="hover:text-brand-600 transition">Direct Feed XML</a>
+                <span>&bull;</span>
+                <span id="footerChannelId">Channel ID: UCi18SVymSduxOYknf1ordCQ</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Article Modal -->
+    <div id="articleModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6 bg-slate-900/80 backdrop-blur-md overflow-y-auto">
+        <div class="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 my-8">
+            <!-- Modal Header Toolbar -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700/50">
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-play"></i> Video Article Reader
+                </span>
+                <div class="flex items-center gap-2">
+                    <button id="modalBookmarkBtn" title="Save Bookmark" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <i class="fa-regular fa-bookmark text-lg"></i>
+                    </button>
+                    <button id="modalShareBtn" title="Share Post" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <i class="fa-regular fa-share-from-square text-lg"></i>
+                    </button>
+                    <button id="closeModalBtn" title="Close" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Player Embed Container -->
+            <div class="relative w-full aspect-video bg-black">
+                <iframe id="modalIframe" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 sm:p-8 space-y-6 max-h-[50vh] overflow-y-auto custom-scrollbar">
+                <div>
+                    <div class="flex items-center gap-3 text-xs text-slate-400 mb-2">
+                        <span id="modalDate"><i class="fa-regular fa-calendar"></i> Date</span>
+                        <span>&bull;</span>
+                        <span id="modalReadTime"><i class="fa-regular fa-clock"></i> 3 min read</span>
+                    </div>
+                    <h2 id="modalTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight"></h2>
+                </div>
+
+                <!-- Formatted Article Content / Description -->
+                <div id="modalDescription" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed space-y-4 whitespace-pre-wrap"></div>
+
+                <!-- Action Links Footer -->
+                <div class="pt-6 border-t border-slate-100 dark:border-slate-700/50 flex flex-wrap items-center justify-between gap-4">
+                    <a id="modalWatchYouTubeBtn" href="#" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition inline-flex items-center gap-2 shadow-md shadow-brand-600/20">
+                        <i class="fa-brands fa-youtube text-lg"></i> Watch on YouTube
+                    </a>
+                    <button id="modalCopyLinkBtn" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-semibold transition inline-flex items-center gap-2">
+                        <i class="fa-regular fa-copy"></i> Copy Article Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Settings / Custom Channel Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
+        <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-brand-600"></i> Feed Configuration
+                </h3>
+                <button id="closeSettingsBtn" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="channelIdInput" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">YouTube Channel ID</label>
+                    <input type="text" id="channelIdInput" value="UCi18SVymSduxOYknf1ordCQ" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
+                    <p class="text-[11px] text-slate-400 mt-1">Default: UCi18SVymSduxOYknf1ordCQ</p>
+                </div>
+
+                <div>
+                    <label for="rssUrlInput" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Custom RSS Feed XML URL</label>
+                    <input type="text" id="rssUrlInput" value="https://www.youtube.com/feeds/videos.xml?channel_id=UCi18SVymSduxOYknf1ordCQ" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <button id="resetSettingsBtn" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition">Reset Default</button>
+                <button id="saveSettingsBtn" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-md shadow-brand-600/20 transition">Apply & Sync</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Core App State
+        const DEFAULT_CHANNEL_ID = 'UCi18SVymSduxOYknf1ordCQ';
+        let currentChannelId = localStorage.getItem('tubelog_channel_id') || DEFAULT_CHANNEL_ID;
+        let currentRssUrl = localStorage.getItem('tubelog_rss_url') || `https://www.youtube.com/feeds/videos.xml?channel_id=${currentChannelId}`;
+        
+        let feedData = {
+            title: 'YouTube Feed',
+            description: '',
+            items: []
+        };
+        let bookmarks = JSON.parse(localStorage.getItem('tubelog_bookmarks') || '[]');
+        let currentView = 'grid'; // 'grid', 'list', 'magazine'
+        let currentTag = 'all';
+        let activeModalVideoId = null;
+
+        // Fallback Mock Data in case network proxies are unreachable
+        const mockFallbackData = [
+            {
+                id: 'dQw4w9WgXcQ',
+                title: 'Welcome to the Channel RSS Blog Showcase',
+                link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                published: new Date().toISOString(),
+                description: 'This is a sample blog post rendered from the YouTube RSS feed format. Stay tuned for live video updates, tutorials, and deep dive logs!\n\n#YouTube #RSS #Blog',
+                thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=1000&q=80',
+                author: 'Channel Creator'
+            },
+            {
+                id: '3JZ_D3ELwOQ',
+                title: 'Building Modern Web Applications with RSS & Dynamic APIs',
+                link: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
+                published: new Date(Date.now() - 86400000 * 2).toISOString(),
+                description: 'Explore how to leverage client-side RSS XML parsers to turn your YouTube channel content into an automated, highly visual editorial blog.',
+                thumbnail: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1000&q=80',
+                author: 'Channel Creator'
+            },
+            {
+                id: 'L_LUpnjgPso',
+                title: 'Creative Content Strategy & Video Layout Designs',
+                link: 'https://www.youtube.com/watch?v=L_LUpnjgPso',
+                published: new Date(Date.now() - 86400000 * 5).toISOString(),
+                description: 'Learn tips and tricks for structuring video descriptions, markdown links, and tags for better reader engagement.',
+                thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80',
+                author: 'Channel Creator'
+            }
+        ];
+
+        const elements = {
+            postsContainer: document.getElementById('postsContainer'),
+            featuredSection: document.getElementById('featuredSection'),
+            featuredCardContainer: document.getElementById('featuredCardContainer'),
+            loadingState: document.getElementById('loadingState'),
+            emptyState: document.getElementById('emptyState'),
+            resultsCount: document.getElementById('resultsCount'),
+            searchInput: document.getElementById('searchInput'),
+            clearSearchBtn: document.getElementById('clearSearchBtn'),
+            sortSelect: document.getElementById('sortSelect'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            refreshIcon: document.getElementById('refreshIcon'),
+            themeToggle: document.getElementById('themeToggle'),
+            bookmarksBtn: document.getElementById('bookmarksBtn'),
+            bookmarkBadge: document.getElementById('bookmarkBadge'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            channelName: document.getElementById('channelName'),
+            channelDescription: document.getElementById('channelDescription'),
+            channelAvatar: document.getElementById('channelAvatar'),
+            navChannelTitle: document.getElementById('navChannelTitle'),
+            postCountBadge: document.getElementById('postCountBadge'),
+            feedStatusText: document.getElementById('feedStatusText'),
+            lastUpdatedTime: document.getElementById('lastUpdatedTime'),
+            copyFeedUrlBtn: document.getElementById('copyFeedUrlBtn'),
+            rssRawLink: document.getElementById('rssRawLink'),
+            youtubeChannelLink: document.getElementById('youtubeChannelLink'),
+            footerChannelId: document.getElementById('footerChannelId'),
+            viewGrid: document.getElementById('viewGrid'),
+            viewList: document.getElementById('viewList'),
+            viewMagazine: document.getElementById('viewMagazine'),
+            // Modals
+            articleModal: document.getElementById('articleModal'),
+            modalIframe: document.getElementById('modalIframe'),
+            modalTitle: document.getElementById('modalTitle'),
+            modalDate: document.getElementById('modalDate'),
+            modalReadTime: document.getElementById('modalReadTime'),
+            modalDescription: document.getElementById('modalDescription'),
+            modalWatchYouTubeBtn: document.getElementById('modalWatchYouTubeBtn'),
+            modalCopyLinkBtn: document.getElementById('modalCopyLinkBtn'),
+            modalBookmarkBtn: document.getElementById('modalBookmarkBtn'),
+            modalShareBtn: document.getElementById('modalShareBtn'),
+            closeModalBtn: document.getElementById('closeModalBtn'),
+            // Settings Modal
+            settingsModal: document.getElementById('settingsModal'),
+            channelIdInput: document.getElementById('channelIdInput'),
+            rssUrlInput: document.getElementById('rssUrlInput'),
+            saveSettingsBtn: document.getElementById('saveSettingsBtn'),
+            resetSettingsBtn: document.getElementById('resetSettingsBtn'),
+            closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+            toastContainer: document.getElementById('toastContainer')
+        };
+
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        elements.themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-slate-800 dark:bg-slate-700';
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl text-white text-xs font-semibold shadow-xl transition-all transform translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info'} text-base"></i>
+                <span>${escapeHtml(message)}</span>
+            `;
+            elements.toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, match => {
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+                return map[match];
+            });
+        }
+
+        function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg, 'success');
+            } catch (err) {
+                showToast('Failed to copy text', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        async function fetchYouTubeFeed() {
+            elements.loadingState.classList.remove('hidden');
+            elements.emptyState.classList.add('hidden');
+            elements.postsContainer.innerHTML = '';
+            elements.featuredSection.classList.add('hidden');
+            elements.refreshIcon.classList.add('animate-spin');
+            elements.feedStatusText.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-amber-400"></i> Fetching RSS...`;
+
+            const rssUrl = currentRssUrl;
+            let success = false;
+
+            // Strategy 1: Try rss2json API
+            try {
+                const jsonApiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+                const response = await fetch(jsonApiUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'ok' && data.items && data.items.length > 0) {
+                        parseRss2JsonData(data);
+                        success = true;
+                    }
+                }
+            } catch (e) {
+                console.warn('rss2json failed, trying CORS proxy fallback...', e);
+            }
+
+            // Strategy 2: Raw XML parsing via corsproxy / allorigins
+            if (!success) {
+                try {
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+                    const response = await fetch(proxyUrl);
+                    if (response.ok) {
+                        const xmlText = await response.text();
+                        parseXmlData(xmlText);
+                        success = true;
+                    }
+                } catch (e) {
+                    console.warn('XML CORS proxy failed', e);
+                }
+            }
+
+            // Fallback: If network APIs fail, load fallback content
+            if (!success) {
+                showToast('Using cached feed preview (Live RSS network blocked or rate limited)', 'info');
+                feedData = {
+                    title: 'Channel Blog Journal',
+                    description: 'Explore video articles and logs directly synchronized from the channel feed.',
+                    items: mockFallbackData
+                };
+                elements.feedStatusText.innerHTML = `<i class="fa-solid fa-circle text-amber-400"></i> Fallback Feed`;
+            } else {
+                elements.feedStatusText.innerHTML = `<i class="fa-solid fa-circle text-emerald-400"></i> Live RSS Synced`;
+            }
+
+            elements.refreshIcon.classList.remove('animate-spin');
+            elements.lastUpdatedTime.innerText = `Updated: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+            updateChannelHeader();
+            renderFeed();
+        }
+
+        function parseRss2JsonData(data) {
+            feedData.title = data.feed.title || 'YouTube Channel Blog';
+            feedData.description = data.feed.description || 'Channel video updates & articles.';
+            feedData.items = data.items.map(item => {
+                const videoId = extractVideoId(item.link || item.guid);
+                return {
+                    id: videoId,
+                    title: item.title,
+                    link: item.link,
+                    published: item.pubDate,
+                    description: cleanDescription(item.description || item.content || ''),
+                    thumbnail: item.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                    author: item.author || data.feed.title
+                };
+            });
+        }
+
+        function parseXmlData(xmlText) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            
+            const titleEl = xmlDoc.querySelector('feed > title');
+            feedData.title = titleEl ? titleEl.textContent : 'YouTube Feed';
+
+            const authorEl = xmlDoc.querySelector('feed > author > name');
+            const authorName = authorEl ? authorEl.textContent : feedData.title;
+
+            const entries = Array.from(xmlDoc.querySelectorAll('entry'));
+            feedData.items = entries.map(entry => {
+                const videoIdEl = entry.querySelector('yt\\:videoId, videoId');
+                const idEl = entry.querySelector('id');
+                let videoId = videoIdEl ? videoIdEl.textContent : '';
+                
+                if (!videoId && idEl) {
+                    videoId = extractVideoId(idEl.textContent);
+                }
+
+                const title = entry.querySelector('title')?.textContent || 'Untitled Video';
+                const link = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || `https://www.youtube.com/watch?v=${videoId}`;
+                const published = entry.querySelector('published')?.textContent || new Date().toISOString();
+                
+                const descEl = entry.querySelector('media\\:group > media\\:description, description');
+                const description = descEl ? descEl.textContent : '';
+
+                const thumbEl = entry.querySelector('media\\:group > media\\:thumbnail, thumbnail');
+                const thumbnail = thumbEl ? thumbEl.getAttribute('url') : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+                return {
+                    id: videoId,
+                    title: title,
+                    link: link,
+                    published: published,
+                    description: cleanDescription(description),
+                    thumbnail: thumbnail,
+                    author: authorName
+                };
+            });
+        }
+
+        function extractVideoId(urlOrId) {
+            if (!urlOrId) return '';
+            if (urlOrId.includes('yt:video:')) return urlOrId.replace('yt:video:', '');
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = urlOrId.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : urlOrId;
+        }
+
+        function cleanDescription(desc) {
+            return desc ? desc.trim() : 'No description available for this video post.';
+        }
+
+        function calculateReadTime(text) {
+            const wordsPerMinute = 180;
+            const words = text ? text.split(/\s+/).length : 0;
+            const minutes = Math.ceil(words / wordsPerMinute);
+            return `${minutes || 1} min read`;
+        }
+
+        function updateChannelHeader() {
+            elements.channelName.innerText = feedData.title;
+            elements.navChannelTitle.innerText = feedData.title.length > 20 ? feedData.title.substring(0, 18) + '...' : feedData.title;
+            elements.channelDescription.innerText = feedData.description || `Welcome to the video blog feed for ${feedData.title}.`;
+            elements.postCountBadge.innerText = `${feedData.items.length} Posts`;
+            
+            // Set channel avatar initials or logo
+            const initials = feedData.title.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'YT';
+            elements.channelAvatar.innerHTML = `<span>${initials}</span>`;
+            
+            elements.rssRawLink.href = currentRssUrl;
+            elements.youtubeChannelLink.href = `https://www.youtube.com/channel/${currentChannelId}`;
+            elements.footerChannelId.innerText = `Channel ID: ${currentChannelId}`;
+
+            updateBookmarkBadge();
+        }
+
+        function updateBookmarkBadge() {
+            elements.bookmarkBadge.innerText = bookmarks.length;
+            if (bookmarks.length > 0) {
+                elements.bookmarkBadge.classList.remove('hidden');
+            } else {
+                elements.bookmarkBadge.classList.add('hidden');
+            }
+        }
+
+        function getFilteredAndSortedItems() {
+            let items = [...feedData.items];
+
+            // Category / Bookmark filter
+            if (currentTag === 'bookmarked') {
+                items = items.filter(item => bookmarks.includes(item.id));
+            }
+
+            // Search filter
+            const query = elements.searchInput.value.toLowerCase().trim();
+            if (query) {
+                items = items.filter(item => 
+                    item.title.toLowerCase().includes(query) || 
+                    item.description.toLowerCase().includes(query)
+                );
+            }
+
+            // Sorting
+            const sortMode = elements.sortSelect.value;
+            if (sortMode === 'newest') {
+                items.sort((a, b) => new Date(b.published) - new Date(a.published));
+            } else if (sortMode === 'oldest') {
+                items.sort((a, b) => new Date(a.published) - new Date(b.published));
+            } else if (sortMode === 'title') {
+                items.sort((a, b) => a.title.localeCompare(b.title));
+            }
+
+            return items;
+        }
+
+        function renderFeed() {
+            elements.loadingState.classList.add('hidden');
+            const items = getFilteredAndSortedItems();
+
+            elements.resultsCount.innerText = `Showing ${items.length} ${items.length === 1 ? 'article' : 'articles'}`;
+
+            if (items.length === 0) {
+                elements.emptyState.classList.remove('hidden');
+                elements.postsContainer.innerHTML = '';
+                elements.featuredSection.classList.add('hidden');
+                return;
+            }
+
+            elements.emptyState.classList.add('hidden');
+
+            // Render Featured Top Card (if not searching and viewing 'all' tag)
+            if (currentTag === 'all' && !elements.searchInput.value.trim() && items.length > 0) {
+                const featuredItem = items[0];
+                renderFeaturedCard(featuredItem);
+                elements.featuredSection.classList.remove('hidden');
+                // Grid shows rest of items
+                renderGridItems(items.slice(1));
+            } else {
+                elements.featuredSection.classList.add('hidden');
+                renderGridItems(items);
+            }
+        }
+
+        function renderFeaturedCard(item) {
+            const isBookmarked = bookmarks.includes(item.id);
+            const pubDate = new Date(item.published).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+            const readTime = calculateReadTime(item.description);
+
+            elements.featuredCardContainer.innerHTML = `
+                <div class="group relative rounded-3xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl transition-all hover:shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-0">
+                    <div class="lg:col-span-7 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900">
+                        <img src="${item.thumbnail}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/800x450/1e293b/ffffff?text=Video+Thumbnail'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                        <button onclick="openVideoModal('${item.id}')" class="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div class="w-16 h-16 rounded-full bg-brand-600/90 text-white flex items-center justify-center shadow-2xl backdrop-blur-sm group-hover:bg-brand-600 transition">
+                                <i class="fa-solid fa-play text-xl ml-1"></i>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between text-xs text-slate-400">
+                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-calendar"></i> ${pubDate}</span>
+                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> ${readTime}</span>
+                            </div>
+                            <h2 onclick="openVideoModal('${item.id}')" class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition cursor-pointer leading-snug line-clamp-2">
+                                ${escapeHtml(item.title)}
+                            </h2>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                                ${escapeHtml(item.description)}
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between gap-3">
+                            <button onclick="openVideoModal('${item.id}')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs transition inline-flex items-center gap-2 shadow-md shadow-brand-600/20">
+                                <i class="fa-solid fa-book-open"></i> Read & Watch
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleBookmark('${item.id}')" class="p-2.5 rounded-xl text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i class="${isBookmarked ? 'fa-solid text-brand-600' : 'fa-regular'} fa-bookmark text-base"></i>
+                                </button>
+                                <button onclick="copyToClipboard('${item.link}', 'Video link copied!')" class="p-2.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i class="fa-regular fa-share-from-square text-base"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGridItems(items) {
+            elements.postsContainer.className = currentView === 'list'
+                ? 'space-y-4'
+                : currentView === 'magazine'
+                ? 'grid grid-cols-1 md:grid-cols-2 gap-8'
+                : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+
+            elements.postsContainer.innerHTML = items.map(item => {
+                const isBookmarked = bookmarks.includes(item.id);
+                const pubDate = new Date(item.published).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                const readTime = calculateReadTime(item.description);
+
+                if (currentView === 'list') {
+                    return `
+                        <div class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/80 p-4 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <div class="relative w-full sm:w-48 aspect-video rounded-xl overflow-hidden bg-slate-900 flex-shrink-0 cursor-pointer" onclick="openVideoModal('${item.id}')">
+                                <img src="${item.thumbnail}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x225/1e293b/ffffff?text=Video'">
+                                <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                    <div class="w-8 h-8 rounded-full bg-brand-600/90 text-white flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-play ml-0.5"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow space-y-1.5">
+                                <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                    <span><i class="fa-regular fa-calendar"></i> ${pubDate}</span>
+                                    <span>&bull;</span>
+                                    <span><i class="fa-regular fa-clock"></i> ${readTime}</span>
+                                </div>
+                                <h4 onclick="openVideoModal('${item.id}')" class="font-bold text-base text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition cursor-pointer line-clamp-1">
+                                    ${escapeHtml(item.title)}
+                                </h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                    ${escapeHtml(item.description)}
+                                </p>
+                            </div>
+                            <div class="flex sm:flex-col items-center gap-2 self-end sm:self-center">
+                                <button onclick="toggleBookmark('${item.id}')" class="p-2 rounded-xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i class="${isBookmarked ? 'fa-solid text-brand-600' : 'fa-regular'} fa-bookmark"></i>
+                                </button>
+                                <button onclick="openVideoModal('${item.id}')" class="p-2 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <article class="group bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                        <div>
+                            <div class="relative aspect-video overflow-hidden bg-slate-900 cursor-pointer" onclick="openVideoModal('${item.id}')">
+                                <img src="${item.thumbnail}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x338/1e293b/ffffff?text=Video+Thumbnail'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                                <div class="absolute inset-0 flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                                    <div class="w-12 h-12 rounded-full bg-brand-600/90 text-white flex items-center justify-center shadow-lg backdrop-blur-sm">
+                                        <i class="fa-solid fa-play ml-0.5"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-5 sm:p-6 space-y-3">
+                                <div class="flex items-center justify-between text-xs text-slate-400">
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-calendar"></i> ${pubDate}</span>
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> ${readTime}</span>
+                                </div>
+                                <h4 onclick="openVideoModal('${item.id}')" class="font-bold text-base sm:text-lg text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition cursor-pointer line-clamp-2 leading-snug">
+                                    ${escapeHtml(item.title)}
+                                </h4>
+                                <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+                                    ${escapeHtml(item.description)}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="px-5 sm:px-6 pb-5 pt-2 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between gap-2">
+                            <button onclick="openVideoModal('${item.id}')" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 flex items-center gap-1.5 transition">
+                                <span>Read & Watch</span>
+                                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </button>
+                            <div class="flex items-center gap-1">
+                                <button onclick="toggleBookmark('${item.id}')" class="p-2 rounded-xl text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i class="${isBookmarked ? 'fa-solid text-brand-600' : 'fa-regular'} fa-bookmark text-sm"></i>
+                                </button>
+                                <button onclick="copyToClipboard('${item.link}', 'Video link copied!')" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i class="fa-regular fa-share-from-square text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function openVideoModal(videoId) {
+            const item = feedData.items.find(i => i.id === videoId);
+            if (!item) return;
+
+            activeModalVideoId = videoId;
+            const pubDate = new Date(item.published).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+            const readTime = calculateReadTime(item.description);
+
+            elements.modalIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+            elements.modalTitle.innerText = item.title;
+            elements.modalDate.innerHTML = `<i class="fa-regular fa-calendar"></i> ${pubDate}`;
+            elements.modalReadTime.innerHTML = `<i class="fa-regular fa-clock"></i> ${readTime}`;
+            
+            // Format Description text with links and hashtags
+            elements.modalDescription.innerHTML = formatDescriptionText(item.description);
+            elements.modalWatchYouTubeBtn.href = item.link;
+
+            updateModalBookmarkState();
+
+            elements.articleModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideoModal() {
+            elements.articleModal.classList.add('hidden');
+            elements.modalIframe.src = '';
+            document.body.style.overflow = 'auto';
+            activeModalVideoId = null;
+        }
+
+        function formatDescriptionText(text) {
+            if (!text) return '<p class="italic text-slate-400">No extended description for this post.</p>';
+            
+            let safe = escapeHtml(text);
+            
+            // Convert URLs into clickable links
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            safe = safe.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-brand-600 dark:text-brand-400 hover:underline font-medium break-all">${url}</a>`);
+
+            // Convert Hashtags into highlighted elements
+            const hashtagRegex = /(#\w+)/g;
+            safe = safe.replace(hashtagRegex, tag => `<span class="inline-block px-2 py-0.5 rounded-md bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-semibold text-xs mr-1">${tag}</span>`);
+
+            return safe.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+        }
+
+        function toggleBookmark(videoId) {
+            const index = bookmarks.indexOf(videoId);
+            if (index > -1) {
+                bookmarks.splice(index, 1);
+                showToast('Removed from saved bookmarks', 'info');
+            } else {
+                bookmarks.push(videoId);
+                showToast('Saved to bookmarks!', 'success');
+            }
+            localStorage.setItem('tubelog_bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkBadge();
+            updateModalBookmarkState();
+            renderFeed();
+        }
+
+        function updateModalBookmarkState() {
+            if (!activeModalVideoId) return;
+            const isBookmarked = bookmarks.includes(activeModalVideoId);
+            elements.modalBookmarkBtn.innerHTML = `<i class="${isBookmarked ? 'fa-solid text-brand-600' : 'fa-regular'} fa-bookmark text-lg"></i>`;
+        }
+
+        function setupEventListeners() {
+            // Search Input Events
+            elements.searchInput.addEventListener('input', (e) => {
+                if (e.target.value.trim()) {
+                    elements.clearSearchBtn.classList.remove('hidden');
+                } else {
+                    elements.clearSearchBtn.classList.add('hidden');
+                }
+                renderFeed();
+            });
+
+            elements.clearSearchBtn.addEventListener('click', () => {
+                elements.searchInput.value = '';
+                elements.clearSearchBtn.classList.add('hidden');
+                renderFeed();
+            });
+
+            document.getElementById('resetSearchBtn')?.addEventListener('click', () => {
+                elements.searchInput.value = '';
+                currentTag = 'all';
+                updateTagButtons();
+                renderFeed();
+            });
+
+            // Sort Dropdown
+            elements.sortSelect.addEventListener('change', () => renderFeed());
+
+            // View Switchers
+            elements.viewGrid.addEventListener('click', () => setViewMode('grid'));
+            elements.viewList.addEventListener('click', () => setViewMode('list'));
+            elements.viewMagazine.addEventListener('click', () => setViewMode('magazine'));
+
+            // Refresh Feed
+            elements.refreshBtn.addEventListener('click', () => {
+                fetchYouTubeFeed();
+                showToast('Refreshed RSS feed data', 'info');
+            });
+
+            // Copy RSS Feed URL
+            elements.copyFeedUrlBtn.addEventListener('click', () => {
+                copyToClipboard(currentRssUrl, 'Channel RSS Feed URL copied!');
+            });
+
+            // Modal Events
+            elements.closeModalBtn.addEventListener('click', closeVideoModal);
+            elements.articleModal.addEventListener('click', (e) => {
+                if (e.target === elements.articleModal) closeVideoModal();
+            });
+
+            elements.modalBookmarkBtn.addEventListener('click', () => {
+                if (activeModalVideoId) toggleBookmark(activeModalVideoId);
+            });
+
+            elements.modalCopyLinkBtn.addEventListener('click', () => {
+                if (activeModalVideoId) {
+                    const link = `https://www.youtube.com/watch?v=${activeModalVideoId}`;
+                    copyToClipboard(link, 'Video link copied!');
+                }
+            });
+
+            elements.modalShareBtn.addEventListener('click', () => {
+                if (activeModalVideoId) {
+                    const link = `https://www.youtube.com/watch?v=${activeModalVideoId}`;
+                    copyToClipboard(link, 'Share link copied to clipboard!');
+                }
+            });
+
+            // Saved Filter Toggle
+            elements.bookmarksBtn.addEventListener('click', () => {
+                currentTag = currentTag === 'bookmarked' ? 'all' : 'bookmarked';
+                updateTagButtons();
+                renderFeed();
+            });
+
+            // Tag Button Handler
+            document.getElementById('filterTags').addEventListener('click', (e) => {
+                const tagBtn = e.target.closest('.tag-btn');
+                if (tagBtn) {
+                    currentTag = tagBtn.dataset.tag;
+                    updateTagButtons();
+                    renderFeed();
+                }
+            });
+
+            // Settings Modal Events
+            elements.settingsBtn.addEventListener('click', () => {
+                elements.channelIdInput.value = currentChannelId;
+                elements.rssUrlInput.value = currentRssUrl;
+                elements.settingsModal.classList.remove('hidden');
+            });
+
+            elements.closeSettingsBtn.addEventListener('click', () => {
+                elements.settingsModal.classList.add('hidden');
+            });
+
+            elements.resetSettingsBtn.addEventListener('click', () => {
+                elements.channelIdInput.value = DEFAULT_CHANNEL_ID;
+                elements.rssUrlInput.value = `https://www.youtube.com/feeds/videos.xml?channel_id=${DEFAULT_CHANNEL_ID}`;
+            });
+
+            elements.saveSettingsBtn.addEventListener('click', () => {
+                const newChannelId = elements.channelIdInput.value.trim() || DEFAULT_CHANNEL_ID;
+                const newRssUrl = elements.rssUrlInput.value.trim() || `https://www.youtube.com/feeds/videos.xml?channel_id=${newChannelId}`;
+
+                currentChannelId = newChannelId;
+                currentRssUrl = newRssUrl;
+
+                localStorage.setItem('tubelog_channel_id', currentChannelId);
+                localStorage.setItem('tubelog_rss_url', currentRssUrl);
+
+                elements.settingsModal.classList.add('hidden');
+                showToast('Settings saved. Reloading feed...', 'success');
+                fetchYouTubeFeed();
+            });
+
+            // Escape key handler for modals
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeVideoModal();
+                    elements.settingsModal.classList.add('hidden');
+                }
+            });
+        }
+
+        function setViewMode(mode) {
+            currentView = mode;
+            [elements.viewGrid, elements.viewList, elements.viewMagazine].forEach(btn => {
+                btn.classList.remove('bg-slate-100', 'dark:bg-slate-700', 'text-slate-800', 'dark:text-white');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeBtn = mode === 'list' ? elements.viewList : mode === 'magazine' ? elements.viewMagazine : elements.viewGrid;
+            activeBtn.classList.add('bg-slate-100', 'dark:bg-slate-700', 'text-slate-800', 'dark:text-white');
+            activeBtn.classList.remove('text-slate-400');
+
+            renderFeed();
+        }
+
+        function updateTagButtons() {
+            document.querySelectorAll('.tag-btn').forEach(btn => {
+                if (btn.dataset.tag === currentTag) {
+                    btn.className = 'tag-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white shadow-sm transition whitespace-nowrap';
+                } else {
+                    btn.className = 'tag-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition whitespace-nowrap';
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            setupEventListeners();
+            fetchYouTubeFeed();
+        });
+    </script>
+</body>
+</html>

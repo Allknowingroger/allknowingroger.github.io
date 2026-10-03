@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civilizational Active Inference & Free Energy Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05070e',
+                        panel: '#0d1222',
+                        accent: '#00f0ff',
+                        cyber: '#7000ff',
+                        emerald: '#00ff88',
+                        warning: '#ffaa00',
+                        danger: '#ff0055'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <comment-tag id="1"><!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script></comment-tag id="1" text="<!-- Three.js Library -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script>
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'></script>
+
+You have beautifully written LaTeX equations in the 'Mathematical Foundations' tab (e.g., $F \to 0$, $G(\pi)$), but they aren't being rendered natively by the browser. Including MathJax will transform these raw strings into beautifully formatted mathematical equations, enhancing the scientific feel of the app." type="suggestion">
+    <style>
+        body {
+            background-color: #030509;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glow-accent {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+        }
+        .glow-cyber {
+            box-shadow: 0 0 25px rgba(112, 0, 255, 0.25);
+        }
+        .border-glass {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .bg-glass {
+            background: rgba(13, 18, 34, 0.75);
+            backdrop-filter: blur(16px);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05070e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+        .pulse-node {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-200 flex flex-col justify-between selection:bg-accent selection:text-black">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-glass border-b border-glass px-4 lg:px-8 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber to-accent flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-accent/20">
+                <i class="fa-solid fa-atom"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-bold text-lg lg:text-xl tracking-tight text-white">CIVILIZATIONAL ACTIVE INFERENCE</h1>
+                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-accent/10 text-accent border border-accent/30">VFE-v4.2</span>
+                </div>
+                <p class="text-xs text-slate-400 font-mono hidden sm:block">Planetary Free Energy Minimization & Kardashev Governance Engine</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- Audio Toggle Button -->
+            <button id="audio-toggle-btn" onclick="toggleAudioEngine()" class="px-3 py-1.5 rounded-lg border border-glass bg-panel hover:bg-slate-800 text-slate-300 text-xs font-mono flex items-center gap-2 transition">
+                <i id="audio-icon" class="fa-solid fa-volume-xmark text-slate-500"></i>
+                <span id="audio-label">Resonance Off</span>
+            </button>
+
+            <!-- Mode Selector / Status -->
+            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-glass bg-panel/60 text-xs font-mono">
+                <span class="w-2 h-2 rounded-full bg-emerald animate-ping"></span>
+                <span class="text-emerald font-semibold">HOMEOSTATIC STABLE</span>
+            </div>
+
+            <!-- Tab Navigation Buttons -->
+            <div class="flex bg-panel p-1 rounded-xl border border-glass text-xs font-mono">
+                <button onclick="switchTab('sim')" id="tab-btn-sim" class="px-3 py-1.5 rounded-lg font-medium transition bg-accent/20 text-accent border border-accent/40">
+                    <i class="fa-solid fa-earth-americas mr-1.5"></i>Simulation
+                </button>
+                <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-diagram-project mr-1.5"></i>Blanket Scale
+                </button>
+                <button onclick="switchTab('policy')" id="tab-btn-policy" class="px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-brain mr-1.5"></i>AI Policy Engine
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-[1800px] w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: 3D Visualization & Real-time Telemetry (8 Cols on LG) -->
+        <div id="sim-view" class="lg:col-span-8 flex flex-col gap-6">
+
+            <!-- 3D Sensorium Viewport -->
+            <div class="relative w-full h-[450px] lg:h-[550px] bg-panel rounded-2xl border border-glass overflow-hidden shadow-2xl flex flex-col">
+                <!-- 3D Canvas -->
+                <div id="three-container" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+                <!-- Overlay Controls & Labels -->
+                <div class="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+                    <div class="bg-glass/80 border border-glass px-3 py-2 rounded-xl backdrop-blur-md pointer-events-auto">
+                        <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Markov Blanket Phase</div>
+                        <div id="kardashev-badge" class="text-sm font-bold text-accent font-mono">TYPE I: Planetary Boundary</div>
+                    </div>
+                    <div class="bg-glass/80 border border-glass px-3 py-2 rounded-xl backdrop-blur-md pointer-events-auto flex items-center gap-3">
+                        <div>
+                            <span class="text-[10px] font-mono text-slate-400 block">Sensory Nodes</span>
+                            <span id="node-count-display" class="font-mono text-xs font-semibold text-emerald">1,024 Active</span>
+                        </div>
+                        <div class="h-6 w-px bg-white/10"></div>
+                        <div>
+                            <span class="text-[10px] font-mono text-slate-400 block">Epistemic Precision</span>
+                            <span id="precision-display" class="font-mono text-xs font-semibold text-accent">γ = 0.94</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viewport Toolbar (Interactive Buttons) -->
+                <div class="absolute top-4 right-4 z-10 flex gap-2">
+                    <button onclick="toggleWireframe()" class="p-2.5 rounded-xl bg-glass border border-glass text-slate-300 hover:text-accent hover:border-accent/50 transition" title="Toggle Markov Shell Mesh">
+                        <i class="fa-solid fa-cube text-sm"></i>
+                    </button>
+                    <button onclick="triggerPerturbation()" class="px-3 py-2 rounded-xl bg-danger/20 border border-danger/40 text-danger hover:bg-danger/30 font-mono text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt"></i> Inject Entropy Surge
+                    </button>
+                </div>
+
+                <!-- Bottom Telemetry Ribbon -->
+                <div class="mt-auto z-10 p-4 bg-gradient-to-t from-void via-void/80 to-transparent flex flex-wrap items-center justify-between gap-4 border-t border-glass/40">
+                    <div class="flex items-center gap-6">
+                        <div>
+                            <div class="text-[10px] font-mono text-slate-400">Variational Free Energy (F)</div>
+                            <div id="vfe-val" class="text-lg font-mono font-bold text-accent">0.142 <span class="text-xs text-slate-500">nat</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono text-slate-400">Expected Free Energy (G)</div>
+                            <div id="efe-val" class="text-lg font-mono font-bold text-cyber">1.890 <span class="text-xs text-slate-500">bits</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono text-slate-400">Pragmatic Harvest</div>
+                            <div id="pragmatic-val" class="text-lg font-mono font-bold text-emerald">94.2%</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono text-slate-400">Epistemic Exploration</div>
+                            <div id="epistemic-val" class="text-lg font-mono font-bold text-warning">88.7%</div>
+                        </div>
+                    </div>
+
+                    <div class="text-xs font-mono text-slate-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-accent"></i>
+                        Drag to rotate 3D Sensorium • Scroll to Zoom
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-Time Variational Free Energy Graph & Controls Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Real-Time Telemetry Canvas -->
+                <div class="bg-panel border border-glass rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="font-bold text-sm tracking-wide text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-accent"></i> Systemic Free Energy Trajectory
+                        </h2>
+                        <span class="text-[10px] font-mono text-slate-400">Target: Minimum Surprise (ln p(y))</span>
+                    </div>
+
+                    <div class="relative w-full h-44 bg-void/80 rounded-xl border border-glass p-2 overflow-hidden">
+                        <canvas id="telemetry-chart" class="w-full h-full"></canvas>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-3 text-[11px] font-mono text-slate-400">
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-accent inline-block"></span> VFE (F)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyber inline-block"></span> EFE (G)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald inline-block"></span> Stability</span>
+                    </div>
+                </div>
+
+                <!-- Active Inference Control Sliders -->
+                <div class="bg-panel border border-glass rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+                    <h2 class="font-bold text-sm tracking-wide text-white mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-cyber"></i> Generative Model Parameters
+                    </h2>
+
+                    <div class="space-y-3">
+                        <!-- Control 1: Environmental Entropy -->
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-slate-300">Environmental Entropy (Surprise Input)</span>
+                                <span id="val-entropy" class="text-accent">0.35</span>
+                            </div>
+                            <input type="range" id="slider-entropy" min="0.05" max="1.0" step="0.01" value="0.35" oninput="updateParams()" class="w-full accent-accent bg-void h-1.5 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <!-- Control 2: Compute Density -->
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-slate-300">Compute Density (Model Depth)</span>
+                                <span id="val-compute" class="text-cyber">0.82</span>
+                            </div>
+                            <input type="range" id="slider-compute" min="0.1" max="1.0" step="0.01" value="0.82" oninput="updateParams()" class="w-full accent-cyber bg-void h-1.5 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <!-- Control 3: Markov Blanket Precision -->
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-slate-300">Markov Sensorium Precision (γ)</span>
+                                <span id="val-precision" class="text-emerald">0.94</span>
+                            </div>
+                            <input type="range" id="slider-precision" min="0.1" max="1.0" step="0.01" value="0.94" oninput="updateParams()" class="w-full accent-emerald bg-void h-1.5 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <!-- Control 4: Epistemic vs Pragmatic Balance -->
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-slate-300">Action Balance (Explore vs Exploit)</span>
+                                <span id="val-balance" class="text-warning">50 / 50</span>
+                            </div>
+                            <input type="range" id="slider-balance" min="0" max="100" step="1" value="50" oninput="updateParams()" class="w-full accent-warning bg-void h-1.5 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex justify-between items-center text-[10px] font-mono text-slate-500 border-t border-glass/30 mt-2">
+                        <span>Minimizing Free Energy ($F \to 0$)</span>
+                        <button onclick="resetSimulation()" class="hover:text-accent transition"><i class="fa-solid fa-rotate-right mr-1"></i>Reset Baseline</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Column / Sidebar: Kardashev Matrix & Structural Breakdown (4 Cols on LG) -->
+        <div id="side-view" class="lg:col-span-4 flex flex-col gap-6">
+
+            <!-- Kardashev Active Inference Selector -->
+            <div class="bg-panel border border-glass rounded-2xl p-5 shadow-xl">
+                <h2 class="font-bold text-sm tracking-wide text-white mb-3 flex items-center justify-between">
+                    <span><i class="fa-solid fa-layer-group text-accent mr-2"></i>Kardashev Scale Configurations</span>
+                    <span class="text-[10px] font-mono bg-accent/10 text-accent border border-accent/30 px-2 py-0.5 rounded">Select Scale</span>
+                </h2>
+
+                <div class="space-y-2.5">
+                    <!-- Type I -->
+                    <button onclick="setKardashevScale(1)" id="kard-btn-1" class="w-full text-left p-3 rounded-xl border border-accent/50 bg-accent/10 transition group flex items-start justify-between">
+                        <div>
+                            <div class="font-bold text-xs text-accent group-hover:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-globe"></i> TYPE I: Planetary Intelligence
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Full planetary sensor network (~10<sup>16</sup> W). Closed-loop climate & technosphere homeostasis.</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-accent mt-1"></i>
+                    </button>
+
+                    <!-- Type II -->
+                    <button onclick="setKardashevScale(2)" id="kard-btn-2" class="w-full text-left p-3 rounded-xl border border-glass bg-void/50 hover:border-cyber/50 hover:bg-cyber/10 transition group flex items-start justify-between">
+                        <div>
+                            <div class="font-bold text-xs text-slate-300 group-hover:text-cyber flex items-center gap-2">
+                                <i class="fa-solid fa-sun"></i> TYPE II: Stellar Dyson Swarm
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Stellar scale compute engines (~10<sup>26</sup> W). Matrioshka brain predictive inferential loops.</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-cyber mt-1"></i>
+                    </button>
+
+                    <!-- Type III -->
+                    <button onclick="setKardashevScale(3)" id="kard-btn-3" class="w-full text-left p-3 rounded-xl border border-glass bg-void/50 hover:border-emerald/50 hover:bg-emerald/10 transition group flex items-start justify-between">
+                        <div>
+                            <div class="font-bold text-xs text-slate-300 group-hover:text-emerald flex items-center gap-2">
+                                <i class="fa-solid fa-dharmachakra"></i> TYPE III: Galactic Consensus
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Relativistic message passing (~10<sup>36</sup> W). Asynchronous galactic belief propagation.</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-emerald mt-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Nested Markov Blanket Hierarchy -->
+            <div class="bg-panel border border-glass rounded-2xl p-5 shadow-xl flex-1 flex flex-col justify-between">
+                <div>
+                    <h2 class="font-bold text-sm tracking-wide text-white mb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-shield-halved text-emerald mr-2"></i>Nested Markov Blanket Topology</span>
+                        <span class="text-[10px] font-mono text-slate-400">Statistical Separation</span>
+                    </h2>
+
+                    <!-- Interactive Diagram Cards -->
+                    <div class="space-y-2">
+                        <!-- Micro -->
+                        <comment-tag id="2"><div onclick="inspectBlanket('micro')" class="p-2.5 rounded-xl border border-glass bg-void/60 hover:border-accent/40 cursor-pointer transition"></comment-tag id="2" text="<div onclick='inspectBlanket(`micro`)' role='button' tabindex='0' aria-label='Inspect Micro Scale' class='p-2.5 rounded-xl border border-glass bg-void/60 hover:border-accent/40 focus:outline-none focus:border-accent cursor-pointer transition'>
+
+Adding `role='button'`, `tabindex='0'`, and focus styles makes these interactive divs accessible to keyboard users and screen readers." type="suggestion">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-200"><i class="fa-solid fa-microchip text-accent mr-1.5"></i>Micro-Scale (Nodes / AI Agents)</span>
+                                <span class="font-mono text-[10px] text-slate-400">Local VFE</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Individual autonomous units, smart grids, edge processors.</p>
+                        </div>
+
+                        <!-- Meso -->
+                        <div onclick="inspectBlanket('meso')" class="p-2.5 rounded-xl border border-glass bg-void/60 hover:border-cyber/40 cursor-pointer transition">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-200"><i class="fa-solid fa-network-wired text-cyber mr-1.5"></i>Meso-Scale (Regional Grids)</span>
+                                <span class="font-mono text-[10px] text-slate-400">Consensus Hub</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5">National compute matrices, logistics grids, trade blankets.</p>
+                        </div>
+
+                        <!-- Macro -->
+                        <div onclick="inspectBlanket('macro')" class="p-2.5 rounded-xl border border-glass bg-void/60 hover:border-emerald/40 cursor-pointer transition">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-200"><i class="fa-solid fa-globe text-emerald mr-1.5"></i>Macro-Scale (Planetary Sensorium)</span>
+                                <span class="font-mono text-[10px] text-slate-400">Global Generative Model</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Atmosphere, satellite arrays, deep-sea sensor matrices.</p>
+                        </div>
+
+                        <!-- Meta -->
+                        <div onclick="inspectBlanket('meta')" class="p-2.5 rounded-xl border border-glass bg-void/60 hover:border-warning/40 cursor-pointer transition">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-200"><i class="fa-solid fa-infinity text-warning mr-1.5"></i>Meta-Scale (Stellar Infrastructure)</span>
+                                <span class="font-mono text-[10px] text-slate-400">Cosmic Bounds</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Orbital Dyson swarms, stellar magnetosphere control.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-glass/40 text-center">
+                    <p class="text-[11px] font-mono text-slate-400">
+                        <i class="fa-solid fa-lock text-emerald mr-1"></i>
+                        Markov Blanket Condition: <span class="text-slate-200 font-semibold">(Internal ⫫ External | Sensory, Active)</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Alternate View 1: AI Active Inference Policy Engine (Hidden by default) -->
+        <div id="policy-view" class="hidden lg:col-span-12 flex flex-col gap-6">
+            <div class="bg-panel border border-glass rounded-2xl p-6 shadow-2xl">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-brain text-accent"></i> Planetary Active Inference Policy Generator
+                        </h2>
+                        <p class="text-xs text-slate-400 font-mono mt-1">Evaluates Expected Free Energy ($G$) interventions for civilizational state perturbations using Gemini Intelligence.</p>
+                    </div>
+                    <div class="flex items-center gap-2 font-mono text-xs text-accent bg-accent/10 border border-accent/30 px-3 py-1.5 rounded-xl">
+                        <i class="fa-solid fa-sparkles"></i> Powered by Gemini 3 Flash
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Input Section -->
+                    <div class="md:col-span-5 flex flex-col gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-300 mb-2">Select Pre-Defined Scenario</label>
+                            <select id="policy-scenario" onchange="loadScenarioPreset()" class="w-full bg-void border border-glass rounded-xl p-3 text-xs text-slate-200 font-mono focus:border-accent outline-none">
+                                <option value="thermal">Technosphere Thermal & Entropy Surge</option>
+                                <option value="misalignment">Sub-Blanket Economic/Institutional Misalignment</option>
+                                <option value="flare">Geomagnetic / Solar Flare Disruption</option>
+                                <option value="custom">Custom Systemic Perturbation...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono text-slate-300 mb-2">Detailed Perturbation Prompt</label>
+                            <textarea id="policy-prompt" rows="5" class="w-full bg-void border border-glass rounded-xl p-3 text-xs text-slate-200 font-mono focus:border-accent outline-none" placeholder="Describe the civilizational risk, sensory error, or external disruption..."></textarea>
+                        </div>
+
+                        <button onclick="generatePolicy()" id="policy-submit-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyber to-accent text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-90 transition shadow-lg shadow-accent/20">
+                            <i class="fa-solid fa-microchip"></i> Calculate Optimal EFE Policy ($G$)
+                        </button>
+                    </div>
+
+                    <!-- Output Section -->
+                    <div class="md:col-span-7 bg-void border border-glass rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
+                        <div>
+                            <div class="flex items-center justify-between border-b border-glass pb-3 mb-4">
+                                <span class="font-mono text-xs text-accent font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-terminal"></i> Policy Recommendation & Mathematical Interventions
+                                </span>
+                                <span id="policy-status" class="text-[10px] font-mono text-slate-500">Awaiting Query...</span>
+                            </div>
+                            <div id="policy-output" class="text-xs text-slate-300 font-mono space-y-3 leading-relaxed overflow-y-auto max-h-[320px] pr-2">
+                                <p class="text-slate-500 italic">Select a scenario or write a perturbation description, then click "Calculate Optimal EFE Policy" to invoke the generative inference model.</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-glass/40 flex justify-between items-center text-[10px] font-mono text-slate-500">
+                            <span>Evaluated Model: $G(\pi) \approx \text{Epistemic Value} + \text{Pragmatic Value}$</span>
+                            <span id="policy-time">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternate View 2: Nested Blanket Explorer & Mathematical Foundations (Hidden by default) -->
+        <div id="matrix-view" class="hidden lg:col-span-12 flex flex-col gap-6">
+            <div class="bg-panel border border-glass rounded-2xl p-6 shadow-2xl">
+                <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-square-root-variable text-cyber"></i> Mathematical Foundations of Civilizational Free Energy
+                </h2>
+                <p class="text-xs text-slate-400 font-mono mb-6">Rigorous information-theoretic equations governing multi-scale planetary active inference systems.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Formula 1 -->
+                    <div class="bg-void border border-glass p-5 rounded-2xl">
+                        <div class="text-xs font-mono text-accent font-bold mb-2">1. Variational Free Energy ($F$)</div>
+                        <div class="p-3 bg-panel/80 rounded-xl border border-glass/50 text-center font-mono text-sm text-emerald my-3">
+                            $F = \text{D}_{\text{KL}}\left[q(\theta) \parallel p(\theta)\right] - \mathbb{E}_{q}\left[\ln p(y \mid \theta)\right]$
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Measures real-time dissonance between internal civilizational models $q(\theta)$ and environmental reality $y$. Minimizing $F$ guarantees accuracy while maintaining minimal model complexity.
+                        </p>
+                    </div>
+
+                    <!-- Formula 2 -->
+                    <div class="bg-void border border-glass p-5 rounded-2xl">
+                        <div class="text-xs font-mono text-cyber font-bold mb-2">2. Expected Free Energy ($G$)</div>
+                        <div class="p-3 bg-panel/80 rounded-xl border border-glass/50 text-center font-mono text-sm text-cyber my-3">
+                            $G(\pi) \approx - \text{Epistemic Value} - \text{Pragmatic Value}$
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Evaluates candidate policy trajectories ($\pi$). Balances scientific exploration (reducing surprise/gaining knowledge) with engineering exploitation (securing survival resources).
+                        </p>
+                    </div>
+
+                    <!-- Formula 3 -->
+                    <div class="bg-void border border-glass p-5 rounded-2xl">
+                        <div class="text-xs font-mono text-emerald font-bold mb-2">3. Markov Blanket Condition</div>
+                        <div class="p-3 bg-panel/80 rounded-xl border border-glass/50 text-center font-mono text-sm text-warning my-3">
+                            $\eta \in (\mu, b) \quad \text{where} \quad b = \{s, a\}$
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Defines statistical independence between internal state ($\mu$) and external environment ($\eta$), conditional on sensory states ($s$) and active states ($a$).
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-glass border-t border-glass px-4 lg:px-8 py-4 mt-8">
+        <div class="max-w-[1800px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
+            <div>
+                <span>CIVILIZATIONAL FREE ENERGY PROGRAM</span> • <span>KARDASHEW RESEARCH AGENDA</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>Active Inference Protocol</span>
+                <span>•</span>
+                <span class="text-emerald"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Continuous Self-Organization</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Logic Scripts -->
+    <script>
+        // Global Application State
+        const state = {
+            kardashevLevel: 1, // 1, 2, or 3
+            entropy: 0.35,
+            computeDensity: 0.82,
+            precision: 0.94,
+            balance: 50, // 0 = 100% Pragmatic, 100 = 100% Epistemic
+            wireframe: true,
+            vfe: 0.142,
+            efe: 1.890,
+            stability: 98.4,
+            audioRunning: false,
+            timeStep: 0
+        };
+
+        // Telemetry Data Buffer for Canvas Chart
+        const telemetryHistory = {
+            vfe: Array(50).fill(0.15),
+            efe: Array(50).fill(1.85),
+            stability: Array(50).fill(95)
+        };
+
+        // Three.js Global Variables
+        let scene, camera, renderer, coreMesh, blanketMesh, nodeParticles, connectionLines, lightGroup;
+
+        // Web Audio API State
+        let audioCtx = null, droneOsc1 = null, droneOsc2 = null, gainNode = null;
+
+        // Initialize App on DOM Loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            initThreeJS();
+            initTelemetryChart();
+            startSimulationLoop();
+            loadScenarioPreset();
+        });
+
+        function initThreeJS() {
+            const container = document.getElementById('three-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Scene & Camera
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x05070e, 0.025);
+
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 0, 18);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x05070e, 1);
+            container.appendChild(renderer.domElement);
+
+            // Central Civilizational Core (Planet / Dyson Core)
+            const coreGeo = new THREE.IcosahedronGeometry(3.2, 4);
+            const coreMat = new THREE.MeshPhongMaterial({
+                color: 0x00f0ff,
+                wireframe: false,
+                emissive: 0x003355,
+                shininess: 80,
+                transparent: true,
+                opacity: 0.85
+            });
+            coreMesh = new THREE.Mesh(coreGeo, coreMat);
+            scene.add(coreMesh);
+
+            // Markov Blanket Outer Shell
+            const blanketGeo = new THREE.IcosahedronGeometry(5.2, 3);
+            const blanketMat = new THREE.MeshBasicMaterial({
+                color: 0x7000ff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.35
+            });
+            blanketMesh = new THREE.Mesh(blanketGeo, blanketMat);
+            scene.add(blanketMesh);
+
+            // Sensory/Active Nodes (Particles on Blanket Surface)
+            const nodeCount = 400;
+            const nodeGeo = new THREE.BufferGeometry();
+            const nodePositions = new Float32Array(nodeCount * 3);
+            const nodeColors = new Float32Array(nodeCount * 3);
+
+            for (let i = 0; i < nodeCount; i++) {
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
+                const r = 5.2 + (Math.random() - 0.5) * 0.4;
+
+                nodePositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                nodePositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                nodePositions[i * 3 + 2] = r * Math.cos(phi);
+
+                nodeColors[i * 3] = 0.0;
+                nodeColors[i * 3 + 1] = 0.94;
+                nodeColors[i * 3 + 2] = 1.0;
+            }
+
+            nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+            nodeGeo.setAttribute('color', new THREE.BufferAttribute(nodeColors, 3));
+
+            const nodeMat = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.9
+            });
+
+            nodeParticles = new THREE.Points(nodeGeo, nodeMat);
+            scene.add(nodeParticles);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x223344, 1.5);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0x00f0ff, 2.5, 50);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+
+            const purpleLight = new THREE.PointLight(0x7000ff, 2.0, 50);
+            purpleLight.position.set(-10, -10, -10);
+            scene.add(purpleLight);
+
+            // Mouse Interactive Orbit Controls (Simplified custom)
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            <comment-tag id="3">window.addEventListener('mouseup', () => isDragging = false);</comment-tag id="3" text="window.addEventListener('mouseup', () => isDragging = false);
+            container.addEventListener('mouseleave', () => isDragging = false);
+
+Currently, if a user drags the 3D model and their mouse pointer accidentally leaves the window boundary before they let go of the mouse button, it will remain 'stuck' in a dragging state when they re-enter. Adding this `mouseleave` listener provides a much smoother interaction." type="suggestion">
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                scene.rotation.y += deltaX * 0.005;
+                scene.rotation.x += deltaY * 0.005;
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                const newW = container.clientWidth;
+                const newH = container.clientHeight;
+                camera.aspect = newW / newH;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newW, newH);
+            });
+        }
+
+        function startSimulationLoop() {
+            function animate() {
+                requestAnimationFrame(animate);
+
+                state.timeStep += 0.01;
+
+                // Rotate Three.js scene continuously
+                if (coreMesh && blanketMesh) {
+                    coreMesh.rotation.y += 0.003;
+                    coreMesh.rotation.x += 0.001;
+                    blanketMesh.rotation.y -= 0.002;
+                    nodeParticles.rotation.y -= 0.002;
+
+                    // Pulsate core scale based on entropy and precision
+                    const scalePulse = 1.0 + Math.sin(state.timeStep * 3) * (state.entropy * 0.05);
+                    coreMesh.scale.set(scalePulse, scalePulse, scalePulse);
+                }
+
+                // Math Engine Calculation
+                // VFE (F) = (Entropy / Precision) * (1.1 - Compute)
+                state.vfe = Math.max(0.01, ((state.entropy / state.precision) * (1.2 - state.computeDensity * 0.7) + (Math.sin(state.timeStep * 5) * 0.02))).toFixed(3);
+                
+                // EFE (G) = Pragmatic Cost + Epistemic Uncertainty
+                const pragmaticVal = (100 - state.balance) * 0.02 * (1 - state.vfe);
+                const epistemicVal = state.balance * 0.02 * state.precision;
+                state.efe = (3.0 - (pragmaticVal + epistemicVal) + (Math.cos(state.timeStep * 4) * 0.03)).toFixed(3);
+
+                state.stability = Math.min(100, Math.max(0, 100 - (state.vfe * 40))).toFixed(1);
+
+                // Update UI Labels
+                document.getElementById('vfe-val').innerHTML = `${state.vfe} <span class="text-xs text-slate-500">nat</span>`;
+                document.getElementById('efe-val').innerHTML = `${state.efe} <span class="text-xs text-slate-500">bits</span>`;
+                document.getElementById('pragmatic-val').textContent = `${(100 - state.balance)}%`;
+                document.getElementById('epistemic-val').textContent = `${state.balance}%`;
+
+                // Update Chart Buffer
+                telemetryHistory.vfe.shift();
+                telemetryHistory.vfe.push(parseFloat(state.vfe));
+
+                telemetryHistory.efe.shift();
+                telemetryHistory.efe.push(parseFloat(state.efe));
+
+                telemetryHistory.stability.shift();
+                telemetryHistory.stability.push(parseFloat(state.stability));
+
+                drawTelemetryChart();
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        }
+
+        function initTelemetryChart() {
+            drawTelemetryChart();
+        }
+
+        function drawTelemetryChart() {
+            const canvas = document.getElementById('telemetry-chart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            <comment-tag id="4">// Set internal resolution
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;</comment-tag id="4" text="// Set internal resolution only when it changes
+            const clientWidth = canvas.parentElement.clientWidth;
+            const clientHeight = canvas.parentElement.clientHeight;
+            if (canvas.width !== clientWidth) canvas.width = clientWidth;
+            if (canvas.height !== clientHeight) canvas.height = clientHeight;
+
+Because this function is being called on every `requestAnimationFrame` loop, setting `canvas.width` and `canvas.height` unconditionally on every frame forces a browser layout recalculation and implicitly clears the canvas (which hurts performance/battery life). This simple `if` check stops that expensive process." type="suggestion">
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Background Grid Lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            for (let y = 0; y < h; y += 20) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+
+            // Function to render smooth graph lines
+            function renderLine(dataArray, color, maxVal) {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+
+                const step = w / (dataArray.length - 1);
+                for (let i = 0; i < dataArray.length; i++) {
+                    const normY = h - ((dataArray[i] / maxVal) * (h - 10));
+                    if (i === 0) ctx.moveTo(0, normY);
+                    else ctx.lineTo(i * step, normY);
+                }
+                ctx.stroke();
+            }
+
+            // Draw VFE Line (Cyan)
+            renderLine(telemetryHistory.vfe, '#00f0ff', 1.0);
+
+            // Draw EFE Line (Purple)
+            renderLine(telemetryHistory.efe, '#7000ff', 4.0);
+
+            // Draw Stability Line (Emerald)
+            renderLine(telemetryHistory.stability, '#00ff88', 100);
+        }
+
+        // Parameter Input Event Handlers
+        function updateParams() {
+            state.entropy = parseFloat(document.getElementById('slider-entropy').value);
+            state.computeDensity = parseFloat(document.getElementById('slider-compute').value);
+            state.precision = parseFloat(document.getElementById('slider-precision').value);
+            state.balance = parseInt(document.getElementById('slider-balance').value);
+
+            document.getElementById('val-entropy').textContent = state.entropy.toFixed(2);
+            document.getElementById('val-compute').textContent = state.computeDensity.toFixed(2);
+            document.getElementById('val-precision').textContent = state.precision.toFixed(2);
+            document.getElementById('val-balance').textContent = `${100 - state.balance} / ${state.balance}`;
+        }
+
+        function triggerPerturbation() {
+            state.entropy = Math.min(1.0, state.entropy + 0.35);
+            document.getElementById('slider-entropy').value = state.entropy;
+            updateParams();
+
+            // Flash Core Mesh Red
+            if (coreMesh) {
+                coreMesh.material.color.setHex(0xff0055);
+                setTimeout(() => {
+                    coreMesh.material.color.setHex(0x00f0ff);
+                }, 800);
+            }
+        }
+
+        function resetSimulation() {
+            document.getElementById('slider-entropy').value = 0.35;
+            document.getElementById('slider-compute').value = 0.82;
+            document.getElementById('slider-precision').value = 0.94;
+            document.getElementById('slider-balance').value = 50;
+            updateParams();
+        }
+
+        function toggleWireframe() {
+            state.wireframe = !state.wireframe;
+            blanketMesh.material.wireframe = state.wireframe;
+        }
+
+        function setKardashevScale(level) {
+            state.kardashevLevel = level;
+
+            const badge = document.getElementById('kardashev-badge');
+            const btn1 = document.getElementById('kard-btn-1');
+            const btn2 = document.getElementById('kard-btn-2');
+            const btn3 = document.getElementById('kard-btn-3');
+
+            // Reset buttons style
+            [btn1, btn2, btn3].forEach(b => {
+                b.className = "w-full text-left p-3 rounded-xl border border-glass bg-void/50 transition group flex items-start justify-between";
+            });
+
+            if (level === 1) {
+                badge.textContent = "TYPE I: Planetary Boundary";
+                badge.className = "text-sm font-bold text-accent font-mono";
+                btn1.className = "w-full text-left p-3 rounded-xl border border-accent/50 bg-accent/10 transition group flex items-start justify-between";
+                coreMesh.material.color.setHex(0x00f0ff);
+                blanketMesh.material.color.setHex(0x7000ff);
+                document.getElementById('node-count-display').textContent = "1,024 Active";
+            } else if (level === 2) {
+                badge.textContent = "TYPE II: Stellar Dyson Swarm";
+                badge.className = "text-sm font-bold text-cyber font-mono";
+                btn2.className = "w-full text-left p-3 rounded-xl border border-cyber/50 bg-cyber/10 transition group flex items-start justify-between";
+                coreMesh.material.color.setHex(0xffaa00);
+                blanketMesh.material.color.setHex(0x00f0ff);
+                document.getElementById('node-count-display').textContent = "1.08 × 10¹² Swarms";
+            } else if (level === 3) {
+                badge.textContent = "TYPE III: Galactic Consensus";
+                badge.className = "text-sm font-bold text-emerald font-mono";
+                btn3.className = "w-full text-left p-3 rounded-xl border border-emerald/50 bg-emerald/10 transition group flex items-start justify-between";
+                coreMesh.material.color.setHex(0x7000ff);
+                blanketMesh.material.color.setHex(0x00ff88);
+                document.getElementById('node-count-display').textContent = "4.2 × 10¹⁶ Nodes";
+            }
+        }
+
+        function switchTab(tab) {
+            document.getElementById('sim-view').classList.add('hidden');
+            document.getElementById('side-view').classList.add('hidden');
+            document.getElementById('policy-view').classList.add('hidden');
+            document.getElementById('matrix-view').classList.add('hidden');
+
+            document.getElementById('tab-btn-sim').className = "px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white";
+            document.getElementById('tab-btn-matrix').className = "px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white";
+            document.getElementById('tab-btn-policy').className = "px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white";
+
+            if (tab === 'sim') {
+                document.getElementById('sim-view').classList.remove('hidden');
+                document.getElementById('side-view').classList.remove('hidden');
+                document.getElementById('tab-btn-sim').className = "px-3 py-1.5 rounded-lg font-medium transition bg-accent/20 text-accent border border-accent/40";
+            } else if (tab === 'matrix') {
+                document.getElementById('matrix-view').classList.remove('hidden');
+                document.getElementById('tab-btn-matrix').className = "px-3 py-1.5 rounded-lg font-medium transition bg-accent/20 text-accent border border-accent/40";
+            } else if (tab === 'policy') {
+                document.getElementById('policy-view').classList.remove('hidden');
+                document.getElementById('tab-btn-policy').className = "px-3 py-1.5 rounded-lg font-medium transition bg-accent/20 text-accent border border-accent/40";
+            }
+        }
+
+        function inspectBlanket(scale) {
+            switchTab('matrix');
+        }
+
+        function loadScenarioPreset() {
+            const sc = document.getElementById('policy-scenario').value;
+            const promptArea = document.getElementById('policy-prompt');
+
+            if (sc === 'thermal') {
+                promptArea.value = "System experiencing a technospheric thermal runaway where localized energy extraction causes extreme atmospheric entropy surge. Sensory precision γ dropping rapidly. Recommend Expected Free Energy (EFE) policy to re-establish homeostatic bounds.";
+            } else if (sc === 'misalignment') {
+                promptArea.value = "Meso-scale economic sub-blanket optimizing localized free energy extraction at the expense of global macro-blanket stability. High variance in belief propagation. Formulate active inference alignment protocol.";
+            } else if (sc === 'flare') {
+                promptArea.value = "Severe G5 geomagnetic disturbance knocking out 42% of planetary satellite sensorium nodes. Markov blanket precision compromised. Devise emergency epistemic exploration strategy.";
+            } else {
+                promptArea.value = "";
+            }
+        }
+
+        async function generatePolicy() {
+            const userPrompt = document.getElementById('policy-prompt').value;
+            const outputDiv = document.getElementById('policy-output');
+            const statusSpan = document.getElementById('policy-status');
+            const submitBtn = document.getElementById('policy-submit-btn');
+
+            if (!userPrompt.trim()) return;
+
+            statusSpan.textContent = "Calculating Variational Bounds...";
+            statusSpan.className = "text-[10px] font-mono text-accent animate-pulse";
+            submitBtn.disabled = true;
+            outputDiv.innerHTML = `<div class="p-4 text-center text-accent font-mono"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Evaluating Expected Free Energy G(π) across nested Markov Blankets...</div>`;
+
+            const systemInstruction = `You are the Planetary Active Inference Super-Intelligence Engine.
+Your objective is to analyze civilizational perturbations and generate mathematically grounded, actionable policy interventions based on Karl Friston's Active Inference and Variational Free Energy minimization.
+Format your response cleanly with bullet points, specifying:
+1. System State Analysis (Entropy & Surprise)
+2. Epistemic Interventions (Information Gathering / Science)
+3. Pragmatic Interventions (Physical Control / Resource Allocation)
+4. Markov Blanket Re-alignment Protocol.
+Keep tone precise, highly analytical, and concise.`;
+
+            <comment-tag id="5">const apiKey = ""; // Canvas runtime injection
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;</comment-tag id="5" text="const apiKey = ''; // Provide your valid Gemini API key here
+            
+            if (!apiKey) {
+                outputDiv.innerHTML = `<p class='text-warning border border-warning/30 bg-warning/10 p-3 rounded-lg'><strong>Missing API Key:</strong> Please insert your Gemini API key in the script to enable live policy generation.</p>`;
+                statusSpan.textContent = 'Configuration Error';
+                statusSpan.className = 'text-[10px] font-mono text-warning';
+                submitBtn.disabled = false;
+                return;
+            }
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+It is a good idea to handle the empty `apiKey` string gracefully so the user gets a helpful error message instead of an unexpected connection failure. Also note, I've updated the API URL to point to the correct available Flash model endpoint." type="suggestion">
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    // Format response text with basic formatting
+                    const formatted = text
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-accent font-semibold">$1</strong>')
+                        .replace(/\n\n/g, '</p><p class="mt-2 font-mono">')
+                        .replace(/\* /g, '• ');
+
+                    outputDiv.innerHTML = `<div class="prose prose-invert text-xs leading-relaxed font-mono"><p>${formatted}</p></div>`;
+                    statusSpan.textContent = "Optimization Complete";
+                    statusSpan.className = "text-[10px] font-mono text-emerald font-semibold";
+                } else {
+                    outputDiv.innerHTML = `<p class="text-danger">Unable to compute generative inference trajectory. Please verify parameters.</p>`;
+                    statusSpan.textContent = "Error";
+                    statusSpan.className = "text-[10px] font-mono text-danger";
+                }
+            } catch (err) {
+                console.error(err);
+                outputDiv.innerHTML = `<p class="text-danger">API Connection Failure during Variational Belief Propagation.</p>`;
+                statusSpan.textContent = "Connection Failure";
+                statusSpan.className = "text-[10px] font-mono text-danger";
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        function toggleAudioEngine() {
+            const label = document.getElementById('audio-label');
+            const icon = document.getElementById('audio-icon');
+
+            if (!state.audioRunning) {
+                // Initialize Web Audio API
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+                droneOsc1 = audioCtx.createOscillator();
+                droneOsc2 = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+
+                droneOsc1.type = 'sine';
+                droneOsc1.frequency.setValueAtTime(55, audioCtx.currentTime); // A1 note (Deep drone)
+
+                droneOsc2.type = 'sawtooth';
+                droneOsc2.frequency.setValueAtTime(110.5, audioCtx.currentTime); // Subtle detune
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(180, audioCtx.currentTime);
+
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+                droneOsc1.connect(filter);
+                droneOsc2.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                droneOsc1.start();
+                droneOsc2.start();
+
+                state.audioRunning = true;
+                label.textContent = "55Hz Resonance";
+                icon.className = "fa-solid fa-volume-high text-emerald";
+            } else {
+                if (audioCtx) {
+                    audioCtx.close();
+                }
+                state.audioRunning = false;
+                label.textContent = "Resonance Off";
+                icon.className = "fa-solid fa-volume-xmark text-slate-500";
+            }
+        }
+    </script>
+</body>
+</html>
